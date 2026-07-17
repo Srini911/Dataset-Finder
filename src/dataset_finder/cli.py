@@ -3,8 +3,20 @@
 from __future__ import annotations
 
 import argparse
+import sys
 
 from dataset_finder import __version__
+from dataset_finder.clients.ncbi_geo import NCBIClientError, NCBIGEOClient
+
+
+def positive_integer(value: str) -> int:
+    """Parse a positive integer argument."""
+    parsed_value = int(value)
+
+    if parsed_value < 1:
+        raise argparse.ArgumentTypeError("value must be greater than zero")
+
+    return parsed_value
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -27,7 +39,7 @@ def build_parser() -> argparse.ArgumentParser:
     search_parser = subparsers.add_parser(
         "search",
         help="Search for public functional-genomics datasets.",
-        description="Prepare a structured dataset search request.",
+        description="Search supported public biological databases.",
     )
     search_parser.add_argument(
         "--species",
@@ -42,8 +54,8 @@ def build_parser() -> argparse.ArgumentParser:
     search_parser.add_argument(
         "--database",
         choices=("geo", "sra", "all"),
-        default="all",
-        help="Database to search. Default: all.",
+        default="geo",
+        help="Database to search. Default: geo.",
     )
     search_parser.add_argument(
         "--max-results",
@@ -55,18 +67,8 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def positive_integer(value: str) -> int:
-    """Parse a positive integer argument."""
-    parsed_value = int(value)
-
-    if parsed_value < 1:
-        raise argparse.ArgumentTypeError("value must be greater than zero")
-
-    return parsed_value
-
-
 def run_search(args: argparse.Namespace) -> int:
-    """Run a dataset search request."""
+    """Run a dataset search."""
     species = args.species.strip()
     query = args.query.strip()
 
@@ -76,12 +78,53 @@ def run_search(args: argparse.Namespace) -> int:
     if not query:
         raise ValueError("Query cannot be empty.")
 
-    print("Dataset Finder search")
+    if args.database == "sra":
+        print(
+            "SRA search is not implemented yet.",
+            file=sys.stderr,
+        )
+        return 2
+
+    if args.database == "all":
+        print(
+            "Combined database search is not implemented yet; searching GEO only.",
+            file=sys.stderr,
+        )
+
+    client = NCBIGEOClient()
+
+    try:
+        records = client.search(
+            species=species,
+            query=query,
+            max_results=args.max_results,
+        )
+    except NCBIClientError as exc:
+        print(f"Dataset Finder error: {exc}", file=sys.stderr)
+        return 1
+
+    print("Dataset Finder GEO search")
     print(f"Species: {species}")
     print(f"Query: {query}")
-    print(f"Database: {args.database}")
-    print(f"Maximum results: {args.max_results}")
-    print("Status: search request validated; database integration is next.")
+    print(f"Results found: {len(records)}")
+
+    if not records:
+        print("No matching GEO Series records were found.")
+        return 0
+
+    print()
+
+    for index, record in enumerate(records, start=1):
+        print(f"{index}. {record.accession or record.uid}")
+        print(f"   Title: {record.title or 'Not available'}")
+        print(f"   Organism: {record.organism or 'Not available'}")
+        print(f"   Study type: {record.study_type or 'Not available'}")
+        print(
+            "   Samples: "
+            f"{record.sample_count if record.sample_count is not None else 'Not available'}"
+        )
+        print(f"   Publication date: {record.publication_date or 'Not available'}")
+        print(f"   URL: {record.url}")
 
     return 0
 
