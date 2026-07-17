@@ -176,7 +176,7 @@ Dataset Finder is distributed under the MIT License. See `LICENSE`.
 
 ## Author
 
-**Srinivas Amla**  
+**Srinivas Amla**
 University of Massachusetts Boston
 
 Research interests include bioinformatics, computational biology, functional genomics, machine learning, and public biological-data integration.
