@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Any
 
 import requests
+
+from dataset_finder.models import DatasetRecord
 
 EUTILS_BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 GEO_ACCESSION_URL = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi"
@@ -15,18 +16,8 @@ class NCBIClientError(RuntimeError):
     """Raised when an NCBI request or response cannot be processed."""
 
 
-@dataclass(frozen=True, slots=True)
-class GEORecord:
-    """A normalized GEO search result."""
-
-    uid: str
-    accession: str
-    title: str
-    organism: str
-    study_type: str
-    sample_count: int | None
-    publication_date: str
-    url: str
+# Backward-compatible name for code that imported GEORecord directly.
+GEORecord = DatasetRecord
 
 
 class NCBIGEOClient:
@@ -51,7 +42,7 @@ class NCBIGEOClient:
         species: str,
         query: str,
         max_results: int = 20,
-    ) -> list[GEORecord]:
+    ) -> list[DatasetRecord]:
         """Search GEO DataSets and return normalized records."""
         term = self._build_search_term(species=species, query=query)
         record_ids = self._search_ids(term=term, max_results=max_results)
@@ -149,7 +140,7 @@ class NCBIGEOClient:
         return payload
 
     @staticmethod
-    def _normalize_summary(summary: dict[str, Any]) -> GEORecord:
+    def _normalize_summary(summary: dict[str, Any]) -> DatasetRecord:
         accession = str(summary.get("accession", "")).strip()
         organisms = summary.get("taxon", [])
         study_types = summary.get("gdstype", [])
@@ -158,7 +149,7 @@ class NCBIGEOClient:
         study_type = _join_values(study_types)
         sample_count = _optional_integer(summary.get("n_samples"))
 
-        return GEORecord(
+        return DatasetRecord(
             uid=str(summary.get("uid", "")).strip(),
             accession=accession,
             title=str(summary.get("title", "")).strip(),

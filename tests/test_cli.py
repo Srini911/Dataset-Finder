@@ -73,7 +73,7 @@ def test_geo_search_command_output(
     ]
 
     monkeypatch.setattr(
-        "dataset_finder.cli.NCBIGEOClient.search",
+        "dataset_finder.search.NCBIGEOClient.search",
         lambda self, **kwargs: fake_records,
     )
     monkeypatch.setattr(
@@ -109,7 +109,7 @@ def test_geo_search_handles_no_results(
 ) -> None:
     """The CLI should report an empty GEO search clearly."""
     monkeypatch.setattr(
-        "dataset_finder.cli.NCBIGEOClient.search",
+        "dataset_finder.search.NCBIGEOClient.search",
         lambda self, **kwargs: [],
     )
     monkeypatch.setattr(
