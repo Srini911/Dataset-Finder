@@ -75,8 +75,47 @@ class SearchService:
                 query=query,
                 max_results=max_results,
             )
-            return (geo_records + encode_records)[:max_results]
+            return self._interleave_records(
+                geo_records,
+                encode_records,
+                max_results=max_results,
+            )
 
         raise UnsupportedDatabaseError(
             f"Unsupported database: {database}"
         )
+
+    @staticmethod
+    def _interleave_records(
+        geo_records: list[DatasetRecord],
+        encode_records: list[DatasetRecord],
+        *,
+        max_results: int,
+    ) -> list[DatasetRecord]:
+        """Interleave and deduplicate records from multiple databases."""
+        merged: list[DatasetRecord] = []
+        seen: set[tuple[str, str]] = set()
+
+        longest = max(len(geo_records), len(encode_records))
+
+        for index in range(longest):
+            for records in (geo_records, encode_records):
+                if index >= len(records):
+                    continue
+
+                record = records[index]
+                identity = (
+                    record.accession.strip().upper(),
+                    record.url.strip(),
+                )
+
+                if identity in seen:
+                    continue
+
+                seen.add(identity)
+                merged.append(record)
+
+                if len(merged) >= max_results:
+                    return merged
+
+        return merged

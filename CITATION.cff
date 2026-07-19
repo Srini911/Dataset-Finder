@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use Dataset Finder in research, please cite the software using this metadata."
+title: "Dataset Finder"
+type: software
+authors:
+  - family-names: "Amla"
+    given-names: "Srinivas"
+version: "0.2.0"
+date-released: "2026-07-19"
+repository-code: "https://github.com/Srini911/Dataset-Finder"
+url: "https://github.com/Srini911/Dataset-Finder"
+license: MIT
+keywords:
+  - bioinformatics
+  - functional genomics
+  - dataset discovery
+  - GEO
+  - ENCODE
+  - RNA sequencing
+  - regulatory genomics
+abstract: >-
+  Dataset Finder is an open-source Python toolkit for discovering and
+  organizing public functional-genomics datasets through a unified
+  command-line interface.

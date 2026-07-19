@@ -57,7 +57,7 @@ Dataset Finder is under active development.
 | Expression Atlas | Future |
 | ProteomeXchange | Future |
 
-## Supported Assay Types
+## Target Assay Coverage
 
 Dataset Finder is intended to support functional-genomics studies including:
 
