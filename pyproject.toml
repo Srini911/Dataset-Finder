@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dataset-finder"
-version = "0.1.0"
+version = "0.2.0"
 description = "Discover, classify, and organize public functional-genomics datasets across species."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -17,8 +17,10 @@ keywords = [
     "functional genomics",
     "dataset discovery",
     "GEO",
-    "SRA",
-    "PubMed"
+    "ENCODE",
+    "RNA-seq",
+    "ChIP-seq",
+    "eCLIP",
 ]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
@@ -47,6 +49,7 @@ dataset-finder = "dataset_finder.cli:main"
 Homepage = "https://github.com/Srini911/Dataset-Finder"
 Repository = "https://github.com/Srini911/Dataset-Finder"
 Issues = "https://github.com/Srini911/Dataset-Finder/issues"
+Changelog = "https://github.com/Srini911/Dataset-Finder/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -132,11 +132,11 @@ def test_geo_search_handles_no_results(
     assert "No matching GEO Series records were found." in output
 
 
-def test_sra_search_is_not_implemented(
+def test_sra_search_is_rejected_by_argument_parser(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """The CLI should reject SRA searches until support is added."""
+    """The CLI should reject SRA because it is not an implemented choice."""
     monkeypatch.setattr(
         "sys.argv",
         [
@@ -151,8 +151,11 @@ def test_sra_search_is_not_implemented(
         ],
     )
 
-    exit_code = main()
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+
     captured = capsys.readouterr()
 
-    assert exit_code == 2
-    assert "SRA search is not implemented yet." in captured.err
+    assert exc_info.value.code == 2
+    assert "invalid choice" in captured.err.lower()
+    assert "choose from geo, encode, all" in captured.err.lower()
