@@ -6,6 +6,7 @@ import argparse
 import sys
 
 from dataset_finder import __version__
+from dataset_finder.clients.encode import ENCODEClientError
 from dataset_finder.clients.ncbi_geo import NCBIClientError
 from dataset_finder.models import DatasetRecord
 from dataset_finder.search import SearchService, UnsupportedDatabaseError
@@ -33,7 +34,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="dataset-finder",
         description=(
-            "Discover and organize public functional-genomics datasets "
+            "Discover public RBP and TF functional-genomics datasets "
             "across species."
         ),
     )
@@ -53,16 +54,16 @@ def build_parser() -> argparse.ArgumentParser:
     search_parser.add_argument(
         "--species",
         required=True,
-        help='Scientific species name, for example "Drosophila melanogaster".',
+        help='Scientific species name, for example "Homo sapiens".',
     )
     search_parser.add_argument(
         "--query",
         required=True,
-        help='Search terms, for example "brain RNA-seq".',
+        help='Regulator or search terms, for example "CTCF".',
     )
     search_parser.add_argument(
         "--database",
-        choices=("geo", "sra", "all"),
+        choices=("geo", "encode", "sra", "all"),
         default="geo",
         help="Database to search. Default: geo.",
     )
@@ -98,12 +99,7 @@ def run_search(args: argparse.Namespace) -> int:
     """Run a dataset search."""
     species = args.species.strip()
     query = args.query.strip()
-
-    if args.database == "all":
-        print(
-            "Combined database search is not implemented yet; searching GEO only.",
-            file=sys.stderr,
-        )
+    database = args.database.strip().lower()
 
     service = SearchService()
 
@@ -111,26 +107,31 @@ def run_search(args: argparse.Namespace) -> int:
         records = service.search(
             species=species,
             query=query,
-            database=args.database,
+            database=database,
             max_results=args.max_results,
         )
     except UnsupportedDatabaseError as exc:
         print(str(exc), file=sys.stderr)
         return 2
-    except NCBIClientError as exc:
+    except (NCBIClientError, ENCODEClientError) as exc:
         print(f"Dataset Finder error: {exc}", file=sys.stderr)
         return 1
     except ValueError as exc:
         print(f"Dataset Finder error: {exc}", file=sys.stderr)
         return 2
 
-    print("Dataset Finder GEO search")
+    database_label = database.upper()
+
+    print(f"Dataset Finder {database_label} search")
     print(f"Species: {species}")
     print(f"Query: {query}")
     print(f"Results found: {len(records)}")
 
     if not records:
-        print("No matching GEO Series records were found.")
+        if database == "geo":
+            print("No matching GEO Series records were found.")
+        else:
+            print(f"No matching {database_label} records were found.")
         return 0
 
     print()
