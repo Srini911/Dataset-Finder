@@ -1,18 +1,25 @@
+cat > README.md <<'EOF'
 # Dataset Finder
 
-> Discover, organize, and curate public functional-genomics datasets across multiple biological databases.
+> Search and export public functional-genomics datasets from GEO and ENCODE through a unified command-line interface.
 
-Dataset Finder is an open-source Python bioinformatics toolkit for discovering publicly available functional-genomics datasets from major biological repositories.
+Dataset Finder is an open-source Python bioinformatics toolkit for discovering, organizing, and exporting publicly available functional-genomics datasets from major biological repositories.
 
-The project provides a unified command-line interface for searching and normalizing dataset metadata across species, genes, tissues, diseases, regulators, and experimental assays.
+It provides a consistent command-line interface for searching supported databases and normalizes returned metadata into a common dataset-record format for downstream analysis.
 
-## Current Capabilities
+## Features
 
 - Search GEO datasets
 - Search ENCODE experiments
-- Search GEO and ENCODE through a common command-line interface
-- Normalize results into a shared dataset-record model
-- Validate code with pytest and Ruff
+- Search GEO and ENCODE through one interface
+- Discover datasets across multiple species
+- Normalize metadata into a shared record structure
+- Export search results as CSV
+- Export search results as JSON
+- Display results directly in the terminal
+- Automated testing with pytest
+- Code-quality validation with Ruff
+- Continuous Integration with GitHub Actions
 
 ## Project Status
 
@@ -22,17 +29,22 @@ Dataset Finder is under active development.
 
 - GEO dataset search
 - ENCODE experiment search
-- Combined database search
+- Combined GEO and ENCODE search
 - Python command-line interface
-- Normalized metadata model
+- Normalized dataset metadata model
+- Terminal table output
+- CSV export
+- JSON export
 - Automated test suite
+- GitHub Actions continuous integration
 
 ### In Progress
 
-- Documentation improvements
-- Export utilities
 - Ranking and relevance scoring
 - Expanded metadata normalization
+- Enhanced biological search filters
+- Documentation improvements
+- Additional database integrations
 
 ### Planned
 
@@ -42,6 +54,8 @@ Dataset Finder is under active development.
 - PubMed integration
 - ENA integration
 - Expression Atlas integration
+- Excel export
+- Reproducible search reports
 
 ## Supported Databases
 
@@ -59,44 +73,61 @@ Dataset Finder is under active development.
 
 ## Target Assay Coverage
 
-Dataset Finder is intended to support functional-genomics studies including:
+Dataset Finder is designed to support the discovery of functional-genomics studies involving:
 
-- bulk RNA-seq
-- single-cell RNA-seq
-- single-nucleus RNA-seq
+- Bulk RNA sequencing
+- Single-cell RNA sequencing
+- Single-nucleus RNA sequencing
 - ATAC-seq
 - ChIP-seq
 - CUT&RUN
 - CUT&Tag
 - eCLIP and other CLIP-based assays
-- spatial transcriptomics
-- perturbation-based transcriptomics
+- Spatial transcriptomics
+- Perturbation-based transcriptomics
 
 ## Guiding Principle
 
 **Search once. Discover everywhere.**
 
+## Requirements
+
+Dataset Finder requires:
+
+- Python 3.11 or newer
+- Internet access for querying public databases
+- Git for cloning the repository
+
 ## Installation
 
-Dataset Finder requires Python 3.11 or newer.
+Clone the repository:
 
 ```bash
 git clone https://github.com/Srini911/Dataset-Finder.git
 cd Dataset-Finder
+```
 
+Create and activate a virtual environment:
+
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
+```
 
+Install Dataset Finder and its development dependencies:
+
+```bash
+python -m pip install --upgrade pip
 pip install -e ".[dev]"
 ```
 
-## Command-Line Interface
-
-Check the installed version:
+Confirm that the command is available:
 
 ```bash
 dataset-finder --version
 ```
+
+## Command-Line Interface
 
 Display general help:
 
@@ -104,7 +135,7 @@ Display general help:
 dataset-finder --help
 ```
 
-Display search help:
+Display search-specific help:
 
 ```bash
 dataset-finder search --help
@@ -138,39 +169,92 @@ dataset-finder search \
 dataset-finder search \
   --database all \
   --species "Homo sapiens" \
-  --query "TARDBP" \
+  --query "CTCF" \
   --max-results 10
 ```
 
-The current combined search queries GEO and ENCODE and returns normalized dataset records.
+The combined search queries GEO and ENCODE and returns normalized dataset records through a common interface.
+
+## Export Search Results
+
+Dataset Finder supports terminal, CSV, and JSON output formats.
+
+### Export Results as CSV
+
+```bash
+dataset-finder search \
+  --species "Homo sapiens" \
+  --query "CTCF" \
+  --format csv \
+  --output results.csv
+```
+
+Example terminal output:
+
+```text
+Dataset Finder GEO search
+Species: Homo sapiens
+Query: CTCF
+Results found: 20
+Exported results: /path/to/results.csv
+```
+
+### Export Results as JSON
+
+```bash
+dataset-finder search \
+  --species "Drosophila melanogaster" \
+  --query "Fru" \
+  --format json \
+  --output drosophila_fru_results.json
+```
+
+When `--output` is omitted, Dataset Finder creates a default file in the current working directory.
+
+### Display Results in the Terminal
+
+```bash
+dataset-finder search \
+  --database geo \
+  --species "Drosophila melanogaster" \
+  --query "fruitless" \
+  --format table \
+  --max-results 5
+```
+
+## Available Output Formats
+
+| Format | CLI value | Status |
+|---|---|---|
+| Terminal table | `table` | Implemented |
+| CSV | `csv` | Implemented |
+| JSON | `json` | Implemented |
+| Excel workbook | Not yet available | Planned |
+| Reproducible report | Not yet available | Planned |
 
 ## Search Result Metadata
 
-Search results may include:
+Normalized search results may include:
 
-- accession identifier
-- dataset title
-- organism
-- assay or study type
-- sample or replicate count
-- release or publication date when available
-- direct database URL
+| Field | Description |
+|---|---|
+| `uid` | Database-specific unique identifier |
+| `accession` | Public dataset or experiment accession |
+| `title` | Dataset title |
+| `organism` | Study organism or organisms |
+| `study_type` | Assay or study classification |
+| `sample_count` | Number of samples or replicates when available |
+| `publication_date` | Release or publication date when available |
+| `url` | Direct link to the source database record |
 
-## Planned Outputs
+Metadata availability may differ between databases because GEO and ENCODE expose different record structures.
 
-Future releases are intended to provide:
+## Example CSV Structure
 
-- dataset inventories
-- accession identifiers
-- direct database links
-- sample and assay metadata
-- publication references
-- relevance scores
-- Excel workbooks
-- CSV tables
-- JSON records
-- reproducible search reports
-- methods-ready summaries
+```text
+uid,accession,title,organism,study_type,sample_count,publication_date,url
+200304737,GSE304737,Example dataset,Drosophila melanogaster,Genome binding/occupancy profiling by high throughput sequencing,7,2026/02/09,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE304737
+```
 
 ## Architecture
 
@@ -185,82 +269,121 @@ SearchService
         +-- ENCODE Client
         |
         +-- Future Database Clients
+        |
+        v
+Normalized Dataset Records
+        |
+        +-- Terminal Output
+        +-- CSV Export
+        +-- JSON Export
 ```
 
-All database clients normalize results into a common dataset-record model.
+Each supported database client converts source-specific metadata into the common `DatasetRecord` model.
 
 ## Repository Structure
 
 ```text
-src/dataset_finder/
-├── clients/       Database clients
-├── exporters/     Export functionality
-├── utils/         Shared utilities
-├── cli.py         Command-line interface
-├── models.py      Shared data models
-├── ranking.py     Ranking utilities
-└── search.py      Search orchestration
-
-tests/             Automated tests
+Dataset-Finder/
+├── .github/
+│   └── workflows/          GitHub Actions workflows
+├── src/
+│   └── dataset_finder/
+│       ├── clients/        Database-specific clients
+│       ├── exporters/      CSV and JSON exporters
+│       ├── utils/          Shared utilities
+│       ├── cli.py          Command-line interface
+│       ├── models.py       Shared dataset models
+│       ├── ranking.py      Ranking utilities
+│       └── search.py       Search orchestration
+├── tests/                  Automated tests
+├── CHANGELOG.md
+├── CITATION.cff
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+└── SECURITY.md
 ```
 
 ## Development
 
-Run linting:
+Install the project with development dependencies:
+
+```bash
+pip install -e ".[dev]"
+```
+
+Run Ruff:
 
 ```bash
 ruff check src tests
 ```
 
-Run tests:
+Run the test suite:
 
 ```bash
 pytest
 ```
 
-Run all checks:
+Run all local validation checks:
 
 ```bash
-ruff check src tests && pytest
+ruff check src tests
+pytest
+git diff --check
 ```
 
 ## Roadmap
 
-### Version 0.2
+### Completed Foundation
 
-- GEO search
-- ENCODE search
+- GEO dataset search
+- ENCODE experiment search
 - Combined database search
-- ENCODE client tests
-- Improved documentation
-
-### Version 0.3
-
-- SRA integration
+- Unified command-line interface
+- Normalized metadata model
 - CSV export
 - JSON export
-- Excel export
-- Relevance ranking
+- Automated testing
+- Continuous Integration
 
-### Version 0.4
+### Next Milestone
+
+- SRA integration
+- Relevance ranking
+- Improved metadata normalization
+- Assay filters
+- Tissue filters
+- Disease filters
+- Excel export
+
+### Future Development
 
 - BioProject integration
+- BioSample integration
 - PubMed integration
 - ENA integration
-- Advanced assay filters
-- Tissue and disease filters
+- Expression Atlas integration
+- Publication-linked dataset discovery
+- Reproducible search reports
+- Methods-ready dataset summaries
+- Stable extensible database-client framework
 
-### Version 1.0
+## Limitations
 
-- Unified multi-database search
-- Harmonized metadata
-- Publication-ready reports
-- Extensible client architecture
-- Stable public release
+Dataset Finder is under active development.
+
+Current limitations include:
+
+- Only GEO and ENCODE are currently implemented.
+- Search relevance depends on metadata exposed by the source database.
+- Metadata completeness varies between repositories.
+- Search results should be reviewed before being used in publications or downstream analyses.
+- Database APIs may change independently of Dataset Finder.
 
 ## Citation and Acknowledgment
 
-If Dataset Finder contributes to your research, publication, thesis, report, software, or teaching, please cite the software or acknowledge its creator.
+When Dataset Finder contributes to research, a publication, thesis, report, software project, or teaching material, please cite the software or acknowledge its creator.
 
 **Creator and lead developer:** Srinivas Amla
 
@@ -268,15 +391,22 @@ Suggested acknowledgment:
 
 > Public functional-genomics datasets were identified and organized using Dataset Finder, developed by Srinivas Amla.
 
-Formal citation metadata is provided in `CITATION.cff`.
+Formal citation metadata is available in [`CITATION.cff`](CITATION.cff).
 
 ## Contributing
 
-Community contributions are welcome. Please read `CONTRIBUTING.md` before submitting a pull request.
+Community contributions are welcome.
+
+Before contributing, read [`CONTRIBUTING.md`](CONTRIBUTING.md) for development and pull-request guidance.
+
+Please also review:
+
+- [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)
+- [`SECURITY.md`](SECURITY.md)
 
 ## License
 
-Dataset Finder is distributed under the MIT License. See `LICENSE`.
+Dataset Finder is distributed under the MIT License. See [`LICENSE`](LICENSE).
 
 ## Author
 
@@ -284,3 +414,4 @@ Dataset Finder is distributed under the MIT License. See `LICENSE`.
 University of Massachusetts Boston
 
 Research interests include bioinformatics, computational biology, functional genomics, machine learning, and public biological-data integration.
+EOF
