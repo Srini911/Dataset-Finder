@@ -156,6 +156,11 @@ def test_sra_search_is_rejected_by_argument_parser(
 
     captured = capsys.readouterr()
 
+    error_output = captured.err.lower()
+
     assert exc_info.value.code == 2
-    assert "invalid choice" in captured.err.lower()
-    assert "choose from geo, encode, all" in captured.err.lower()
+    assert "invalid choice" in error_output
+    assert "sra" in error_output
+    assert "geo" in error_output
+    assert "encode" in error_output
+    assert "all" in error_output
