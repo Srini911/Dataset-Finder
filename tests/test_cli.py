@@ -164,3 +164,107 @@ def test_sra_search_is_rejected_by_argument_parser(
     assert "geo" in error_output
     assert "encode" in error_output
     assert "all" in error_output
+
+
+def test_geo_search_exports_csv(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    tmp_path,
+) -> None:
+    """The CLI should export GEO results to CSV."""
+    fake_records = [
+        GEORecord(
+            uid="200123456",
+            accession="GSE123456",
+            title="Drosophila brain RNA sequencing",
+            organism="Drosophila melanogaster",
+            study_type="Expression profiling by high throughput sequencing",
+            sample_count=12,
+            publication_date="2026/01/10",
+            url="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE123456",
+        )
+    ]
+    output_path = tmp_path / "geo_results.csv"
+
+    monkeypatch.setattr(
+        "dataset_finder.search.NCBIGEOClient.search",
+        lambda self, **kwargs: fake_records,
+    )
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "dataset-finder",
+            "search",
+            "--species",
+            "Drosophila melanogaster",
+            "--query",
+            "brain RNA-seq",
+            "--database",
+            "geo",
+            "--format",
+            "csv",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    exit_code = main()
+    output = capsys.readouterr().out
+
+    assert exit_code == 0
+    assert output_path.exists()
+    assert "Exported results:" in output
+    assert "GSE123456" in output_path.read_text(encoding="utf-8")
+
+
+def test_geo_search_exports_json(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    tmp_path,
+) -> None:
+    """The CLI should export GEO results to JSON."""
+    fake_records = [
+        GEORecord(
+            uid="200123456",
+            accession="GSE123456",
+            title="Drosophila brain RNA sequencing",
+            organism="Drosophila melanogaster",
+            study_type="Expression profiling by high throughput sequencing",
+            sample_count=12,
+            publication_date="2026/01/10",
+            url="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE123456",
+        )
+    ]
+    output_path = tmp_path / "geo_results.json"
+
+    monkeypatch.setattr(
+        "dataset_finder.search.NCBIGEOClient.search",
+        lambda self, **kwargs: fake_records,
+    )
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "dataset-finder",
+            "search",
+            "--species",
+            "Drosophila melanogaster",
+            "--query",
+            "brain RNA-seq",
+            "--database",
+            "geo",
+            "--format",
+            "json",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    exit_code = main()
+    output = capsys.readouterr().out
+
+    assert exit_code == 0
+    assert output_path.exists()
+    assert "Exported results:" in output
+    assert '"accession": "GSE123456"' in output_path.read_text(
+        encoding="utf-8"
+    )

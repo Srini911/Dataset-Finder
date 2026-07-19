@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import argparse
 import sys
+from pathlib import Path
 
 from dataset_finder import __version__
 from dataset_finder.clients.encode import ENCODEClientError
 from dataset_finder.clients.ncbi_geo import NCBIClientError
+from dataset_finder.exporters import export_csv, export_json
 from dataset_finder.models import DatasetRecord
 from dataset_finder.search import SearchService, UnsupportedDatabaseError
 
@@ -73,6 +75,20 @@ def build_parser() -> argparse.ArgumentParser:
         default=20,
         help="Maximum number of results. Default: 20.",
     )
+    search_parser.add_argument(
+        "--format",
+        choices=("table", "csv", "json"),
+        default="table",
+        help="Output format: table, CSV, or JSON. Default: table.",
+    )
+    search_parser.add_argument(
+        "--output",
+        type=Path,
+        help=(
+            "Output file path for CSV or JSON. "
+            "A default filename is used when omitted."
+        ),
+    )
 
     return parser
 
@@ -93,6 +109,29 @@ def print_records(records: list[DatasetRecord]) -> None:
             f"{record.publication_date or 'Not available'}"
         )
         print(f"   URL: {record.url}")
+
+
+def default_output_path(output_format: str) -> Path:
+    """Return the default output filename for an export format."""
+    return Path(f"dataset_finder_results.{output_format}")
+
+
+def export_records(
+    records: list[DatasetRecord],
+    *,
+    output_format: str,
+    output_path: Path | None,
+) -> Path:
+    """Export records to CSV or JSON."""
+    path = output_path or default_output_path(output_format)
+
+    if output_format == "csv":
+        return export_csv(records, path)
+
+    if output_format == "json":
+        return export_json(records, path)
+
+    raise ValueError(f"Unsupported export format: {output_format}")
 
 
 def run_search(args: argparse.Namespace) -> int:
@@ -126,6 +165,23 @@ def run_search(args: argparse.Namespace) -> int:
     print(f"Species: {species}")
     print(f"Query: {query}")
     print(f"Results found: {len(records)}")
+
+    if args.format in {"csv", "json"}:
+        try:
+            exported_path = export_records(
+                records,
+                output_format=args.format,
+                output_path=args.output,
+            )
+        except OSError as exc:
+            print(
+                f"Dataset Finder export error: {exc}",
+                file=sys.stderr,
+            )
+            return 1
+
+        print(f"Exported results: {exported_path}")
+        return 0
 
     if not records:
         if database == "geo":
