@@ -150,3 +150,79 @@ def test_gal4_driver_genotype_is_transgenic() -> None:
     )
 
     assert metadata.genotype == "transgenic"
+
+
+def test_male_and_female_samples_are_mixed() -> None:
+    metadata = extract_biological_metadata(
+        {
+            "samples": [
+                {"sex": "male"},
+                {"sex": "female"},
+            ]
+        }
+    )
+
+    assert metadata.sex == "mixed"
+
+
+def test_control_and_treated_samples_are_mixed() -> None:
+    metadata = extract_biological_metadata(
+        {
+            "sample_titles": [
+                "untreated control replicate",
+                "drug-treated replicate",
+            ]
+        }
+    )
+
+    assert metadata.control_status == "mixed"
+
+
+def test_wild_type_and_mutant_genotypes_are_mixed() -> None:
+    metadata = extract_biological_metadata(
+        {
+            "characteristics": {
+                "genotype": [
+                    "wild type",
+                    "orb2 mutant",
+                ]
+            }
+        }
+    )
+
+    assert metadata.genotype == "mixed"
+
+
+def test_single_genotype_is_not_marked_mixed() -> None:
+    metadata = extract_biological_metadata(
+        {
+            "characteristics": {
+                "genotype": [
+                    "inscGAL4>orb2RNAi",
+                    "inscGAL4>orb2RNAi",
+                ]
+            }
+        }
+    )
+
+    assert metadata.genotype == "transgenic"
+
+
+def test_single_sex_is_not_marked_mixed() -> None:
+    metadata = extract_biological_metadata(
+        "adult female brain samples",
+    )
+
+    assert metadata.sex == "female"
+
+
+def test_zygosity_with_mutant_word_is_not_mixed() -> None:
+    homozygous = extract_biological_metadata(
+        "homozygous mutant flies",
+    )
+    heterozygous = extract_biological_metadata(
+        "heterozygous mutant flies",
+    )
+
+    assert homozygous.genotype == "homozygous"
+    assert heterozygous.genotype == "heterozygous"

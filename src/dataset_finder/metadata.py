@@ -281,11 +281,13 @@ def _combined_text(values: tuple[object, ...]) -> str:
     return " ".join(fragments).casefold()
 
 
-def _first_match(
+def _matched_labels(
     text: str,
     patterns: dict[str, tuple[str, ...]],
-) -> str:
-    """Return the first normalized label supported by the text."""
+) -> list[str]:
+    """Return every normalized label supported by the text."""
+    labels: list[str] = []
+
     for label, expressions in patterns.items():
         if any(
             re.search(
@@ -295,9 +297,65 @@ def _first_match(
             )
             for expression in expressions
         ):
-            return label
+            labels.append(label)
 
-    return ""
+    return labels
+
+
+def _first_match(
+    text: str,
+    patterns: dict[str, tuple[str, ...]],
+) -> str:
+    """Return the first normalized label supported by the text."""
+    labels = _matched_labels(text, patterns)
+    return labels[0] if labels else ""
+
+
+def _mixed_or_first(
+    text: str,
+    patterns: dict[str, tuple[str, ...]],
+    *,
+    mixed_when: set[str] | None = None,
+) -> str:
+    """Return mixed when multiple incompatible labels are present."""
+    labels = _matched_labels(text, patterns)
+
+    if not labels:
+        return ""
+
+    relevant_labels = (
+        [label for label in labels if label in mixed_when]
+        if mixed_when
+        else labels
+    )
+
+    if len(set(relevant_labels)) > 1:
+        return "mixed"
+
+    return labels[0]
+
+
+def _extract_genotype(text: str) -> str:
+    """Extract genotype while preserving specific zygosity labels."""
+    labels = _matched_labels(text, GENOTYPE_PATTERNS)
+
+    if not labels:
+        return ""
+
+    for zygosity in ("homozygous", "heterozygous"):
+        if zygosity in labels:
+            return zygosity
+
+    if "wild type" in labels and any(
+        label in labels
+        for label in ("mutant", "transgenic")
+    ):
+        return "mixed"
+
+    if "mutant" in labels and "transgenic" in labels:
+        return "mixed"
+
+    return labels[0]
 
 
 def extract_biological_metadata(
@@ -315,14 +373,19 @@ def extract_biological_metadata(
             text,
             DEVELOPMENTAL_STAGE_PATTERNS,
         ),
-        sex=_first_match(text, SEX_PATTERNS),
-        genotype=_first_match(text, GENOTYPE_PATTERNS),
+        sex=_mixed_or_first(
+            text,
+            SEX_PATTERNS,
+            mixed_when={"male", "female"},
+        ),
+        genotype=_extract_genotype(text),
         strain=_first_match(text, STRAIN_PATTERNS),
         treatment=_first_match(text, TREATMENT_PATTERNS),
         disease=_first_match(text, DISEASE_PATTERNS),
-        control_status=_first_match(
+        control_status=_mixed_or_first(
             text,
             CONTROL_PATTERNS,
+            mixed_when={"control", "treated"},
         ),
         time_point=(
             time_point_match.group(0)

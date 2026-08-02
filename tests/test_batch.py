@@ -385,7 +385,7 @@ def test_batch_search_extracts_biological_metadata() -> None:
     assert record.developmental_stage == "adult"
     assert record.sex == "male"
     assert record.strain == "w1118"
-    assert record.control_status == "control"
+    assert record.control_status == "mixed"
     assert record.time_point == "24 hours"
     assert record.perturbation == "RNAi"
 
