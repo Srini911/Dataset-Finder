@@ -2,16 +2,46 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from dataclasses import dataclass
+from typing import Protocol
 
 from dataset_finder.clients.biostudies import BioStudiesClient
 from dataset_finder.clients.encode import ENCODEClient
-from dataset_finder.clients.ncbi_bioproject import (
-    NCBIBioProjectClient,
-)
+from dataset_finder.clients.ncbi_bioproject import NCBIBioProjectClient
 from dataset_finder.clients.ncbi_geo import NCBIGEOClient
 from dataset_finder.clients.ncbi_sra import NCBISRAClient
 from dataset_finder.models import DatasetRecord
+
+
+class SearchClient(Protocol):
+    """Protocol implemented by database search clients."""
+
+    def search(
+        self,
+        *,
+        species: str,
+        query: str,
+        max_results: int,
+    ) -> list[DatasetRecord]:
+        """Search one public database."""
+
+
+@dataclass(frozen=True, slots=True)
+class DatabaseSearchStatus:
+    """Outcome of one database search."""
+
+    database: str
+    success: bool
+    result_count: int
+    error: str = ""
+
+
+@dataclass(frozen=True, slots=True)
+class SearchOutcome:
+    """Records and source-level statuses from a search."""
+
+    records: tuple[DatasetRecord, ...]
+    statuses: tuple[DatabaseSearchStatus, ...]
 
 
 class UnsupportedDatabaseError(ValueError):
@@ -33,13 +63,105 @@ class SearchService:
         self.geo_client = geo_client or NCBIGEOClient()
         self.encode_client = encode_client or ENCODEClient()
         self.sra_client = sra_client or NCBISRAClient()
-        self.bioproject_client = (
-            bioproject_client
-            or NCBIBioProjectClient()
+        self.bioproject_client = bioproject_client or NCBIBioProjectClient()
+        self.biostudies_client = biostudies_client or BioStudiesClient()
+
+    def _clients(self) -> dict[str, SearchClient]:
+        return {
+            "geo": self.geo_client,
+            "encode": self.encode_client,
+            "sra": self.sra_client,
+            "bioproject": self.bioproject_client,
+            "biostudies": self.biostudies_client,
+        }
+
+    @staticmethod
+    def _validate(
+        *,
+        species: str,
+        query: str,
+        max_results: int,
+    ) -> tuple[str, str]:
+        species = species.strip()
+        query = query.strip()
+
+        if not species:
+            raise ValueError("Species cannot be empty.")
+
+        if not query:
+            raise ValueError("Query cannot be empty.")
+
+        if max_results < 1:
+            raise ValueError("Maximum results must be greater than zero.")
+
+        return species, query
+
+    def search_with_status(
+        self,
+        *,
+        species: str,
+        query: str,
+        database: str = "geo",
+        max_results: int = 20,
+    ) -> SearchOutcome:
+        """Search databases and preserve every database outcome."""
+        species, query = self._validate(
+            species=species,
+            query=query,
+            max_results=max_results,
         )
-        self.biostudies_client = (
-            biostudies_client
-            or BioStudiesClient()
+        database = database.strip().lower()
+        clients = self._clients()
+
+        if database == "all":
+            selected_clients = clients
+        elif database in clients:
+            selected_clients = {
+                database: clients[database],
+            }
+        else:
+            raise UnsupportedDatabaseError(
+                f"Unsupported database: {database}"
+            )
+
+        result_groups: list[list[DatasetRecord]] = []
+        statuses: list[DatabaseSearchStatus] = []
+
+        for database_name, client in selected_clients.items():
+            try:
+                records = client.search(
+                    species=species,
+                    query=query,
+                    max_results=max_results,
+                )
+            except Exception as exc:
+                statuses.append(
+                    DatabaseSearchStatus(
+                        database=database_name,
+                        success=False,
+                        result_count=0,
+                        error=str(exc),
+                    )
+                )
+                continue
+
+            result_groups.append(records)
+            statuses.append(
+                DatabaseSearchStatus(
+                    database=database_name,
+                    success=True,
+                    result_count=len(records),
+                )
+            )
+
+        records = self._interleave_records(
+            result_groups,
+            max_results=max_results,
+        )
+
+        return SearchOutcome(
+            records=tuple(records),
+            statuses=tuple(statuses),
         )
 
     def search(
@@ -50,79 +172,43 @@ class SearchService:
         database: str = "geo",
         max_results: int = 20,
     ) -> list[DatasetRecord]:
-        """Search the requested database and normalize results."""
-        species = species.strip()
-        query = query.strip()
-        database = database.strip().lower()
-
-        if not species:
-            raise ValueError("Species cannot be empty.")
-
-        if not query:
-            raise ValueError("Query cannot be empty.")
-
-        if max_results < 1:
-            raise ValueError(
-                "Maximum results must be greater than zero."
-            )
-
-        clients = {
-            "geo": self.geo_client,
-            "encode": self.encode_client,
-            "sra": self.sra_client,
-            "bioproject": self.bioproject_client,
-            "biostudies": self.biostudies_client,
-        }
-
-        if database in clients:
-            return clients[database].search(
-                species=species,
-                query=query,
-                max_results=max_results,
-            )
-
-        if database == "all":
-            result_groups: list[list[DatasetRecord]] = []
-
-            for client in clients.values():
-                try:
-                    records = client.search(
-                        species=species,
-                        query=query,
-                        max_results=max_results,
-                    )
-                except Exception:
-                    continue
-
-                result_groups.append(records)
-
-            return self._interleave_records(
-                result_groups,
-                max_results=max_results,
-            )
-
-        raise UnsupportedDatabaseError(
-            f"Unsupported database: {database}"
+        """Search databases and return normalized records."""
+        outcome = self.search_with_status(
+            species=species,
+            query=query,
+            database=database,
+            max_results=max_results,
         )
+
+        if database.strip().lower() != "all":
+            failed = [
+                status
+                for status in outcome.statuses
+                if not status.success
+            ]
+
+            if failed:
+                raise RuntimeError(failed[0].error)
+
+        return list(outcome.records)
 
     @staticmethod
     def _interleave_records(
-        record_groups: Iterable[list[DatasetRecord]],
+        record_groups: list[list[DatasetRecord]],
         *,
         max_results: int,
     ) -> list[DatasetRecord]:
         """Interleave and deduplicate multiple result groups."""
-        groups = list(record_groups)
         merged: list[DatasetRecord] = []
         seen: set[tuple[str, str]] = set()
 
         longest = max(
-            (len(records) for records in groups),
+            (len(records) for records in record_groups),
             default=0,
         )
 
         for index in range(longest):
-            for records in groups:
+            for records in record_groups:
                 if index >= len(records):
                     continue
 

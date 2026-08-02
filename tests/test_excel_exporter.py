@@ -32,6 +32,7 @@ def test_export_excel_creates_expected_sheets(tmp_path) -> None:
                 message="Test error",
             ),
         ),
+        database_statuses=(),
         genes=("bru1", "bad"),
         gene_set="RBP",
         database="geo",

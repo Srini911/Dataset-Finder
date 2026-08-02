@@ -13,7 +13,10 @@ from dataset_finder.clients.flyatlas import (
 )
 from dataset_finder.flybase_resolver import FlyBaseGene, FlyBaseResolver
 from dataset_finder.models import DatasetRecord
-from dataset_finder.search import SearchService
+from dataset_finder.search import (
+    DatabaseSearchStatus,
+    SearchService,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,11 +29,23 @@ class BatchSearchIssue:
 
 
 @dataclass(frozen=True, slots=True)
+class BatchDatabaseStatus:
+    """Database status for one submitted gene."""
+
+    gene: str
+    database: str
+    success: bool
+    result_count: int
+    error: str = ""
+
+
+@dataclass(frozen=True, slots=True)
 class BatchSearchResult:
     """Results and errors from a multi-gene search."""
 
     records: tuple[DatasetRecord, ...]
     issues: tuple[BatchSearchIssue, ...]
+    database_statuses: tuple[BatchDatabaseStatus, ...]
     genes: tuple[str, ...]
     gene_set: str
     database: str
@@ -65,6 +80,7 @@ class BatchSearchService:
 
         records: list[DatasetRecord] = []
         issues: list[BatchSearchIssue] = []
+        database_statuses: list[BatchDatabaseStatus] = []
         search_date = datetime.now(UTC).date().isoformat()
 
         for submitted_gene in genes:
@@ -82,12 +98,29 @@ class BatchSearchService:
             )
 
             try:
-                gene_records = self.search_service.search(
-                    species=species,
-                    query=query,
-                    database=database,
-                    max_results=max_results_per_gene,
-                )
+                if hasattr(self.search_service, "search_with_status"):
+                    outcome = self.search_service.search_with_status(
+                        species=species,
+                        query=query,
+                        database=database,
+                        max_results=max_results_per_gene,
+                    )
+                    gene_records = list(outcome.records)
+
+                    for status in outcome.statuses:
+                        database_statuses.append(
+                            self._batch_status(
+                                submitted_gene,
+                                status,
+                            )
+                        )
+                else:
+                    gene_records = self.search_service.search(
+                        species=species,
+                        query=query,
+                        database=database,
+                        max_results=max_results_per_gene,
+                    )
             except Exception as exc:
                 issues.append(
                     BatchSearchIssue(
@@ -170,9 +203,24 @@ class BatchSearchService:
         return BatchSearchResult(
             records=tuple(self._deduplicate(records)),
             issues=tuple(issues),
+            database_statuses=tuple(database_statuses),
             genes=tuple(genes),
             gene_set=gene_set,
             database=database,
+        )
+
+    @staticmethod
+    def _batch_status(
+        gene: str,
+        status: DatabaseSearchStatus,
+    ) -> BatchDatabaseStatus:
+        """Attach a database search status to its submitted gene."""
+        return BatchDatabaseStatus(
+            gene=gene,
+            database=status.database,
+            success=status.success,
+            result_count=status.result_count,
+            error=status.error,
         )
 
     def _fetch_flyatlas(

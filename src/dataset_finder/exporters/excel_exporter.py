@@ -435,6 +435,40 @@ def export_excel(
                 workbook=writer.book,
             )
 
+        status_df = pd.DataFrame(
+            [
+                {
+                    "Gene": status.gene,
+                    "Database": status.database,
+                    "Status": (
+                        "Success"
+                        if status.success
+                        else "Failed"
+                    ),
+                    "Results": status.result_count,
+                    "Error": status.error,
+                }
+                for status in result.database_statuses
+            ],
+            columns=[
+                "Gene",
+                "Database",
+                "Status",
+                "Results",
+                "Error",
+            ],
+        )
+        status_df.to_excel(
+            writer,
+            sheet_name="Database_Status",
+            index=False,
+        )
+        _format_dataframe_sheet(
+            worksheet=writer.sheets["Database_Status"],
+            dataframe=status_df,
+            workbook=writer.book,
+        )
+
         issue_df = pd.DataFrame(
             [
                 {
