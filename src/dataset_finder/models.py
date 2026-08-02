@@ -28,7 +28,14 @@ class DatasetRecord:
     technique: str = ""
     technique_subtype: str = ""
     project_accession: str = ""
+    experiment_accessions: tuple[str, ...] = field(default_factory=tuple)
     sample_accessions: tuple[str, ...] = field(default_factory=tuple)
+    biosample_accessions: tuple[str, ...] = field(default_factory=tuple)
+    library_strategy: str = ""
+    library_source: str = ""
+    library_selection: str = ""
+    library_layout: str = ""
+    platform: str = ""
     description: str = ""
     tissue: str = ""
     developmental_stage: str = ""
@@ -60,6 +67,14 @@ class DatasetRecord:
         """Return a serialization-friendly dictionary."""
         result = asdict(self)
         result["synonyms"] = "; ".join(self.synonyms)
-        result["sample_accessions"] = "; ".join(self.sample_accessions)
+        result["experiment_accessions"] = "; ".join(
+            self.experiment_accessions
+        )
+        result["sample_accessions"] = "; ".join(
+            self.sample_accessions
+        )
+        result["biosample_accessions"] = "; ".join(
+            self.biosample_accessions
+        )
         result["raw_metadata"] = str(self.raw_metadata)
         return result
