@@ -75,7 +75,12 @@ class PartiallyFailingSearchService:
         if query == "bad":
             raise RuntimeError("Temporary database failure")
 
-        return [make_record("GSE1", "RNA-seq")]
+        return [
+            make_record(
+                "GSE1",
+                f"{query} RNA-seq",
+            )
+        ]
 
 
 def test_batch_search_records_gene_errors() -> None:
@@ -101,6 +106,7 @@ class FakeFlyBaseGene:
     submitted_symbol = "h"
     official_symbol = "hry"
     flybase_id = "FBgn0001168"
+    current_fullname = "hairy"
     synonyms = ("hairy", "h")
     match_type = "synonym"
     ambiguous = True
@@ -143,7 +149,7 @@ def test_batch_search_adds_flybase_metadata() -> None:
     assert record.official_symbol == "hry"
     assert record.flybase_id == "FBgn0001168"
     assert record.synonyms == ("hairy", "h")
-    assert record.match_type == "synonym"
+    assert record.match_type == "FlyBase identifier"
     assert record.confidence == "Medium"
     assert record.flybase_url.endswith(
         "FBgn0001168.html"
@@ -167,7 +173,12 @@ def test_batch_search_query_includes_resolved_flybase_terms() -> None:
         ) -> list[DatasetRecord]:
             del species, database, max_results
             self.query = query
-            return [make_record("GSE1", "RNA-seq")]
+            return [
+                    make_record(
+                        "GSE1",
+                        "hairy gene RNA-seq",
+                    )
+                ]
 
     search_service = CapturingSearchService()
 

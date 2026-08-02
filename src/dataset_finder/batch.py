@@ -13,6 +13,7 @@ from dataset_finder.clients.flyatlas import (
 )
 from dataset_finder.flybase_resolver import FlyBaseGene, FlyBaseResolver
 from dataset_finder.models import DatasetRecord
+from dataset_finder.relevance import assess_relevance
 from dataset_finder.search import (
     DatabaseSearchStatus,
     SearchService,
@@ -132,6 +133,16 @@ class BatchSearchService:
                 continue
 
             for record in gene_records:
+                source_database = (
+                    record.database
+                    or self._infer_database(record)
+                )
+
+                assessment_record = replace(
+                    record,
+                    database=source_database,
+                )
+
                 technique = classify_technique(
                     record.study_type,
                     record.title,
@@ -139,8 +150,20 @@ class BatchSearchService:
                     record.evidence_text,
                 )
 
-                confidence = self._confidence_label(
-                    resolved_gene
+                relevance = assess_relevance(
+                    record=assessment_record,
+                    submitted_gene=submitted_gene,
+                    resolved_gene=resolved_gene,
+                )
+
+                if not relevance.accepted:
+                    continue
+
+                confidence = self._combined_confidence(
+                    gene_confidence=self._confidence_label(
+                        resolved_gene
+                    ),
+                    relevance_confidence=relevance.confidence,
                 )
 
                 records.append(
@@ -154,13 +177,14 @@ class BatchSearchService:
                         ),
                         flybase_id=resolved_gene.flybase_id,
                         synonyms=resolved_gene.synonyms,
-                        database=(
-                            record.database
-                            or self._infer_database(record)
-                        ),
+                        database=source_database,
                         technique=record.technique or technique,
-                        match_type=resolved_gene.match_type,
+                        match_type=relevance.match_type,
                         confidence=confidence,
+                        evidence_text=(
+                            record.evidence_text
+                            or relevance.evidence
+                        ),
                         search_date=record.search_date or search_date,
                         flybase_url=resolved_gene.flybase_url,
                         flyatlas_url=resolved_gene.flyatlas_url,
@@ -276,6 +300,24 @@ class BatchSearchService:
         return " OR ".join(
             f'"{term}"'
             for term in terms
+        )
+
+    @staticmethod
+    def _combined_confidence(
+        *,
+        gene_confidence: str,
+        relevance_confidence: str,
+    ) -> str:
+        """Return the weaker of gene and dataset confidence."""
+        rank = {
+            "Low": 1,
+            "Medium": 2,
+            "High": 3,
+        }
+
+        return min(
+            (gene_confidence, relevance_confidence),
+            key=lambda value: rank.get(value, 0),
         )
 
     @staticmethod
