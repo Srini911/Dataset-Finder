@@ -50,6 +50,17 @@ class DatasetRecord:
     perturbation: str = ""
     control: str = ""
     publication: str = ""
+    pubmed_ids: tuple[str, ...] = field(default_factory=tuple)
+    dois: tuple[str, ...] = field(default_factory=tuple)
+    related_accessions: tuple[str, ...] = field(default_factory=tuple)
+    related_geo_accessions: tuple[str, ...] = field(default_factory=tuple)
+    related_study_accessions: tuple[str, ...] = field(default_factory=tuple)
+    related_bioproject_accessions: tuple[str, ...] = field(
+        default_factory=tuple
+    )
+    related_biosample_accessions: tuple[str, ...] = field(
+        default_factory=tuple
+    )
     evidence_text: str = ""
     match_type: str = ""
     confidence: str = ""
@@ -81,6 +92,23 @@ class DatasetRecord:
         )
         result["biosample_accessions"] = "; ".join(
             self.biosample_accessions
+        )
+        result["pubmed_ids"] = "; ".join(self.pubmed_ids)
+        result["dois"] = "; ".join(self.dois)
+        result["related_accessions"] = "; ".join(
+            self.related_accessions
+        )
+        result["related_geo_accessions"] = "; ".join(
+            self.related_geo_accessions
+        )
+        result["related_study_accessions"] = "; ".join(
+            self.related_study_accessions
+        )
+        result["related_bioproject_accessions"] = "; ".join(
+            self.related_bioproject_accessions
+        )
+        result["related_biosample_accessions"] = "; ".join(
+            self.related_biosample_accessions
         )
         result["raw_metadata"] = str(self.raw_metadata)
         return result

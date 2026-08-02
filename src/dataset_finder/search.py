@@ -12,6 +12,7 @@ from dataset_finder.clients.ncbi_bioproject import NCBIBioProjectClient
 from dataset_finder.clients.ncbi_biosample import NCBIBioSampleClient
 from dataset_finder.clients.ncbi_geo import NCBIGEOClient
 from dataset_finder.clients.ncbi_sra import NCBISRAClient
+from dataset_finder.clients.pubmed import PubMedClient
 from dataset_finder.models import DatasetRecord
 
 
@@ -63,6 +64,7 @@ class SearchService:
         biosample_client: NCBIBioSampleClient | None = None,
         biostudies_client: BioStudiesClient | None = None,
         ena_client: ENAClient | None = None,
+        pubmed_client: PubMedClient | None = None,
     ) -> None:
         self.geo_client = geo_client or NCBIGEOClient()
         self.encode_client = encode_client or ENCODEClient()
@@ -71,6 +73,7 @@ class SearchService:
         self.biosample_client = biosample_client or NCBIBioSampleClient()
         self.biostudies_client = biostudies_client or BioStudiesClient()
         self.ena_client = ena_client or ENAClient()
+        self.pubmed_client = pubmed_client or PubMedClient()
 
     def _clients(self) -> dict[str, SearchClient]:
         return {
@@ -81,6 +84,7 @@ class SearchService:
             "biosample": self.biosample_client,
             "biostudies": self.biostudies_client,
             "ena": self.ena_client,
+            "pubmed": self.pubmed_client,
         }
 
     @staticmethod

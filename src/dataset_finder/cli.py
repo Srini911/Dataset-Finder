@@ -97,12 +97,13 @@ def build_parser() -> argparse.ArgumentParser:
             "biosample",
             "biostudies",
             "ena",
+            "pubmed",
             "all",
         ),
         default="geo",
         help=(
             "Database to search: GEO, ENCODE, SRA, BioProject, "
-            "BioSample, BioStudies/ArrayExpress, ENA, or all. "
+            "BioSample, BioStudies/ArrayExpress, ENA, PubMed, or all. "
             "Default: geo."
         ),
     )

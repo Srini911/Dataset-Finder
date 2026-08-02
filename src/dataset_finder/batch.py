@@ -20,6 +20,10 @@ from dataset_finder.search import (
     DatabaseSearchStatus,
     SearchService,
 )
+from dataset_finder.study_linking import (
+    extract_links_from_record,
+    link_related_records,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -217,6 +221,10 @@ class BatchSearchService:
                     geo_sample_metadata,
                 )
 
+                record_links = extract_links_from_record(
+                    record
+                )
+
                 confidence = self._combined_confidence(
                     gene_confidence=self._confidence_label(
                         resolved_gene
@@ -351,6 +359,31 @@ class BatchSearchService:
                             record.perturbation
                             or biological_metadata.perturbation
                         ),
+                        pubmed_ids=(
+                            record.pubmed_ids
+                            or record_links.pubmed_ids
+                        ),
+                        dois=record.dois or record_links.dois,
+                        related_accessions=(
+                            record.related_accessions
+                            or record_links.study_level_accessions
+                        ),
+                        related_geo_accessions=(
+                            record.related_geo_accessions
+                            or record_links.related_geo_accessions
+                        ),
+                        related_study_accessions=(
+                            record.related_study_accessions
+                            or record_links.related_study_accessions
+                        ),
+                        related_bioproject_accessions=(
+                            record.related_bioproject_accessions
+                            or record_links.related_bioproject_accessions
+                        ),
+                        related_biosample_accessions=(
+                            record.related_biosample_accessions
+                            or record_links.related_biosample_accessions
+                        ),
                         match_type=relevance.match_type,
                         confidence=confidence,
                         evidence_text=(
@@ -396,6 +429,8 @@ class BatchSearchService:
                     )
                 )
                 accepted_for_gene += 1
+
+        records = list(link_related_records(records))
 
         return BatchSearchResult(
             records=tuple(self._deduplicate(records)),
