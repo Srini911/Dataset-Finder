@@ -119,6 +119,7 @@ class BatchSearchService:
                         confidence=confidence,
                         search_date=record.search_date or search_date,
                         flybase_url=resolved_gene.flybase_url,
+                        flyatlas_url=resolved_gene.flyatlas_url,
                     )
                 )
 

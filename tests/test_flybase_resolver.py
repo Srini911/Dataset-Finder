@@ -68,3 +68,14 @@ def test_historical_h_symbol_resolves_to_hairy() -> None:
     assert gene.flybase_id == "FBgn0001168"
     assert gene.current_fullname == "hairy"
     assert gene.match_type == "synonym"
+
+
+def test_flyatlas_urls_use_flybase_identifier() -> None:
+    resolver = FlyBaseResolver()
+    gene = resolver.resolve("bru1")
+
+    assert gene.flybase_id == "FBgn0000114"
+    assert "FBgn0000114" in gene.flyatlas_url
+    assert "idtype=fbgn" in gene.flyatlas_url
+    assert "FBgn0000114" in gene.flyatlas_download_url
+    assert "tableOut=gene" in gene.flyatlas_download_url

@@ -33,6 +33,37 @@ class FlyBaseGene:
         )
 
     @property
+    def flyatlas_url(self) -> str:
+        """Return the FlyAtlas 2 gene-results URL."""
+        if self.flybase_id:
+            return (
+                "https://motif.mvls.gla.ac.uk/FlyAtlas2/"
+                "index.html?search=gene&gene="
+                f"{self.flybase_id}&idtype=fbgn"
+            )
+
+        if self.official_symbol:
+            return (
+                "https://motif.mvls.gla.ac.uk/FlyAtlas2/"
+                "index.html?search=gene&gene="
+                f"{self.official_symbol}&idtype=symbol"
+            )
+
+        return ""
+
+    @property
+    def flyatlas_download_url(self) -> str:
+        """Return the FlyAtlas 2 direct gene-table download URL."""
+        if not self.flybase_id:
+            return ""
+
+        return (
+            "https://motif.mvls.gla.ac.uk/FA2Direct/"
+            "index.html?fbgn="
+            f"{self.flybase_id}&tableOut=gene"
+        )
+
+    @property
     def search_terms(self) -> tuple[str, ...]:
         """Return conservative search terms for external databases."""
         values = [

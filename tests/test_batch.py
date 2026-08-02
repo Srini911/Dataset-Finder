@@ -108,6 +108,11 @@ class FakeFlyBaseGene:
         "https://flybase.org/reports/"
         "FBgn0001168.html"
     )
+    flyatlas_url = (
+        "https://motif.mvls.gla.ac.uk/FlyAtlas2/"
+        "index.html?search=gene&gene="
+        "FBgn0001168&idtype=fbgn"
+    )
 
 
 class FakeFlyBaseResolver:
@@ -143,6 +148,8 @@ def test_batch_search_adds_flybase_metadata() -> None:
     assert record.flybase_url.endswith(
         "FBgn0001168.html"
     )
+    assert "FBgn0001168" in record.flyatlas_url
+    assert "idtype=fbgn" in record.flyatlas_url
 
 
 def test_batch_search_query_includes_resolved_flybase_terms() -> None:
