@@ -206,10 +206,7 @@ def assess_relevance(
         if len(_normalized_compact(synonym)) < 3:
             continue
 
-        if (
-            _contains_exact_term(text, synonym)
-            or _contains_compact_name(text, synonym)
-        ):
+        if _contains_exact_term(text, synonym):
             return RelevanceAssessment(
                 accepted=True,
                 match_type="FlyBase synonym",

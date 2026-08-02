@@ -44,6 +44,7 @@ TECHNIQUE_PATTERNS: dict[str, tuple[str, ...]] = {
         r"\bchip[-\s]?seq\b",
         r"\bchip sequencing\b",
         r"chromatin immunoprecipitation sequencing",
+        r"genome binding/occupancy profiling by high throughput sequencing",
     ),
     "ATAC_seq": (
         r"\batac[-\s]?seq\b",
@@ -71,11 +72,14 @@ TECHNIQUE_PATTERNS: dict[str, tuple[str, ...]] = {
         r"\btranscriptome sequencing\b",
         r"\btranscriptomic sequencing\b",
         r"\bmrna sequencing\b",
+        r"expression profiling by high throughput sequencing",
     ),
     "Microarray": (
         r"\bmicroarray\b",
         r"\bexpression array\b",
         r"\barray profiling\b",
+        r"expression profiling by array",
+        r"genome binding/occupancy profiling by array",
     ),
     "Proteomics": (
         r"\bproteom",

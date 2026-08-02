@@ -126,3 +126,36 @@ def test_compact_gene_name_matches_bruno1_spelling() -> None:
         "FlyBase gene name",
         "FlyBase synonym",
     }
+
+
+def test_orb_does_not_match_orb2() -> None:
+    gene = FlyBaseResolver().resolve("orb")
+
+    result = assess_relevance(
+        record=make_record(
+            "The ORB2 RNA-binding protein regulates maternal transcripts"
+        ),
+        submitted_gene="orb",
+        resolved_gene=gene,
+    )
+
+    assert not result.accepted
+
+
+def test_orb2_matches_orb2() -> None:
+    gene = FlyBaseResolver().resolve("orb2")
+
+    result = assess_relevance(
+        record=make_record(
+            "The ORB2 RNA-binding protein regulates maternal transcripts"
+        ),
+        submitted_gene="orb2",
+        resolved_gene=gene,
+    )
+
+    assert result.accepted
+    assert result.match_type in {
+        "Official symbol",
+        "Submitted symbol",
+        "FlyBase synonym",
+    }
