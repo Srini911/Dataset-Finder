@@ -7,9 +7,9 @@ import sys
 from pathlib import Path
 
 from dataset_finder import __version__
-from dataset_finder.clients.encode import ENCODEClientError
-from dataset_finder.clients.ncbi_geo import NCBIClientError
-from dataset_finder.exporters import export_csv, export_json
+from dataset_finder.batch import BatchSearchService
+from dataset_finder.exporters import export_csv, export_excel, export_json
+from dataset_finder.gene_sets import GeneInputError, collect_genes
 from dataset_finder.models import DatasetRecord
 from dataset_finder.search import SearchService, UnsupportedDatabaseError
 
@@ -51,43 +51,54 @@ def build_parser() -> argparse.ArgumentParser:
     search_parser = subparsers.add_parser(
         "search",
         help="Search for public functional-genomics datasets.",
-        description="Search supported public biological databases.",
+        description="Search one or many genes across supported databases.",
     )
     search_parser.add_argument(
         "--species",
         required=True,
-        help='Scientific species name, for example "Homo sapiens".',
+        help='Scientific species name, for example "Drosophila melanogaster".',
     )
     search_parser.add_argument(
         "--query",
-        required=True,
-        help='Regulator or search terms, for example "CTCF".',
+        help="One gene or legacy free-text query.",
+    )
+    search_parser.add_argument(
+        "--genes",
+        nargs="+",
+        help="Multiple genes separated by spaces or commas.",
+    )
+    search_parser.add_argument(
+        "--gene-file",
+        type=Path,
+        help="Plain-text file containing one or more gene symbols.",
+    )
+    search_parser.add_argument(
+        "--gene-set-name",
+        default="",
+        help="Label stored in exports, for example RBP or TF.",
     )
     search_parser.add_argument(
         "--database",
         choices=("geo", "encode", "all"),
         default="geo",
-        help="Database to search: GEO, ENCODE, or both. Default: geo.",
+        help="Database to search. Default: geo.",
     )
     search_parser.add_argument(
         "--max-results",
         type=positive_integer,
         default=20,
-        help="Maximum number of results. Default: 20.",
+        help="Maximum results per gene. Default: 20.",
     )
     search_parser.add_argument(
         "--format",
-        choices=("table", "csv", "json"),
+        choices=("table", "csv", "json", "xlsx"),
         default="table",
-        help="Output format: table, CSV, or JSON. Default: table.",
+        help="Output format. Default: table.",
     )
     search_parser.add_argument(
         "--output",
         type=Path,
-        help=(
-            "Output file path for CSV or JSON. "
-            "A default filename is used when omitted."
-        ),
+        help="Output file path.",
     )
 
     return parser
@@ -97,9 +108,17 @@ def print_records(records: list[DatasetRecord]) -> None:
     """Print normalized dataset records."""
     for index, record in enumerate(records, start=1):
         print(f"{index}. {record.accession or record.uid}")
+
+        if record.gene:
+            print(f"   Gene: {record.gene}")
+
         print(f"   Title: {record.title or 'Not available'}")
         print(f"   Organism: {record.organism or 'Not available'}")
         print(f"   Study type: {record.study_type or 'Not available'}")
+
+        if record.technique:
+            print(f"   Technique: {record.technique}")
+
         print(
             "   Samples: "
             f"{record.sample_count if record.sample_count is not None else 'Not available'}"
@@ -113,7 +132,8 @@ def print_records(records: list[DatasetRecord]) -> None:
 
 def default_output_path(output_format: str) -> Path:
     """Return the default output filename for an export format."""
-    return Path(f"dataset_finder_results.{output_format}")
+    extension = "xlsx" if output_format == "xlsx" else output_format
+    return Path(f"dataset_finder_results.{extension}")
 
 
 def export_records(
@@ -122,7 +142,7 @@ def export_records(
     output_format: str,
     output_path: Path | None,
 ) -> Path:
-    """Export records to CSV or JSON."""
+    """Export simple record lists to CSV or JSON."""
     path = output_path or default_output_path(output_format)
 
     if output_format == "csv":
@@ -135,43 +155,100 @@ def export_records(
 
 
 def run_search(args: argparse.Namespace) -> int:
-    """Run a dataset search."""
+    """Run a single- or multi-gene dataset search."""
     species = args.species.strip()
-    query = args.query.strip()
     database = args.database.strip().lower()
 
-    service = SearchService()
+    try:
+        genes = collect_genes(
+            query=args.query,
+            genes=args.genes,
+            gene_file=args.gene_file,
+        )
+    except GeneInputError as exc:
+        print(f"Dataset Finder error: {exc}", file=sys.stderr)
+        return 2
+
+    if len(genes) == 1 and args.format != "xlsx":
+        service = SearchService()
+
+        try:
+            records = service.search(
+                species=species,
+                query=genes[0],
+                database=database,
+                max_results=args.max_results,
+            )
+        except UnsupportedDatabaseError as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
+        except ValueError as exc:
+            print(f"Dataset Finder error: {exc}", file=sys.stderr)
+            return 2
+        except Exception as exc:
+            print(f"Dataset Finder error: {exc}", file=sys.stderr)
+            return 1
+
+        print(f"Dataset Finder {database.upper()} search")
+        print(f"Species: {species}")
+        print(f"Query: {genes[0]}")
+        print(f"Results found: {len(records)}")
+
+        if args.format in {"csv", "json"}:
+            try:
+                exported_path = export_records(
+                    records,
+                    output_format=args.format,
+                    output_path=args.output,
+                )
+            except OSError as exc:
+                print(
+                    f"Dataset Finder export error: {exc}",
+                    file=sys.stderr,
+                )
+                return 1
+
+            print(f"Exported results: {exported_path}")
+            return 0
+
+        if not records:
+            if database == "geo":
+                print("No matching GEO Series records were found.")
+            else:
+                print(f"No matching {database.upper()} records were found.")
+            return 0
+
+        print()
+        print_records(records)
+        return 0
+
+    batch_service = BatchSearchService()
 
     try:
-        records = service.search(
+        result = batch_service.search_many(
             species=species,
-            query=query,
+            genes=genes,
             database=database,
-            max_results=args.max_results,
+            max_results_per_gene=args.max_results,
+            gene_set=args.gene_set_name.strip(),
         )
-    except UnsupportedDatabaseError as exc:
-        print(str(exc), file=sys.stderr)
-        return 2
-    except (NCBIClientError, ENCODEClientError) as exc:
-        print(f"Dataset Finder error: {exc}", file=sys.stderr)
-        return 1
     except ValueError as exc:
         print(f"Dataset Finder error: {exc}", file=sys.stderr)
         return 2
 
-    database_label = database.upper()
-
-    print(f"Dataset Finder {database_label} search")
+    print("Dataset Finder multi-gene search")
     print(f"Species: {species}")
-    print(f"Query: {query}")
-    print(f"Results found: {len(records)}")
+    print(f"Genes searched: {len(genes)}")
+    print(f"Results found: {len(result.records)}")
+    print(f"Search errors: {len(result.issues)}")
 
-    if args.format in {"csv", "json"}:
+    if args.format == "xlsx":
+        output_path = args.output or default_output_path("xlsx")
+
         try:
-            exported_path = export_records(
-                records,
-                output_format=args.format,
-                output_path=args.output,
+            exported_path = export_excel(
+                result,
+                output_path,
             )
         except OSError as exc:
             print(
@@ -180,14 +257,18 @@ def run_search(args: argparse.Namespace) -> int:
             )
             return 1
 
-        print(f"Exported results: {exported_path}")
+        print(f"Exported workbook: {exported_path}")
         return 0
 
-    if not records:
-        if database == "geo":
-            print("No matching GEO Series records were found.")
-        else:
-            print(f"No matching {database_label} records were found.")
+    records = list(result.records)
+
+    if args.format in {"csv", "json"}:
+        exported_path = export_records(
+            records,
+            output_format=args.format,
+            output_path=args.output,
+        )
+        print(f"Exported results: {exported_path}")
         return 0
 
     print()
