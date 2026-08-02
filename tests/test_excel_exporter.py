@@ -33,6 +33,7 @@ def test_export_excel_creates_expected_sheets(tmp_path) -> None:
             ),
         ),
         database_statuses=(),
+        gene_annotations=(),
         genes=("bru1", "bad"),
         gene_set="RBP",
         database="geo",
@@ -50,6 +51,7 @@ def test_export_excel_creates_expected_sheets(tmp_path) -> None:
 
     assert "README" in workbook.sheetnames
     assert "Gene_Summary" in workbook.sheetnames
+    assert "Gene_Annotations" in workbook.sheetnames
     assert "All_Datasets" in workbook.sheetnames
     assert "RNA_seq" in workbook.sheetnames
     assert "Errors" in workbook.sheetnames

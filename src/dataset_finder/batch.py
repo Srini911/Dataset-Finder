@@ -41,12 +41,21 @@ class BatchDatabaseStatus:
 
 
 @dataclass(frozen=True, slots=True)
+class BatchGeneAnnotation:
+    """FlyBase and FlyAtlas annotation for one submitted gene."""
+
+    gene: FlyBaseGene
+    flyatlas: FlyAtlasExpression
+
+
+@dataclass(frozen=True, slots=True)
 class BatchSearchResult:
     """Results and errors from a multi-gene search."""
 
     records: tuple[DatasetRecord, ...]
     issues: tuple[BatchSearchIssue, ...]
     database_statuses: tuple[BatchDatabaseStatus, ...]
+    gene_annotations: tuple[BatchGeneAnnotation, ...]
     genes: tuple[str, ...]
     gene_set: str
     database: str
@@ -82,6 +91,7 @@ class BatchSearchService:
         records: list[DatasetRecord] = []
         issues: list[BatchSearchIssue] = []
         database_statuses: list[BatchDatabaseStatus] = []
+        gene_annotations: list[BatchGeneAnnotation] = []
         search_date = datetime.now(UTC).date().isoformat()
 
         for submitted_gene in genes:
@@ -91,6 +101,13 @@ class BatchSearchService:
 
             flyatlas_expression = self._fetch_flyatlas(
                 resolved_gene,
+            )
+
+            gene_annotations.append(
+                BatchGeneAnnotation(
+                    gene=resolved_gene,
+                    flyatlas=flyatlas_expression,
+                )
             )
 
             query = self._build_search_query(
@@ -228,6 +245,7 @@ class BatchSearchService:
             records=tuple(self._deduplicate(records)),
             issues=tuple(issues),
             database_statuses=tuple(database_statuses),
+            gene_annotations=tuple(gene_annotations),
             genes=tuple(genes),
             gene_set=gene_set,
             database=database,

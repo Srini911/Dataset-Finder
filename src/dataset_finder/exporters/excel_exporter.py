@@ -342,6 +342,111 @@ def _write_readme_sheet(
         )
 
 
+def _write_gene_annotations(
+    *,
+    writer: pd.ExcelWriter,
+    result: BatchSearchResult,
+) -> None:
+    """Write FlyBase and FlyAtlas annotation rows for every submitted gene."""
+    records_by_gene = {
+        record.gene.casefold(): record
+        for record in result.records
+    }
+
+    rows: list[dict[str, object]] = []
+
+    for gene_annotation in result.gene_annotations:
+        annotation = gene_annotation.gene
+        expression = gene_annotation.flyatlas
+
+        record = records_by_gene.get(
+            annotation.submitted_symbol.casefold()
+        )
+
+        rows.append(
+            {
+                "Gene": annotation.submitted_symbol,
+                "Gene Set": result.gene_set,
+                "Official Symbol": annotation.official_symbol,
+                "FlyBase ID": annotation.flybase_id,
+                "Current Full Name": annotation.current_fullname,
+                "Synonyms": "; ".join(annotation.synonyms),
+                "Resolution Type": annotation.match_type,
+                "Ambiguous Alias": (
+                    "Yes"
+                    if annotation.ambiguous
+                    else "No"
+                ),
+                "Accepted Datasets": sum(
+                    1
+                    for dataset in result.records
+                    if dataset.gene.casefold()
+                    == annotation.submitted_symbol.casefold()
+                ),
+                "Dataset Match Type": (
+                    record.match_type
+                    if record
+                    else "No accepted datasets"
+                ),
+                "Dataset Confidence": (
+                    record.confidence
+                    if record
+                    else ""
+                ),
+                "FlyBase URL": annotation.flybase_url,
+                "FlyAtlas URL": annotation.flyatlas_url,
+                "Brain Male FPKM": (
+                    expression.brain_male_fpkm
+                ),
+                "Brain Female FPKM": (
+                    expression.brain_female_fpkm
+                ),
+                "Brain Larval FPKM": (
+                    expression.brain_larval_fpkm
+                ),
+                "Head Male FPKM": (
+                    expression.head_male_fpkm
+                ),
+                "Head Female FPKM": (
+                    expression.head_female_fpkm
+                ),
+                "Top Male Tissue": (
+                    expression.top_male_tissue
+                ),
+                "Top Male FPKM": (
+                    expression.top_male_fpkm
+                ),
+                "Top Female Tissue": (
+                    expression.top_female_tissue
+                ),
+                "Top Female FPKM": (
+                    expression.top_female_fpkm
+                ),
+                "Top Larval Tissue": (
+                    expression.top_larval_tissue
+                ),
+                "Top Larval FPKM": (
+                    expression.top_larval_fpkm
+                ),
+            }
+        )
+
+    dataframe = pd.DataFrame(rows)
+
+    dataframe.to_excel(
+        writer,
+        sheet_name="Gene_Annotations",
+        index=False,
+    )
+
+    _format_dataframe_sheet(
+        worksheet=writer.sheets["Gene_Annotations"],
+        dataframe=dataframe,
+        workbook=writer.book,
+    )
+
+
+
 def _write_gene_summary(
     *,
     writer: pd.ExcelWriter,
@@ -362,6 +467,20 @@ def _write_gene_summary(
             "Gene": gene,
             "Total Datasets": len(gene_records),
         }
+
+        for database_name in (
+            "GEO",
+            "ENCODE",
+            "SRA",
+            "BioProject",
+            "BioStudies",
+        ):
+            row[database_name] = int(
+                (
+                    gene_records["Database"]
+                    == database_name
+                ).sum()
+            )
 
         for technique in TECHNIQUE_ORDER:
             row[technique] = int(
@@ -416,6 +535,11 @@ def export_excel(
         )
 
         _write_gene_summary(
+            writer=writer,
+            result=result,
+        )
+
+        _write_gene_annotations(
             writer=writer,
             result=result,
         )
