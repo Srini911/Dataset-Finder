@@ -1,38 +1,39 @@
-"""CSV export support for Dataset Finder records."""
+"""CSV export support for normalized dataset records."""
 
 from __future__ import annotations
 
 import csv
-from dataclasses import asdict
 from pathlib import Path
 
 from dataset_finder.models import DatasetRecord
-
-FIELD_NAMES = (
-    "uid",
-    "accession",
-    "title",
-    "organism",
-    "study_type",
-    "sample_count",
-    "publication_date",
-    "url",
-)
 
 
 def export_csv(
     records: list[DatasetRecord],
     output_path: str | Path,
 ) -> Path:
-    """Write normalized dataset records to a UTF-8 CSV file."""
-    path = Path(output_path).expanduser()
+    """Write normalized dataset records to a CSV file."""
+    path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=FIELD_NAMES)
-        writer.writeheader()
+    fieldnames = list(DatasetRecord.__dataclass_fields__)
 
-        for record in records:
-            writer.writerow(asdict(record))
+    try:
+        with path.open(
+            "w",
+            encoding="utf-8",
+            newline="",
+        ) as output_file:
+            writer = csv.DictWriter(
+                output_file,
+                fieldnames=fieldnames,
+                extrasaction="ignore",
+            )
+            writer.writeheader()
 
-    return path.resolve()
+            for record in records:
+                writer.writerow(record.to_dict())
+    except OSError:
+        raise
+
+    return path

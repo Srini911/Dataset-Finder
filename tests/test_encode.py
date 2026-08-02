@@ -207,3 +207,96 @@ def test_encode_target_path_is_normalized() -> None:
     assert records[0].title == (
         "CTCF-human | TF ChIP-seq | Homo sapiens HepG2"
     )
+
+
+def test_encode_extracts_simple_terms_from_enriched_query() -> None:
+    terms = ENCODEClient._extract_search_terms(
+        '"bru1" OR "FBgn0000114"'
+    )
+
+    assert terms == [
+        "bru1",
+        "FBgn0000114",
+    ]
+
+
+def test_encode_species_matching_rejects_unrelated_species() -> None:
+    experiment = {
+        "accession": "ENCSR123ABC",
+        "biosample_summary": "human liver",
+        "organism": {
+            "scientific_name": "Homo sapiens",
+        },
+    }
+
+    assert not ENCODEClient._matches_species(
+        experiment,
+        requested_species="Drosophila melanogaster",
+    )
+
+
+def test_encode_species_matching_accepts_requested_species() -> None:
+    experiment = {
+        "accession": "ENCSR123ABC",
+        "biosample_summary": "Drosophila melanogaster embryo",
+    }
+
+    assert ENCODEClient._matches_species(
+        experiment,
+        requested_species="Drosophila melanogaster",
+    )
+
+
+def test_encode_returns_empty_for_unsupported_species() -> None:
+    class FailingSession:
+        def __init__(self) -> None:
+            self.headers: dict[str, str] = {}
+
+        def get(self, *args, **kwargs):
+            raise AssertionError(
+                "ENCODE should not be called for Drosophila."
+            )
+
+    client = ENCODEClient(
+        session=FailingSession(),
+    )
+
+    records = client.search(
+        species="Drosophila melanogaster",
+        query="bru1",
+        max_results=5,
+    )
+
+    assert records == []
+
+
+def test_encode_request_uses_object_frame() -> None:
+    class FakeResponse:
+        def raise_for_status(self) -> None:
+            return None
+
+        def json(self) -> dict:
+            return {"@graph": []}
+
+    class CapturingSession:
+        def __init__(self) -> None:
+            self.headers: dict[str, str] = {}
+            self.params = None
+
+        def get(self, url, *, params, timeout):
+            del url, timeout
+            self.params = params
+            return FakeResponse()
+
+    session = CapturingSession()
+    client = ENCODEClient(session=session)
+
+    client.search(
+        species="Homo sapiens",
+        query="CTCF",
+        max_results=2,
+    )
+
+    assert session.params is not None
+    assert ("frame", "object") in session.params
+    assert ("format", "json") not in session.params

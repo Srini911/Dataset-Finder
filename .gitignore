@@ -32,3 +32,6 @@ outputs/*
 *.log
 *.tmp
 *.bak
+
+# Local FlyBase bulk downloads used to build the compact packaged index
+/data/flybase/*.gz

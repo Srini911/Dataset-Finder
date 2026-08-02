@@ -1,102 +1,103 @@
-cat > README.md <<'EOF'
 # Dataset Finder
 
-> Search and export public functional-genomics datasets from GEO and ENCODE through a unified command-line interface.
+Dataset Finder is an open-source Python toolkit for discovering, integrating, annotating, and exporting public functional genomics datasets from major biological repositories.
 
-Dataset Finder is an open-source Python bioinformatics toolkit for discovering, organizing, and exporting publicly available functional-genomics datasets from major biological repositories.
+The project provides a unified command-line interface for searching biological databases, normalizing heterogeneous metadata, resolving gene identifiers, enriching gene annotations, classifying experimental techniques, evaluating gene-to-dataset relevance, and exporting standardized results for downstream analysis.
 
-It provides a consistent command-line interface for searching supported databases and normalizes returned metadata into a common dataset-record format for downstream analysis.
+Dataset Finder was initially developed for large-scale screening of RNA-binding proteins, transcription factors, and other regulatory genes in *Drosophila melanogaster*. The software also supports general single-query searches across other species where the selected repository provides coverage.
 
 ## Features
 
-- Search GEO datasets
-- Search ENCODE experiments
-- Search GEO and ENCODE through one interface
-- Discover datasets across multiple species
-- Normalize metadata into a shared record structure
-- Export search results as CSV
-- Export search results as JSON
-- Display results directly in the terminal
-- Automated testing with pytest
-- Code-quality validation with Ruff
-- Continuous Integration with GitHub Actions
+Dataset Finder currently provides:
 
-## Project Status
+- Single-gene dataset searches
+- Multi-gene batch searches
+- Built-in Drosophila RNA-binding protein gene set
+- Built-in Drosophila transcription factor gene set
+- Custom gene lists supplied on the command line
+- Plain-text gene-file input
+- GEO search
+- SRA search
+- BioProject search
+- BioStudies and ArrayExpress search
+- ENCODE search for supported organisms
+- FlyBase gene-symbol and identifier resolution
+- FlyBase synonym and historical-name matching
+- FlyAtlas tissue-expression enrichment
+- Repository metadata normalization
+- Gene-to-dataset relevance assessment
+- Experimental technique classification
+- Match-type and confidence reporting
+- Study-level SRA aggregation
+- Terminal, CSV, JSON, and Excel output
+- Database-level success and failure reporting
+- Automatic retries for transient NCBI failures
+- Automated tests with pytest
+- Static analysis with Ruff
+- Continuous integration with GitHub Actions
 
-Dataset Finder is under active development.
+## Built-in Gene Sets
 
-### Implemented
+The package includes two curated *Drosophila melanogaster* gene collections:
 
-- GEO dataset search
-- ENCODE experiment search
-- Combined GEO and ENCODE search
-- Python command-line interface
-- Normalized dataset metadata model
-- Terminal table output
-- CSV export
-- JSON export
-- Automated test suite
-- GitHub Actions continuous integration
+| Gene set | CLI value | Number of genes |
+|----------|-----------|-----------------|
+| RNA-binding proteins | `rbp` | 129 |
+| Transcription factors | `tf` | 292 |
 
-### In Progress
+## Supported Data Sources
 
-- Ranking and relevance scoring
-- Expanded metadata normalization
-- Enhanced biological search filters
-- Documentation improvements
-- Additional database integrations
+| Source | Status | Role |
+|--------|--------|------|
+| GEO | Implemented | Dataset discovery |
+| SRA | Implemented | Sequencing-study discovery |
+| BioProject | Implemented | Project-level metadata |
+| BioStudies / ArrayExpress | Implemented | Study discovery |
+| ENCODE | Implemented | Functional genomics experiments for supported organisms |
+| FlyBase | Implemented | Gene annotation and identifier resolution |
+| FlyAtlas | Implemented | Tissue-expression enrichment |
+| BioSample | Metadata enrichment | Parsed from SRA records when available |
+| PubMed | Planned | Publication discovery |
+| ENA | Planned | Sequencing-data discovery |
+| Expression Atlas | Planned | Expression-study integration |
+| ProteomeXchange | Planned | Proteomics-data integration |
 
-### Planned
+Repository coverage differs by organism. The current ENCODE portal primarily provides human and mouse experiment coverage, while the Drosophila workflow relies more heavily on GEO, SRA, BioProject, BioStudies, FlyBase, and FlyAtlas.
 
-- SRA integration
-- BioProject integration
-- BioSample integration
-- PubMed integration
-- ENA integration
-- Expression Atlas integration
-- Excel export
-- Reproducible search reports
+## Supported Experimental Techniques
 
-## Supported Databases
+Dataset Finder classifies records into the following categories:
 
-| Database | Status |
-|---|---|
-| GEO | Implemented |
-| ENCODE | Implemented |
-| SRA | Planned |
-| BioProject | Planned |
-| BioSample | Planned |
-| PubMed | Planned |
-| ENA | Future |
-| Expression Atlas | Future |
-| ProteomeXchange | Future |
-
-## Target Assay Coverage
-
-Dataset Finder is designed to support the discovery of functional-genomics studies involving:
-
-- Bulk RNA sequencing
-- Single-cell RNA sequencing
-- Single-nucleus RNA sequencing
-- ATAC-seq
+- RNA-seq
+- Single-cell RNA-seq
+- Single-nucleus RNA-seq
 - ChIP-seq
 - CUT&RUN
 - CUT&Tag
-- eCLIP and other CLIP-based assays
+- ATAC-seq
+- CLIP-seq
+- eCLIP
+- iCLIP
+- PAR-CLIP
+- HITS-CLIP
 - Spatial transcriptomics
-- Perturbation-based transcriptomics
+- Microarray
+- Proteomics
+- Other assays
 
-## Guiding Principle
+The classifier also recognizes controlled GEO descriptions such as:
 
-**Search once. Discover everywhere.**
+- `Expression profiling by high throughput sequencing`
+- `Genome binding/occupancy profiling by high throughput sequencing`
+- `Expression profiling by array`
 
 ## Requirements
 
-Dataset Finder requires:
-
 - Python 3.11 or newer
-- Internet access for querying public databases
-- Git for cloning the repository
+- Git
+- Internet access
+
+The project is developed and tested primarily on macOS and Linux.
 
 ## Installation
 
@@ -114,304 +115,458 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-Install Dataset Finder and its development dependencies:
+Install Dataset Finder and the development dependencies:
 
 ```bash
 python -m pip install --upgrade pip
-pip install -e ".[dev]"
+python -m pip install -e ".[dev]"
 ```
 
 Confirm that the command is available:
 
 ```bash
 dataset-finder --version
+dataset-finder search --help
 ```
 
 ## Command-Line Interface
 
-Display general help:
+The main command is:
 
 ```bash
-dataset-finder --help
+dataset-finder search
 ```
 
-Display search-specific help:
+Available search inputs include:
+
+- `--query`
+- `--genes`
+- `--gene-file`
+- `--gene-set`
+- `--gene-set-name`
+
+Available databases include:
+
+- `geo`
+- `encode`
+- `sra`
+- `bioproject`
+- `biostudies`
+- `all`
+
+Available output formats include:
+
+- `table`
+- `csv`
+- `json`
+- `xlsx`
+
+Display all search options:
 
 ```bash
 dataset-finder search --help
 ```
 
-## Quick Start
+## Single-Query Search
 
-### Search GEO
+Use `--query` for one direct repository search.
 
 ```bash
 dataset-finder search \
+  --species "Drosophila melanogaster" \
+  --query orb2 \
   --database geo \
-  --species "Mus musculus" \
-  --query "Tardbp" \
   --max-results 5
 ```
 
-### Search ENCODE
+## Multi-Gene Search
+
+Use `--genes` to search multiple genes in one run:
 
 ```bash
 dataset-finder search \
-  --database encode \
-  --species "Homo sapiens" \
-  --query "TARDBP" \
-  --max-results 5
-```
-
-### Search All Implemented Databases
-
-```bash
-dataset-finder search \
+  --species "Drosophila melanogaster" \
+  --genes bru1 caz Hrb98DE orb orb2 \
   --database all \
-  --species "Homo sapiens" \
-  --query "CTCF" \
-  --max-results 10
+  --max-results 3
 ```
 
-The combined search queries GEO and ENCODE and returns normalized dataset records through a common interface.
+In batch mode, `--max-results` limits the number of accepted records per gene. Dataset Finder may retrieve a larger internal candidate pool before relevance filtering.
 
-## Export Search Results
-
-Dataset Finder supports terminal, CSV, and JSON output formats.
-
-### Export Results as CSV
-
-```bash
-dataset-finder search \
-  --species "Homo sapiens" \
-  --query "CTCF" \
-  --format csv \
-  --output results.csv
-```
-
-Example terminal output:
-
-```text
-Dataset Finder GEO search
-Species: Homo sapiens
-Query: CTCF
-Results found: 20
-Exported results: /path/to/results.csv
-```
-
-### Export Results as JSON
+## Built-in RBP Search
 
 ```bash
 dataset-finder search \
   --species "Drosophila melanogaster" \
-  --query "Fru" \
-  --format json \
-  --output drosophila_fru_results.json
+  --gene-set rbp \
+  --database all \
+  --max-results 3 \
+  --format xlsx \
+  --output Drosophila_RBP_Dataset_Screening.xlsx
 ```
 
-When `--output` is omitted, Dataset Finder creates a default file in the current working directory.
-
-### Display Results in the Terminal
+## Built-in TF Search
 
 ```bash
 dataset-finder search \
+  --species "Drosophila melanogaster" \
+  --gene-set tf \
+  --database all \
+  --max-results 3 \
+  --format xlsx \
+  --output Drosophila_TF_Dataset_Screening.xlsx
+```
+
+## Gene-File Input
+
+A gene file may contain one symbol per line:
+
+```text
+bru1
+Hrb98DE
+orb
+orb2
+caz
+```
+
+Search the file:
+
+```bash
+dataset-finder search \
+  --species "Drosophila melanogaster" \
+  --gene-file genes.txt \
+  --gene-set-name CUSTOM_SET \
+  --database all \
+  --max-results 3 \
+  --format xlsx \
+  --output custom_gene_screening.xlsx
+```
+
+## Output Formats
+
+### Terminal
+
+```bash
+dataset-finder search \
+  --species "Drosophila melanogaster" \
+  --genes orb orb2 \
   --database geo \
+  --max-results 3 \
+  --format table
+```
+
+### CSV
+
+```bash
+dataset-finder search \
+  --species "Homo sapiens" \
+  --query CTCF \
+  --database geo \
+  --format csv \
+  --output CTCF_results.csv
+```
+
+### JSON
+
+```bash
+dataset-finder search \
+  --species "Mus musculus" \
+  --query Tardbp \
+  --database geo \
+  --format json \
+  --output Tardbp_results.json
+```
+
+### Excel
+
+```bash
+dataset-finder search \
   --species "Drosophila melanogaster" \
-  --query "fruitless" \
-  --format table \
-  --max-results 5
+  --genes bru1 caz orb2 \
+  --gene-set-name RBP_TEST \
+  --database all \
+  --max-results 5 \
+  --format xlsx \
+  --output RBP_Test_Workbook.xlsx
 ```
 
-## Available Output Formats
+## Search Workflow
 
-| Format | CLI value | Status |
-|---|---|---|
-| Terminal table | `table` | Implemented |
-| CSV | `csv` | Implemented |
-| JSON | `json` | Implemented |
-| Excel workbook | Not yet available | Planned |
-| Reproducible report | Not yet available | Planned |
+For each submitted gene, Dataset Finder performs the following steps:
 
-## Search Result Metadata
-
-Normalized search results may include:
-
-| Field | Description |
-|---|---|
-| `uid` | Database-specific unique identifier |
-| `accession` | Public dataset or experiment accession |
-| `title` | Dataset title |
-| `organism` | Study organism or organisms |
-| `study_type` | Assay or study classification |
-| `sample_count` | Number of samples or replicates when available |
-| `publication_date` | Release or publication date when available |
-| `url` | Direct link to the source database record |
-
-Metadata availability may differ between databases because GEO and ENCODE expose different record structures.
-
-## Example CSV Structure
+1. Normalize the submitted gene input.
+2. Resolve the gene through FlyBase.
+3. Retrieve the official symbol, FlyBase identifier, full name, and known synonyms.
+4. Build a repository search query using accepted identifiers.
+5. Search one or more selected repositories.
+6. Normalize repository-specific metadata into the shared `DatasetRecord` model.
+7. Evaluate whether the returned record contains sufficient gene evidence.
+8. Classify the experimental technique.
+9. Retrieve FlyAtlas tissue-expression values when available.
+10. Export the accepted records and search-status information.
 
 ```text
-uid,accession,title,organism,study_type,sample_count,publication_date,url
-200304737,GSE304737,Example dataset,Drosophila melanogaster,Genome binding/occupancy profiling by high throughput sequencing,7,2026/02/09,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE304737
+Gene, gene list, or built-in gene set
+                  |
+                  v
+          FlyBase resolution
+                  |
+                  v
+     Repository-specific searches
+   GEO | SRA | BioProject | BioStudies | ENCODE
+                  |
+                  v
+         Metadata normalization
+                  |
+                  v
+       Gene relevance assessment
+                  |
+                  v
+       Technique classification
+                  |
+                  v
+        FlyAtlas enrichment
+                  |
+                  v
+      Terminal | CSV | JSON | Excel
 ```
 
-## Architecture
+## FlyBase Gene Resolution
+
+For *Drosophila melanogaster*, Dataset Finder resolves:
+
+- Submitted symbol
+- Current official symbol
+- FlyBase gene identifier
+- Current full gene name
+- Symbol synonyms
+- Historical symbols
+- Secondary FlyBase identifiers
+- Annotation identifier
+- Resolution type
+- Alias ambiguity status
+- FlyBase record URL
+
+Exact official symbols are prioritized over ambiguous synonyms.
+
+Example:
 
 ```text
-Command-Line Interface
-        |
-        v
-SearchService
-        |
-        +-- GEO Client
-        |
-        +-- ENCODE Client
-        |
-        +-- Future Database Clients
-        |
-        v
-Normalized Dataset Records
-        |
-        +-- Terminal Output
-        +-- CSV Export
-        +-- JSON Export
+h -> hry -> FBgn0001168 -> hairy
 ```
 
-Each supported database client converts source-specific metadata into the common `DatasetRecord` model.
+## FlyAtlas Enrichment
+
+FlyAtlas enrichment may include:
+
+- Adult male brain FPKM
+- Adult female brain FPKM
+- Larval brain FPKM
+- Adult male head FPKM
+- Adult female head FPKM
+- Highest-expression adult male tissue
+- Highest-expression adult female tissue
+- Highest-expression larval tissue
+- FlyAtlas record URL
+
+Gene annotation and FlyAtlas information are retained even when no dataset passes strict relevance filtering.
+
+## Gene Relevance Assessment
+
+Repository search matches are not automatically treated as valid biological matches.
+
+Dataset Finder evaluates available metadata for evidence including:
+
+- FlyBase identifier
+- Official symbol
+- Submitted symbol
+- Current full gene name
+- Accepted FlyBase synonyms
+- Dataset title
+- Study description
+- Repository metadata
+
+Short symbols require stronger context to reduce accidental matches.
+
+Examples:
+
+- `D` does not match the species abbreviation in `D. melanogaster`
+- `orb` does not match an `ORB2`-only record
+- Generic BioStudies results are excluded when no gene evidence is present
+
+A gene may legitimately return zero accepted datasets.
+
+## SRA Normalization
+
+SRA results are aggregated at the study level to avoid repeated rows for experiments belonging to the same study.
+
+Normalized SRA metadata may include:
+
+- SRP study accession
+- Study title
+- BioProject accession
+- SRX experiment accessions
+- SRR run accessions
+- BioSample accessions
+- Library strategy
+- Library source
+- Library selection
+- Library layout
+- Sequencing platform
+- Run count
+- Release date
+- Direct SRA URL
+
+## Excel Workbook Structure
+
+Excel exports contain the following worksheets:
+
+| Worksheet | Description |
+|-----------|-------------|
+| `README` | Workbook description and search context |
+| `Gene_Summary` | Per-gene counts by database and technique |
+| `Gene_Annotations` | FlyBase resolution and FlyAtlas expression |
+| `All_Datasets` | All accepted normalized dataset records |
+| `Database_Status` | Per-gene and per-database search status |
+| `Errors` | Search failures and error messages |
+| Technique worksheets | Accepted datasets grouped by assay |
+
+Technique worksheets include:
+
+- `CUT_RUN`
+- `CUT_TAG`
+- `eCLIP`
+- `iCLIP`
+- `PAR_CLIP`
+- `HITS_CLIP`
+- `CLIP`
+- `ChIP_seq`
+- `ATAC_seq`
+- `scRNA_seq`
+- `snRNA_seq`
+- `Spatial`
+- `RNA_seq`
+- `Microarray`
+- `Proteomics`
+- `Other_Assays`
+
+## Database Status Reporting
+
+The `Database_Status` worksheet records:
+
+- Submitted gene
+- Database name
+- Success or failure
+- Number of returned records
+- Error message
+
+A temporary repository failure is distinguishable from a successful search with zero results.
+
+## Network Reliability
+
+The GEO client retries transient failures such as:
+
+- Interrupted connections
+- Premature response termination
+- Request timeouts
+- HTTP 429
+- HTTP 500
+- HTTP 502
+- HTTP 503
+- HTTP 504
 
 ## Repository Structure
 
 ```text
 Dataset-Finder/
 ├── .github/
-│   └── workflows/          GitHub Actions workflows
+│   └── workflows/
 ├── src/
 │   └── dataset_finder/
-│       ├── clients/        Database-specific clients
-│       ├── exporters/      CSV and JSON exporters
-│       ├── utils/          Shared utilities
-│       ├── cli.py          Command-line interface
-│       ├── models.py       Shared dataset models
-│       ├── ranking.py      Ranking utilities
-│       └── search.py       Search orchestration
-├── tests/                  Automated tests
+│       ├── clients/
+│       ├── data/
+│       ├── exporters/
+│       ├── assay_classifier.py
+│       ├── batch.py
+│       ├── builtin_gene_sets.py
+│       ├── cli.py
+│       ├── flybase_resolver.py
+│       ├── gene_sets.py
+│       ├── models.py
+│       ├── relevance.py
+│       └── search.py
+├── tests/
+├── tools/
+├── AUTHORS.md
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
 ├── LICENSE
 ├── README.md
-└── SECURITY.md
+├── SECURITY.md
+└── pyproject.toml
 ```
 
 ## Development
 
-Install the project with development dependencies:
-
 ```bash
-pip install -e ".[dev]"
-```
-
-Run Ruff:
-
-```bash
-ruff check src tests
-```
-
-Run the test suite:
-
-```bash
-pytest
-```
-
-Run all local validation checks:
-
-```bash
-ruff check src tests
-pytest
+python -m pip install -e ".[dev]"
+ruff check src tests tools
+pytest -q
 git diff --check
 ```
 
-## Roadmap
+## Continuous Integration
 
-### Completed Foundation
-
-- GEO dataset search
-- ENCODE experiment search
-- Combined database search
-- Unified command-line interface
-- Normalized metadata model
-- CSV export
-- JSON export
-- Automated testing
-- Continuous Integration
-
-### Next Milestone
-
-- SRA integration
-- Relevance ranking
-- Improved metadata normalization
-- Assay filters
-- Tissue filters
-- Disease filters
-- Excel export
-
-### Future Development
-
-- BioProject integration
-- BioSample integration
-- PubMed integration
-- ENA integration
-- Expression Atlas integration
-- Publication-linked dataset discovery
-- Reproducible search reports
-- Methods-ready dataset summaries
-- Stable extensible database-client framework
+GitHub Actions validates commits and pull requests using Ruff, automated tests, and supported Python versions.
 
 ## Limitations
 
-Dataset Finder is under active development.
+- Repository metadata quality varies between databases.
+- Some datasets may not expose enough metadata for strict gene validation.
+- A zero-result gene does not necessarily mean no public data exists.
+- ENCODE organism coverage differs from GEO and SRA coverage.
+- External APIs may temporarily fail or change independently of Dataset Finder.
+- Search results should be reviewed before publication or downstream analysis.
 
-Current limitations include:
+## Roadmap
 
-- Only GEO and ENCODE are currently implemented.
-- Search relevance depends on metadata exposed by the source database.
-- Metadata completeness varies between repositories.
-- Search results should be reviewed before being used in publications or downstream analyses.
-- Database APIs may change independently of Dataset Finder.
+Planned work includes:
 
-## Citation and Acknowledgment
-
-When Dataset Finder contributes to research, a publication, thesis, report, software project, or teaching material, please cite the software or acknowledge its creator.
-
-**Creator and lead developer:** Srinivas Amla
-
-Suggested acknowledgment:
-
-> Public functional-genomics datasets were identified and organized using Dataset Finder, developed by Srinivas Amla.
-
-Formal citation metadata is available in [`CITATION.cff`](CITATION.cff).
+- PubMed integration
+- ENA integration
+- Expression Atlas integration
+- ProteomeXchange integration
+- Additional metadata normalization
+- Tissue and cell-type filtering
+- Disease-related filtering
+- Dataset ranking improvements
+- Citation export
+- Reproducible search reports
 
 ## Contributing
 
-Community contributions are welcome.
+Before contributing, review:
 
-Before contributing, read [`CONTRIBUTING.md`](CONTRIBUTING.md) for development and pull-request guidance.
+- `CONTRIBUTING.md`
+- `CODE_OF_CONDUCT.md`
+- `SECURITY.md`
 
-Please also review:
+## Citation
 
-- [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)
-- [`SECURITY.md`](SECURITY.md)
+If Dataset Finder contributes to a publication, thesis, report, software project, or teaching material, cite the software using the metadata provided in `CITATION.cff`.
+
+Suggested acknowledgement:
+
+> Public functional genomics datasets were identified and organized using Dataset Finder, developed by Srinivas Amla.
 
 ## License
 
-Dataset Finder is distributed under the MIT License. See [`LICENSE`](LICENSE).
+Dataset Finder is distributed under the MIT License. See `LICENSE` for the complete license text.
 
 ## Author
 
 **Srinivas Amla**
-University of Massachusetts Boston
 
-Research interests include bioinformatics, computational biology, functional genomics, machine learning, and public biological-data integration.
-EOF
+University of Massachusetts Boston
