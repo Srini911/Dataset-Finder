@@ -288,7 +288,7 @@ def test_batch_overfetches_candidates_before_relevance_filtering() -> None:
         max_results_per_gene=1,
     )
 
-    assert search_service.max_results == 20
+    assert search_service.max_results == 50
     assert len(result.records) == 1
     assert result.records[0].gene == "h"
 

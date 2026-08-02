@@ -115,9 +115,12 @@ class BatchSearchService:
                 resolved_gene,
             )
 
-            candidate_limit = max(
-                20,
-                max_results_per_gene * 10,
+            candidate_limit = min(
+                100,
+                max(
+                    50,
+                    max_results_per_gene * 20,
+                ),
             )
 
             try:

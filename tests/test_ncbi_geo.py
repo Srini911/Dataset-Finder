@@ -145,10 +145,119 @@ def test_geo_request_errors_are_wrapped() -> None:
         ]
     )
 
-    client = NCBIGEOClient(session=session)  # type: ignore[arg-type]
+    client = NCBIGEOClient(
+        session=session,  # type: ignore[arg-type]
+        max_attempts=1,
+        retry_delay=0,
+    )
 
     with pytest.raises(NCBIClientError, match="NCBI request failed"):
         client.search(
             species="Drosophila melanogaster",
             query="brain RNA-seq",
         )
+
+
+def test_geo_retries_transient_connection_failure() -> None:
+    class FakeResponse:
+        status_code = 200
+
+        def raise_for_status(self) -> None:
+            return None
+
+        def json(self) -> dict:
+            return {
+                "esearchresult": {
+                    "idlist": [],
+                }
+            }
+
+    class FlakySession:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def get(self, *args, **kwargs):
+            del args, kwargs
+            self.calls += 1
+
+            if self.calls == 1:
+                raise requests.ConnectionError(
+                    "Response ended prematurely"
+                )
+
+            return FakeResponse()
+
+    session = FlakySession()
+
+    client = NCBIGEOClient(
+        session=session,
+        max_attempts=3,
+        retry_delay=0,
+    )
+
+    records = client.search(
+        species="Drosophila melanogaster",
+        query="orb2",
+        max_results=3,
+    )
+
+    assert records == []
+    assert session.calls == 2
+
+
+def test_geo_retries_transient_http_status() -> None:
+    class FakeResponse:
+        def __init__(
+            self,
+            status_code: int,
+            payload: dict | None = None,
+        ) -> None:
+            self.status_code = status_code
+            self._payload = payload or {}
+
+        def raise_for_status(self) -> None:
+            if self.status_code >= 400:
+                raise requests.HTTPError(
+                    f"HTTP {self.status_code}",
+                    response=self,
+                )
+
+        def json(self) -> dict:
+            return self._payload
+
+    class FlakySession:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def get(self, *args, **kwargs):
+            del args, kwargs
+            self.calls += 1
+
+            if self.calls == 1:
+                return FakeResponse(503)
+
+            return FakeResponse(
+                200,
+                {
+                    "esearchresult": {
+                        "idlist": [],
+                    }
+                },
+            )
+
+    session = FlakySession()
+
+    client = NCBIGEOClient(
+        session=session,
+        max_attempts=3,
+        retry_delay=0,
+    )
+
+    records = client.search(
+        species="Drosophila melanogaster",
+        query="orb2",
+        max_results=3,
+    )
+
+    assert records == []
+    assert session.calls == 2

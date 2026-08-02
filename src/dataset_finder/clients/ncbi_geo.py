@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from typing import Any
 
 import requests
@@ -30,11 +31,15 @@ class NCBIGEOClient:
         tool: str = "dataset-finder",
         email: str | None = None,
         session: requests.Session | None = None,
+        max_attempts: int = 4,
+        retry_delay: float = 0.75,
     ) -> None:
         self.timeout = timeout
         self.tool = tool
         self.email = email
         self.session = session or requests.Session()
+        self.max_attempts = max_attempts
+        self.retry_delay = retry_delay
 
     def search(
         self,
@@ -115,29 +120,80 @@ class NCBIGEOClient:
         *,
         params: dict[str, str | int],
     ) -> dict[str, Any]:
+        """Request NCBI JSON with retries for transient failures."""
         request_params = dict(params)
         request_params["tool"] = self.tool
 
         if self.email:
             request_params["email"] = self.email
 
-        try:
-            response = self.session.get(
-                f"{EUTILS_BASE_URL}/{endpoint}",
-                params=request_params,
-                timeout=self.timeout,
-            )
-            response.raise_for_status()
-            payload = response.json()
-        except requests.RequestException as exc:
-            raise NCBIClientError(f"NCBI request failed: {exc}") from exc
-        except ValueError as exc:
-            raise NCBIClientError("NCBI returned invalid JSON.") from exc
+        last_error: Exception | None = None
 
-        if not isinstance(payload, dict):
-            raise NCBIClientError("NCBI returned an unexpected JSON response.")
+        for attempt in range(1, self.max_attempts + 1):
+            try:
+                response = self.session.get(
+                    f"{EUTILS_BASE_URL}/{endpoint}",
+                    params=request_params,
+                    timeout=self.timeout,
+                )
 
-        return payload
+                status_code = getattr(
+                    response,
+                    "status_code",
+                    200,
+                )
+
+                if status_code in {
+                    429,
+                    500,
+                    502,
+                    503,
+                    504,
+                }:
+                    raise requests.HTTPError(
+                        f"Transient NCBI HTTP {status_code}",
+                        response=response,
+                    )
+
+                response.raise_for_status()
+                payload = response.json()
+
+                if not isinstance(payload, dict):
+                    raise NCBIClientError(
+                        "NCBI returned an unexpected JSON response."
+                    )
+
+                return payload
+
+            except (
+                requests.ConnectionError,
+                requests.Timeout,
+                requests.HTTPError,
+                requests.exceptions.ChunkedEncodingError,
+            ) as exc:
+                last_error = exc
+
+                if attempt >= self.max_attempts:
+                    break
+
+                time.sleep(
+                    self.retry_delay * (2 ** (attempt - 1))
+                )
+
+            except ValueError as exc:
+                raise NCBIClientError(
+                    "NCBI returned invalid JSON."
+                ) from exc
+
+            except requests.RequestException as exc:
+                last_error = exc
+                break
+
+        raise NCBIClientError(
+            f"NCBI request failed after "
+            f"{self.max_attempts} attempts: {last_error}"
+        )
+
 
     @staticmethod
     def _normalize_summary(summary: dict[str, Any]) -> DatasetRecord:
