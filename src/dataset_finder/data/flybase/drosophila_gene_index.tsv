@@ -1,0 +1,421 @@
+submitted_symbol	official_symbol	flybase_id	current_fullname	symbol_synonyms	secondary_flybase_ids	annotation_id	match_type	ambiguous
+bru1	bru1	FBgn0000114	bruno 1	ARET|Aret|aret|aret/bruno1|arrest/Bruno|BcDNA:GM15173|Bru|bru|bru-1|Bru1|Bruno|bruno|Bruno 1|CG31762|CG6319|Dm Bru|ms(2)01284|NEST:bs01g04|NEST:bs34h11	FBgn0015367,FBgn0045095,FBgn0045436,FBgn0051762,FBgn0063197	CG31762	official_symbol	No
+Hrb98DE	Hrb98DE	FBgn0001215	Heterogeneous nuclear ribonucleoprotein at 98DE	anon-E7Delta6|anon-E7Δ6|CG9983|E7Delta6|E7Δ6|HDP(P9)|hnRNP A2/B1|Hrb1|Hrb98 de|hrb98 de|HRB98DE|hrb98DE|hrb98de|HRB98DE/hrp38|Hrb98DE/Hrp38|Hrp38|hrp38|p9|Pen9	FBgn0003056,FBgn0014945	CG9983	official_symbol	No
+mod	mod	FBgn0002780	modulo	0952/14|CG2050|Mod|Modulo|ms(3)100EF	FBgn0011255	CG2050	official_symbol	Yes
+sm	sm	FBgn0003435	smooth	BcDNA:GH10856|CG9218|l(2)05338|SM|Sm|smo|smooth	FBgn0010597,FBgn0063694	CG9218	official_symbol	Yes
+snf	snf	FBgn0003449	sans fille	CG4528|D25|dSNF|fs(1)1621|fs(1)A16121|fs(1)A1621|liz|SNF|Snf|SNF/D25|snf1621|snRNP B''|snRNP-U1-A|U1-A|U1A|U2 snRNP|U2 snRNP B'' protein|U2B	FBgn0005667	CG4528	official_symbol	No
+tra2	tra2	FBgn0003742	transformer 2	CG10128|TRA 2|TRA-2|Tra-2|tra-2|TRA2|Tra2		CG10128	official_symbol	No
+nonA	nonA	FBgn0004227	no on or off transient A	Bj6|Bj6-1|CG4211|diss|dNONO|non-A|NONA|NonA|nona|nonA/diss|opm2|p54[nrb]|x14	FBgn0000188,FBgn0002957	CG4211	official_symbol	No
+Hrb87F	Hrb87F	FBgn0004237	Heterogeneous nuclear ribonucleoprotein at 87F	CG12749|hnRNP A2/B1|hnRNP36|hnRNPA1|hnRNPA1/A2|hnRNPA2|hnRNPA2/B1|Hrb2|Hrb85CD|HRB87F|Hrb87f|hrb87f|HRB87F/hrp36|Hrb87Fa|HRP36|Hrp36|hrp36|P11|P11/Hrb87F|p38|Q14|Q16	FBgn0010230	CG12749	official_symbol	No
+B52	B52	FBgn0004587	B52	B52/dSRp55|B52/SRp55|CG10851|dSRp55|E(Dfd)|E726|l(3)s2249|MabB52|Rbp8|RRM8|rrm8|RSp55|SR55|SRp55|SRSF6	FBgn0004424,FBgn0010262,FBgn0011022,FBgn0013330	CG10851	official_symbol	Yes
+Hrb27C	Hrb27C	FBgn0004838	Heterogeneous nuclear ribonucleoprotein at 27C	10280|CG10377|hnRNP-C|hnRNP27C|hnRNP48|hrb27|Hrb27-C|HRB27C|Hrb27c|hrb27C|hrb27c|Hrb27C/Hrp48|Hrb48|HRP48|Hrp48|hrp48|Hrp48/Hrb27C|l(2)02647|l(2)10280|l(2)2647|linha|Ov5|p50|Rbp7|RRM7|rrm7	FBgn0010261,FBgn0016665,FBgn0019729,FBgn0024845,FBgn0061493	CG10377	official_symbol	No
+orb	orb	FBgn0004882	oo18 RNA-binding protein	151666_s_at|CG10868|fs(3)00107|Oo18|oo18|oo18 RNA-binding protein|ORB|Orb|ORB1|Orb1		CG10868	official_symbol	Yes
+Rb97D	Rb97D	FBgn0004903	Ribonuclear protein at 97D	CG6354|Hrb97D|ms(3)03445|R16|rb97d|Rb97D1|rbf|RBP97D		CG6354	official_symbol	No
+U2af50	U2af50	FBgn0005411	U2 small nuclear riboprotein auxiliary factor 50	9-21|CG9998|DmU2AF[50]|DU2AF50|dU2AF50|dU2AF[50]|dUTAf[50]|l(1)14Ca|l(1)14Cc|l(1)9-21|U2AF|U2af|U2AF 50|U2AF-50|U2AF50		CG9998	official_symbol	No
+Pabp2	Pabp2	FBgn0005648	Pabp2	CG2163|dpabII|PABP2|pAbp2|pabp2|PABPN1|ROX2|Rox2|rox2		CG2163	official_symbol	No
+Rox8	Rox8	FBgn0005649	Rox8	CG5422|DmTIAR|dTIAR|Rbp12|Rox-8|ROX8|rox8|RRM12|rrm12|TIAR	FBgn0010255,FBgn0010283	CG5422	official_symbol	No
+Rbp4	Rbp4	FBgn0010258	RNA-binding protein 4	CG9654|rbp4|RRM4|rrm4|TSR|Tsr|tsr		CG9654	official_symbol	No
+Rbp9	Rbp9	FBgn0010263	RNA-binding protein 9	CG15402|CG3151|fes|fs(2)B|rbp|Rbp10|RBP9|rbp9|RBP9-2|rbp9a|Rpb9|RRM10|rrm10|RRM9|rrm9	FBgn0010253,FBgn0031482	CG3151	official_symbol	No
+Ref1	Ref1	FBgn0010774	RNA and export factor binding protein 1	ALY|Aly|aly|ALYREF|alyref|BcDNA:LD24793|CG1101|cg1101|DmREF1|dmREF1|l(3)02267|REF1|ref1	FBgn0027857	CG1101	official_symbol	No
+bol	bol	FBgn0011206	boule	BcDNA:AT13332|BOL|Bol|Boule|boule|CG4727|CG4760|lincRNA.485|ms(3)07272	FBgn0040826,FBgn0063736	CG4760	official_symbol	No
+heph	heph	FBgn0011224	hephaestus	CG2094|CG2290|CG31000|DmPTB|dmPTB|dPTB|ema|HEPH|Heph|Hephaestus|hnRNP I|l(3)03429|l(3)j11B9|PTB|Ptb|ptb	FBgn0010798,FBgn0011433,FBgn0029138,FBgn0039884,FBgn0039885,FBgn0051000	CG31000	official_symbol	No
+Rsf1	Rsf1	FBgn0011305	Repressor splicing factor 1	CG5655|dRSF1|ROX21|Rox21|rox21|RSF1		CG5655	official_symbol	No
+lark	lark	FBgn0011640	lark	CG8597|dLARK|LARK|Lark		CG8597	official_symbol	No
+msi	msi	FBgn0011666	musashi	3R11|anon-EST:Liang-2.35|CG5099|clone 2.35|dMSI|dMsi|DMSIDNA|MSI|Msi|musashi|SIDNA		CG5099	official_symbol	Yes
+Rnp4F	Rnp4F	FBgn0014024	RNA-binding protein 4F	4F-rnp|4f-rnp|CG3312|RNP-4F|Rnp-4F|rnp-4f|Rnp4f		CG3312	official_symbol	No
+nonA-l	nonA-l	FBgn0015520	nonA-like	BEST:LD09360|CG10328|LD09360|nonA 1|nonA-1|NonA-like|PSF|Z	FBgn0026581	CG10328	official_symbol	No
+rin	rin	FBgn0015778	rasputin	CG9412|cg9412|Nts|rasp|RIN|Rin	FBgn0038164	CG9412	official_symbol	No
+Spx	Spx	FBgn0015818	Spliceosomal protein on the X	CG3780|SF3B4|Sf3b4|SPX|spx		CG3780	official_symbol	Yes
+spen	spen	FBgn0016977	split ends	136/24|BcDNA:GM01870|CG18497|E(E2F)2A|E(Raf)2A|E(Sev-CycE)2A|EK2-9|En(yan[ACT])2-7|EY2-7|l(2)03350|l(2)k06805|l(2)k07612|l(2)k08102|poc|rno|spe|SPEN|Spen|Splitends|yip1	FBgn0010537,FBgn0016056,FBgn0016624,FBgn0022059,FBgn0022080,FBgn0022115,FBgn0026182,FBgn0031230,FBgn0040065,FBgn0047291	CG18497	official_symbol	No
+snRNP-U1-70K	snRNP-U1-70K	FBgn0016978	small ribonucleoprotein particle U1 subunit 70K	70K|CG8749|Dm70K|dU1-70K|l(2)02107|snRNP|snRNP 70K|SnRNP-U1-70K|snRnP-U1-70K|snRNP27D|snRNP70K|snRNPU1-70K|U1|U1 70K|U1 70k|U1 70K snRNP|U1 snRNP|U1-70K|U1-70k|U170K|U1snRNP-70K	FBgn0003458,FBgn0010508	CG8749	official_symbol	No
+Nelf-E	Nelf-E	FBgn0017430	Negative elongation factor E	anon-66Da|CG5994|cg5994|dNelf-E|ENelf-E|EY07065|NELF|NELF-E|Nelf-e|Nelf_E|NELFE|NelfE		CG5994	official_symbol	No
+U2af38	U2af38	FBgn0017457	U2 small nuclear riboprotein auxiliary factor 38	CG3582|DU2AF38|dU2AF38|dU2AF[38]|l(2)06751|U2AF|U2AF 38|U2AF38|u2af38|Utaf38	FBgn0010626	CG3582	official_symbol	No
+eIF4B	eIF4B	FBgn0020660	eukaryotic translation initiation factor 4B	CG10837|Dm-eIF4B|EIF-4B|eIF-4B|eIF-4b|eIF-4B-L|eIF-4B-S|EIF4B|Eif4B|eIF4B|eIf4b|eIF4B-L|eIF4B-S	FBgn0040057	CG10837	official_symbol	No
+Cbp20	Cbp20	FBgn0022943	cap binding protein 20	CBP20|cbp20|CG12357		CG12357	official_symbol	No
+Srp54	Srp54	FBgn0024285	Splicing regulatory protein 54	anon-EST:Liang-2.16|CG4602|clone 2.16|dSRp54|p75|SRP54|SRp54|srp54	FBgn0025965	CG4602	official_symbol	Yes
+Neos	Neos	FBgn0024542	Neosin	BcDNA.HL05936|BcDNA:HL05936|CG8614|l(3)L2249	FBgn0027902	CG8614	official_symbol	No
+ssx	ssx	FBgn0024987	sister-of-Sex-lethal	anon-EST:Posey102|CG3056|cg3056|EG:132E8.1|Ssx	FBgn0027771	CG3056	official_symbol	No
+TBPH	TBPH	FBgn0025790	TAR DNA-binding protein-43 homolog	CG10327|dmTDP43|dtar|dTBPH|dTDP|dTDP-43|Tbph|tbph|TDP-43|TDP43|TDPH		CG10327	official_symbol	No
+fz3	fz3	FBgn0027343	frizzled 3	CG16785|DFz3|Dfz3|dFz3|dfz3|Dm Fz3|EG:34F3.6|Fz3	FBgn0025619	CG16785	official_symbol	No
+nito	nito	FBgn0027548	spenito	BcDNA:GH11110|CG2910|cg2910|Dm44A/spenito|DmSSp|dOTT|NITO|Nito|Spenito|SSLP		CG2910	official_symbol	No
+CG5808	Ppil4	FBgn0027617	Peptidyl-prolyl cis/trans isomerase-like 4	BcDNA:GH01073|CG5808|cg5808|dPPIL4|dppil4|UKL		CG5808	synonym	No
+CstF64	CstF64	FBgn0027841	Cleavage stimulation factor 64 kD subunit	CG7697|CStF 64|CstF 64|CstF-64|CstF64|dCstF64		CG7697	official_symbol	No
+cyp33	cyp33	FBgn0028382	cyclophilin-33	CG4886|CYP33|Cyp33|Dcyp33		CG4886	official_symbol	No
+CG4119	CG4119	FBgn0028474		BcDNA.LD23634|BcDNA:LD23634|cg4119		CG4119	official_symbol	No
+x16	x16	FBgn0028554	x16 splicing factor	2/30|9G8|anon-WO0118547.78|CG10203|d9G8|Dx16|dx16|Dxl6|dxl6|l(2)k00230|RBP1-like|TN166|X16|x16|X16/9G8|XL6|Xl6|xl6	FBgn0022271,FBgn0040511,FBgn0061658	CG10203	official_symbol	Yes
+hfp	hfp	FBgn0028577	half pint	anon-WO0118547.408|CG12085|dFIR|DPUF68|Fir|HFP|Hfp|hfp|pUbsf|PUF60|Puf60|PUF68|Puf68|pUF68|pUf68|puf68	FBgn0062032	CG12085	official_symbol	No
+eIF3g1	eIF3g1	FBgn0029629	eukaryotic translation initiation factor 3 subunit g1	CG8636|cg8636|eIF s4|eIF-3|eIF-3ga|eIF3-S4|EIF3G|eIF3g|EIF3G1|eIF3G1|eIF3ga		CG8636	official_symbol	No
+CG6999	CG6999	FBgn0030085				CG6999	official_symbol	No
+Rbp1-like	Rbp1-like	FBgn0030479	Rbp1-like	BcDNA:RE47308|BEST:HL02433|CG1987|i159|RBP1-like|Rbp1L	FBgn0063004,FBgn0069063	CG1987	official_symbol	Yes
+CG10993	CG10993	FBgn0030524		BcDNA:GH23064	FBgn0063227	CG10993	official_symbol	No
+CG14414	CG14414	FBgn0030571		BcDNA:AT01764|cg14414	FBgn0063363	CG14414	official_symbol	No
+CG18259	CG18259	FBgn0030956				CG18259	official_symbol	No
+CG6961	CG6961	FBgn0030959		cg6961		CG6961	official_symbol	No
+CG14230	CG14230	FBgn0031062		anon-18DEe|cg14230|clone 9.42|Nol8	FBgn0019898	CG14230	official_symbol	No
+CG11454	CG11454	FBgn0031224		cg11454|dRbm7		CG11454	official_symbol	No
+CG4887	CG4887	FBgn0031318		cg4887		CG4887	official_symbol	No
+CG4896	CG4896	FBgn0031319		cg4896		CG4896	official_symbol	No
+CG15440	Secp43	FBgn0031607	tRNA Selenocysteine associated protein	CG15440|cg15440		CG15440	synonym	No
+CG3294	CG3294	FBgn0031628		cg3294		CG3294	official_symbol	No
+Caper	Caper	FBgn0031883	Caper	CAPER|Caper|caper|CC1.3|CG11266|cg11266|HCC1|igru		CG11266	official_symbol	No
+Ref2	Ref2	FBgn0032439	RNA and export factor binding protein 2	CG17031|cg17031|REF2|ref2		CG17031	official_symbol	Yes
+CG12288	CG12288	FBgn0032620		cg12288|RBM34		CG12288	official_symbol	No
+CG10466	CG10466	FBgn0032822		anon-WO0140519.255|cg10466	FBgn0044613	CG10466	official_symbol	No
+tsu	tsu	FBgn0033378	tsunagi	CG8781|cg8781|dY14|TSU|Tsu|Y14|y14|Y14/Tsunagi		CG8781	official_symbol	No
+eIF3b	eIF3b	FBgn0034237	eukaryotic translation initiation factor 3 subunit b	CG4878|cg4878|eIF3|eIF3 S9|eIF3-S9|eIF3-s9|EIF3B|eIF3B|eIF3b|elF3b|SN2-6		CG4878	official_symbol	No
+CG9346	CG9346	FBgn0034572		cg9346		CG9346	official_symbol	No
+CG4266	Isha	FBgn0034598	Insulator su(Hw) mRNA adaptor	CG4266|cg4266		CG4266	synonym	No
+LS2	LS2	FBgn0034834	Large Subunit 2	CG3162|cg3162		CG3162	official_symbol	No
+CG4612	CG4612	FBgn0035016		cg4612		CG4612	official_symbol	No
+Pof	Pof	FBgn0035047	Painting of fourth	CG3691|cg3691|POF|pof		CG3691	official_symbol	No
+CG3594	CG3594	FBgn0035063		CG3594|cg3594|Eap		CG3594	official_symbol	No
+CG7879	CG7879	FBgn0035235		cg7879		CG7879	official_symbol	No
+CG1316	CG1316	FBgn0035526		cg1316		CG1316	official_symbol	No
+Sf3b6	Sf3b6	FBgn0035692	Splicing factor 3b subunit 6	CG13298|cg13298|SF3B6		CG13298	official_symbol	No
+CG7185	Cpsf6	FBgn0035872	Cleavage and polyadenylation specific factor 6	CF I[[m]]68|CFI68|CFIm68|CFlm-68k|CG7185|cg7185|CPSF6|dCPSF6		CG7185	synonym	No
+CG3335	CG3335	FBgn0036018		cg3335|Dm-RBD-1|Q9VT19		CG3335	official_symbol	No
+CG11726	CG11726	FBgn0036156		cg11726		CG11726	official_symbol	No
+CG10948	anw	FBgn0036317	angel wing	CG10948|cg10948|CT30663|Enox		CG10948	synonym	No
+CG7804	cocoon	FBgn0036496	cocoon	CG7804|cg7804|Cocoon		CG7804	synonym	No
+barc	barc	FBgn0037081	barricade	Barc|CG6049|cg6049|cus2|Tat-SF1		CG6049	official_symbol	No
+CG14641	CG14641	FBgn0037220		cg14641		CG14641	official_symbol	No
+srl	srl	FBgn0037248	spargel	CG 9809|CG9809|cg9809|dh-PPRC1|DmPGC-1|DmPGC-1/spargel|DmPGC-1alpha|DmPGC-1α|dPCG1alpha|dPCG1α|dPGC|dPGC-1|dPGC-1alpha|dPGC-1α|dPGC1|PCG1-alpha|PCG1-α|PGC-1|PGC-1-alpha|PGC-1alpha|PGC-1α|PGC1|PGC1-alpha|PGC1-α|PGC1a|PGC1alpha|PGC1α|Spargel|spargel|Srl		CG9809	official_symbol	No
+CG2931	CG2931	FBgn0037342		cg2931		CG2931	official_symbol	No
+SLIRP2	SLIRP2	FBgn0037602	SRA stem-loop interacting RNA binding protein 2	CG8021|cg8021|DmSLIRP2		CG8021	official_symbol	No
+RnpS1	RnpS1	FBgn0037707	RNA-binding protein S1	CG16788|cg16788|DEK|RNPS1|Rnps1|rnps1		CG16788	official_symbol	No
+CG14718	CG14718	FBgn0037939		cg14718		CG14718	official_symbol	No
+CG5213	maca	FBgn0038345	maca	CG5213|cg5213|Maca		CG5213	synonym	No
+eIF3g2	eIF3g2	FBgn0038796	eukaryotic translation initiation factor 3 subunit g2	CG10881|cg10881|eIF3-S4|eIF3gb		CG10881	official_symbol	No
+Syp	Syp	FBgn0038826	Syncrip	AI945337|anon-WO0118547.613|CG17838|cg17838|l(3)03806|Syncrip|syp	FBgn0010818,FBgn0061828	CG17838	official_symbol	No
+CG6937	CG6937	FBgn0038989		cg6937|NIFK		CG6937	official_symbol	No
+Saf-B	Saf-B	FBgn0039229	Scaffold attachment factor B	CG6995|cg6995|LD22822|SAF-B|saf-b|SAFB		CG6995	official_symbol	No
+CG14506	CG14506	FBgn0039659		cg14506		CG14506	official_symbol	No
+CG7903	CG7903	FBgn0039730		cg7903		CG7903	official_symbol	No
+eIF4H2	eIF4H2	FBgn0039797	eukaryotic translation initiation factor 4H2	CG1340|cg1340|eIF4H|EIF4H2		CG1340	official_symbol	No
+Set1	Set1	FBgn0040022	SET domain containing 1	aaf45425 Dm|CG17395|CG17396|CG40351|dSet-1|dSET1|dSet1|dset1|l(3)h5|l5|SET1|set1|SETD1|SetD1	FBgn0040021	CG40351	official_symbol	No
+CG14628	CG14628	FBgn0040365		cg14628|EG:BACR42I17.12	FBgn0029558	CG14628	official_symbol	No
+CG18823	CG18823	FBgn0042146				CG18823	official_symbol	No
+Cnot4	Cnot4	FBgn0051716	CCR4-NOT transcription complex subunit 4	CCR4|CCR4-NOT|CG31716|CG5244|CG5251|cg5251|CNOT4|Cont4|dNOT4|NOT4|Not4|not4|Q8IPB9_DROME	FBgn0032238,FBgn0032239	CG31716	official_symbol	No
+Rbfox1	Rbfox1	FBgn0052062	RNA-binding Fox protein 1	A2BP1|A2bp1|BcDNA:GM06073|CG14155|CG18441|cg18441|CG32062|dA2BP1|rbfox1|Rbox1	FBgn0036086,FBgn0036087	CG32062	official_symbol	No
+shep	shep	FBgn0052423	alan shepard	alan|alan-shepard|anon-EST:Posey83|anon-WO0118547.198|anon-WO0172774.41|BcDNA:LD40028|BcDNA:RH63980|CG10647|CG10649|CG10668|cg10668|CG32423|Shep	FBgn0027668,FBgn0035595,FBgn0035597,FBgn0035599,FBgn0046389,FBgn0062176,FBgn0062425,FBgn0063142	CG32423	official_symbol	No
+CG32706	CG32706	FBgn0052706				CG32706	official_symbol	No
+SLIRP1	SLIRP1	FBgn0064117	SRA stem-loop interacting RNA binding protein 1	CG1704|cg1704|CG33071|CG33071-ORFA|CG33071ORFA|CG33714|DmSLIRP1|Dromel_CG33713_FBtr0091704_uORF|RRM	FBgn0031172,FBgn0053071,FBgn0053714	CG33714	official_symbol	No
+CG34354	CG34354	FBgn0085383		CG12425|CG12852|CG4787|cg4787	FBgn0039571,FBgn0039573,FBgn0039572	CG34354	official_symbol	No
+trv	trv	FBgn0085391	trivet	BcDNA:RE10833|CG12870|CG12872|CG34362|Tia1-like	FBgn0063063,FBgn0039570,FBgn0039569	CG34362	official_symbol	No
+CG40813	CG40813	FBgn0085521				CG40813	official_symbol	No
+CG41562	CG41562	FBgn0085693				CG41562	official_symbol	No
+fne	fne	FBgn0086675	found in neurons	BcDNA:HL02010|BcDNA:RE25290|BEST:HL02010|CG4396|cg4396|CR32646|FNE|Fne|lincRNA.985|MRE28	FBgn0040222,FBgn0047242,FBgn0030436,FBgn0045795,FBgn0052646,FBgn0063046	CG4396	official_symbol	No
+Spf45	Spf45	FBgn0086683	Spf45	CG17540|dRBM17|dSPF45|RBM17|spf-45|SPF45|spf45	FBgn0040024,FBgn0062542	CG17540	official_symbol	No
+glo	glo	FBgn0259139	glorund	110/46|anon-WO0118547.328|CG6946|cg6946|GLO|Glo|l(3)S011046|l(3)S11046|p67|p67-K	FBgn0037954,FBgn0062090,FBgn0069092	CG6946	official_symbol	Yes
+CG42458	CG42458	FBgn0259935		CG18656|cg18656|CG33277|CG33279|cg42458|HNPNPC	FBgn0053277,FBgn0035784,FBgn0053279	CG42458	official_symbol	No
+elav	elav	FBgn0260400	embryonic lethal abnormal vision	44C11|9F8A9|CG4262|dHuR|EC7|EG:65F1.2|ELAV|ELav|ElaV|Elav|elav-1|elav-2|elav-3|Elav-9F8A9|END1-2|fliJ|l(1)1Be|l(1)EC7|l(1)G0031|l(1)G0319|weg	FBgn0026157,FBgn0000570,FBgn0040177,FBgn0040203	CG4262	official_symbol	No
+CG4806	CG4806	FBgn0260456		cg4806	FBgn0035048	CG4806	official_symbol	Yes
+Larp7	Larp7	FBgn0260771	La related protein 7	CG12058|CG42569|dLARP7|dmLarp7	FBgn0005639,FBgn0030113	CG42569	official_symbol	No
+Rbp6	Rbp6	FBgn0260943	RNA-binding protein 6	BcDNA:RE25373|CG14055|CG14056|CG32169|CG6573|RBP6|rbp6|RRM6|rrm6	FBgn0010260,FBgn0052169,FBgn0036699,FBgn0036700,FBgn0036701,FBgn0063045	CG32169	official_symbol	No
+Rbp1	Rbp1	FBgn0260944	RNA-binding protein 1	CG17136|Rbp-1|RBP1|rbp1|Rbp11|Rbp1D|RRM1|rrm1|RRM11|rrm11|SRSF3	FBgn0010252,FBgn0010254	CG17136	official_symbol	No
+bru2	bru2	FBgn0262475	bruno 2	Bru-2|bru-2|CG17008|CG31761|CG31763|CG43065|CG6319|Dm Bru-2	FBgn0043904,FBgn0032423,FBgn0051761,FBgn0051763	CG43065	official_symbol	No
+eIF4H1	eIF4H1	FBgn0262734	eukaryotic translation initiation factor 4H1	anon-EST:fe1B9|CG4429|cg4429|eIF4H|EIF4H1|MRE9|Rbp2|RNA-binding protein 2|RRM2|rrm2	FBgn0010256,FBgn0025264,FBgn0030754,FBgn0086541	CG4429	official_symbol	No
+sqd	sqd	FBgn0263396	squid	BcDNA:GM03761|CG16901|CG17791|CR33328|fs(3)00048|hnRNP 1|hnRNP A|Hrb87|Hrb87Fb|HRP40|Hrp40|hrp40|l(3)EP3631|l(3)j4B4|l(3)j6E3|l(3)j8E7|Rbp3|RRM3|rrm3|SQD|Sqd|Squid|squid	FBgn0053328,FBgn0047283,FBgn0086897,FBgn0003498,FBgn0010257,FBgn0010299,FBgn0011398,FBgn0011413,FBgn0027643,FBgn0040556,FBgn0011363	CG16901	official_symbol	No
+CG34334	CG34334	FBgn0263829		CG9561|cg9561	FBgn0085363,FBgn0031203	CG34334	official_symbol	No
+cpo	cpo	FBgn0263995	couch potato	1824|3603|5339|6015|BcDNA:AT31405|CG12349|CG18434|CG18435|cg18435|CG31243|CG42457|CG43738|CPO|Cpo|E(sda)N|l(3)01432|l(3)6015|l(3)j4A1|l(3)j4D4|l(3)j7E2|l(3)j9B3|l(3)rJ553|l(3)s2336|Line N|ORE-17	FBgn0000363,FBgn0011025,FBgn0011358,FBgn0011368,FBgn0011405,FBgn0011416,FBgn0011503,FBgn0038560,FBgn0038561,FBgn0038562,FBgn0051243,FBgn0063288,FBgn0066121,FBgn0259934	CG43738	official_symbol	No
+bru3	bru3	FBgn0264001	bruno 3	BRU-3|Bru-3|bru-3|bruno-3|CG10046|cg10046|CG12478|cg12478|CG34243|CG43744|Dm Bru-3|l(3)05871	FBgn0262350,FBgn0036379,FBgn0036378,FBgn0010879,FBgn0085272	CG43744	official_symbol	No
+Sxl	Sxl	FBgn0264270	Sex lethal	CG14425|CG18350|CG33070|CG43770|Dm-Sxl|DmSxl|dSXL|Fl|fs(1)K1274|fs(1)M106|l(1)6Fa|melSxl|Mex156|ORF2|Su(da)|Sx1|SXL|SxL|sxl|Sxl-1 Sxl-2|Sxl-Pe|SxlPe|SxlPm	FBgn0003659,FBgn0000823,FBgn0029934,FBgn0053070,FBgn0029933	CG43770	official_symbol	No
+orb2	orb2	FBgn0264307	orb2	anon-WO0140519.222|CG43113|CG43782|CG5735|cg5735|Orb2|ORB2A|Orb2A|Orb2B	FBgn0262573,FBgn0035938,FBgn0044649,FBgn0264304	CG43782	official_symbol	No
+CG44249	miso	FBgn0265184	minor splicing and oogenesis	65K|CG11478|cg11478|CG30327|CG42257|CG44249|Dm65K|miso|Snrnp65	FBgn0259142,FBgn0034686,FBgn0050327	CG44249	synonym	No
+pAbp	pAbp	FBgn0265297	poly(A) binding protein	anon-EST:fe2E5|anon-EST:Posey247|anon-EST:Posey249|BABP|BcDNA:LD24412|CG16803|CG5119|dPABP|duo|l(2)k10109|l(2)SH1908|l(2)SH2 1908|pAB|PABP|PAbp|Pabp|pABP|pABp|pabp|PABP55|PABP55B|PABPC1	FBgn0261619,FBgn0003031,FBgn0021963,FBgn0027713,FBgn0027714,FBgn0063151,FBgn0065324,FBgn0025217,FBgn0040739	CG5119	official_symbol	No
+SC35	SC35	FBgn0265298	SR family splicing factor SC35	anon-EST:Posey284|CG15494|CG5442|cg5442|CG5542|dSC35|SC-35|Sc35|sc35	FBgn0040286,FBgn0032432,FBgn0040971,FBgn0027696	CG5442	official_symbol	No
+rump	rump	FBgn0267790	rumpelstiltskin	CG9373|cg9373|hnRNP M|HnRNP-S5|Hrp59|hrp59|p70|p75|Rump|S5	FBgn0020921,FBgn0260010,FBgn0037701,FBgn0043867	CG9373	official_symbol	No
+SF2	SF2	FBgn0283477	Splicing factor 2	154911_at|ASF|ASF/SF2|CG6987|cg6987|dASF|dmSF2/p28|dSF2|dSF2/ASF|dSRp30|Sf2|SRp30|SRSF1	FBgn0040284,FBgn0038417,FBgn0017543	CG6987	official_symbol	No
+Imp	Imp	FBgn0285926	IGF-II mRNA-binding protein	anon-EST:fe2B3|anon-WO0140519.39|CG1691|cg1691|dIMP|FGC026A04|IGF-II|IGF2BP1|IMP|imp|IMP-1|l(1)G0072|MRE11|mre11|ORE-9	FBgn0262735,FBgn0030235,FBgn0025229,FBgn0026687,FBgn0044592,FBgn0086543,FBgn0086345	CG1691	official_symbol	Yes
+caz	caz	FBgn0285954	cabeza	anon-Pen19|BcDNA:GM09207|Cabeza|cabeza|cas|Caz|CG3606|dFUS|dFus|EWSR1|l(1)5g11|P19|p19|Pen19|pen19|SARFH|Sarfh|TFIID	FBgn0011571,FBgn0003059,FBgn0011830,FBgn0062479,FBgn0019764	CG3606	official_symbol	No
+abd-A	abd-A	FBgn0000014	abdominal A	Abd A|abd A|ABD-A|Abd-A|abd-a|abd_a|AbdA|Abda|abdA|abda|BX-C|Cbxd|CG10325|DmabdA|Dmabda|Fab-3|Fab-4|Fub|Hab|iab|iab-2|iab-3|iab-4|iab-5|iab2|iab3|iab4|l(3)89Ec|Uab		CG10325	official_symbol	No
+Abd-B	Abd-B	FBgn0000015	Abdominal B	Abd B|ABD-B|Abd-b|abd-B|Abd0B|ABDB|AbdB|Abdb|abdB|AbdB(CA)[[26]]|AbdB-I|AbdB-II|AbdBm|Adb-B|AdbB|bex|BX-C|CG10291|CG11648|DmAbdB|DROABDB|Droabdb|FAB|Fab-6|Fab-7|Fab-8|Fab6|Fab7|iab|IAB 5|iab-5|iab-6|Iab-7|iab-7|iab-8|iab-8,9|IAB5|iab5|iab6|IAB7|iab7|IAB8|iab8|iab8.9|iab8/9|iab9|l(3)89Ed|Mc|MCP|Mcp|pH189|Sab|Tab|tuh-3|twig|Uab-5[Sab]	FBgn0002692,FBgn0010098,FBgn0026843,FBgn0026859,FBgn0038456,FBgn0038457	CG11648	official_symbol	No
+ac	ac	FBgn0000022	achaete	990 E5 F1|AC|Ac|Achaete|achaete|achaete-scute|AS-C|AS-C T5|AS-C T5ac|ASC|ascT5|CG3796|EG:125H10.3|Hw|sc/T5|T5		CG3796	official_symbol	Yes
+Acf	Acf	FBgn0027620	ATP-dependent chromatin assembly factor large subunit	175K protein|ACF|Acf-1|ACF/CHRAC|ACF1|Acf1|acf1|CAF|CG1966|CHRAC|CHRAC-175|dACF|dAcf1|dCHRAC|p170|p170/p185|p175	FBgn0021749	CG1966	official_symbol	Yes
+achi	achi	FBgn0033749	achintya	ach|Achi|achi/vis|CG8819|dTGIF|dTGIFa|dTGIFb|TGIF|vis|zaa	FBgn0026155	CG8819	official_symbol	No
+acj6	acj6	FBgn0000028	abnormal chemosensory jump 6	ACJ6|Acj6|CG9151|I-POU|Ipou|tI-POU	FBgn0004418,FBgn0030633	CG9151	official_symbol	No
+Adf1	Adf1	FBgn0284249	Adh transcription factor 1	ADF|Adf|Adf 1|Adf-1|adf-1|ADF1|adf1|Adh transcription factor 1|CG15845|l(2)01349|l(2)04065|l(2)k14805|nal	FBgn0000054,FBgn0010484,FBgn0010565,FBgn0013714,FBgn0033084,FBgn0021846	CG15845	official_symbol	No
+Aef1	Aef1	FBgn0005694	Adult enhancer factor 1	AEF-1|AEF1|aef1|CG5683		CG5683	official_symbol	No
+al	al	FBgn0000061	aristaless	A1|AL|Al|CG3935|L13-4|lambda13-4		CG3935	official_symbol	No
+Alh	Alh	FBgn0261238	Alhambra	AF10|anon-WO0118547.226|CG1070|dAF10|Dalf|l(3)84Be|l(3)g2|l(3)g5|l(3)j13A6|l(3)j8C8|l(3)j8c8|l(3)r13|l(3j8C8|stk	FBgn0037471,FBgn0011412,FBgn0011439,FBgn0062159,FBgn0003528	CG1070	official_symbol	No
+amos	amos	FBgn0003270	absent MD neurons and olfactory sensilla	Amos|asolo|bHLHa10|CG10393|Roi|rolo|Tft	FBgn0003689,FBgn0027104	CG10393	official_symbol	No
+Antp	Antp	FBgn0260642	Antennapedia	3.4|Ant|ANT-C|ANT-P|ANTC|ANTP|AntP|antp|Antp P1|Antp P2|AntP1|Antp1|Aus|BG:DS07700.1|CG1028|DmAntp|DMANTPE1|DRO15DC96Z|Hu|l(3)84Ba|Ns|Scx	FBgn0000095,FBgn0000111,FBgn0001236,FBgn0003344,FBgn0026857,FBgn0042093	CG1028	official_symbol	No
+aop	aop	FBgn0000097	anterior open	AOP|Aop|Aop/Yan|aop/yan|CG3166|DROYANET|DROYANETSB|fus6|pok|SK2-1|YAN|Yan|yan|yan/pok	FBgn0003123,FBgn0005623,FBgn0026827	CG3166	official_symbol	No
+ap	ap	FBgn0267978	apterous	AP|Ap|Apt|apterous|blt|CG8376|LIM|neuro|S-2a|trw|Xa	FBgn0000099,FBgn0005618	CG8376	official_symbol	No
+apt	apt	FBgn0015903	apontic	3041|APT|Apt|CG5393|l(2)03041|l(2)06369|l(2)09049|l(2)59Ea|l(2)k11531|TDF|tdf|TDF/APT|Tdp	FBgn0010526,FBgn0010619,FBgn0010654,FBgn0016073,FBgn0021909,FBgn0023031	CG5393	official_symbol	Yes
+ara	ara	FBgn0015904	araucan	Ara|CG10571|Iro|iro|IRO-C|Iro-C|iro-C|IroC	FBgn0014195	CG10571	official_symbol	No
+ase	ase	FBgn0000137	asense	AS-C T8|AS-C T8ase|AS-T8|as-T8|ASC|ascT8|Ase|Asense|asense|bHLHc28|CG3258|EG:165H7.2|sc/T8|T1|T1A|T1a|T8		CG3258	official_symbol	No
+ATbp	ATbp	FBgn0039946	(A+T)-stretch binding protein	ATBP|CG17172|CG40145	FBgn0058145	CG17172	official_symbol	No
+ato	ato	FBgn0010433	atonal	At|ATO|Ato|ato1|ato[Dm]|bHLHa10|CG7508		CG7508	official_symbol	No
+Awh	Awh	FBgn0013751	Arrowhead	awh|CG1072|l(3)63Ea|l(3)63Ea/Awh|l(3)64Ea|l(3)SH9|l63Ea	FBgn0002195	CG1072	official_symbol	No
+bab1	bab1	FBgn0004870	bric a brac 1	anon-WO0118547.639|BAB|bab|BAB-1|bab-I|BAB1|Bab1|bric|bric-a-brac|CG13910|CG9097	FBgn0035183,FBgn0061802	CG9097	official_symbol	No
+bab2	bab2	FBgn0025525	bric a brac 2	BAB|bab|bab-II|BAB2|Bab2|BTB-II|BtbII|CG13911|CG9102	FBgn0012044,FBgn0035185	CG9102	official_symbol	No
+bap	bap	FBgn0004862	bagpipe	Bag|bag|BAP|Bap|Bap1|bgp|CG7902|dNK-3|NK-3|nk-3|NK3|Nkx3.2	FBgn0002943	CG7902	official_symbol	Yes
+Bap60	Bap60	FBgn0025463	Brahma associated protein 60kD	BAF60|BAP60|bap60|BAPp60|CG4303|dBAP60|i127|i133		CG4303	official_symbol	No
+bcd	bcd	FBgn0000166	bicoid	BCD|Bcd|BG:DS00276.7|bic|Bicoid|bicoid|CG1034|Dm-Bcd|mum|prd4	FBgn0040059,FBgn0014130,FBgn0014131,FBgn0015909,FBgn0015910,FBgn0015911,FBgn0015912	CG1034	official_symbol	No
+BEAF-32	BEAF-32	FBgn0015602	Boundary element-associated factor of 32kD	BEAF|beaf|BEAF 32|Beaf-32|beaf-32|BEAF-32A|BEAF-32B|BEAF32|Beaf32|BEAF32A|BEAF32B|BEAF32b|bs04c01.y1|CG10159	FBgn0013752	CG10159	official_symbol	No
+B-H1	B-H1	FBgn0011758	BarH1	B-H|Bar|Bar H1|Bar-H1|bar-h1|BarH|BarH1|Barh1|barH1|barh1|BarHI|BH1|CG5529		CG5529	official_symbol	No
+B-H2	B-H2	FBgn0004854	BarH2	B|Bar|Bar-H2|bar-h2|BarH|BarH2|Barh2|barh2|BH2|CG5488		CG5488	official_symbol	No
+bi	bi	FBgn0000179	bifid	BI|bifid|CG3578|Dm-OMB|Dm-omb|dm-omb|l(1)bi|l(1)omb|OMB|Omb|omb|Qd|T3|TBX2	FBgn0002996,FBgn0003183,FBgn0004104	CG3578	official_symbol	Yes
+bigmax	bigmax	FBgn0039509	bigmax	bHLHd13|BIGMAX|Bigmax|CG3350|cg3350|DmMlx|Mlx|mlx		CG3350	official_symbol	No
+bin	bin	FBgn0045759	biniou	BIN|Bin|binI|CG18647|Dmbin|DmFoxF|FOXF|FoxF|l(3)65CEe|XIV	FBgn0015501,FBgn0035728	CG18647	official_symbol	No
+Blimp-1	Blimp-1	FBgn0035625	Blimp-1	BLIMP-1|blimp-1|Blimp1|CG5249|dBlimp-1|dBlimp1		CG5249	official_symbol	No
+br	br	FBgn0283451	broad	2B5|2Bc|A18|BR|Br|BR-C|BR-c|Br-C|Br-c|br-C|br-c|BR-C Z1|Br-C Z2|Br-C-Z3|BR-Z1|br-Z1|BR-Z2|br-Z2|BR-Z3|br-Z3|BR-Z4|Br-Z4|br-Z4|BR_C|BRC|BrC|BRC-Z1|BrC-Z1|BRC-Z2|BRC-Z3|BRC-Z4|Broad|broad|BrZ3|CG11491|CG11509|CG11511|CG11514|de12|DmBr-C|ecs|EG:123F11.1|EG:17A9.1|EG:25D2.1|l(1)2Ba|l(1)2Bab|l(1)2Bad|l(1)2Bb|l(1)2Bc|l(1)2Bd|l(1)d norm-12|l(1)d.norm.1|l(1)dn1|l(1)ESHS5|l(1)G0018|l(1)G0042|l(1)G0284|l(1)G0284a|l(1)G0318|l(1)G0401|l(1)n34|l(1)npr-1|l(1)npr1|l(1)pp-1|l(1)pp-2|l(1)PP1|l(1)pp1|l(1)pp2|l(1)ts132|l(1)ts144|l(1)ts358|l(1)ts376|npr|npr-1|npr1|nprl|nrp|nrp1|o.c.c.|PP1|PP2|rbp|rdp|rds|uq|Z1|Z2|Z3|Z4	FBgn0000210,FBgn0000801,FBgn0001373,FBgn0001374,FBgn0001375,FBgn0001644,FBgn0001684,FBgn0002964,FBgn0003222,FBgn0005389,FBgn0005581,FBgn0010011,FBgn0026711,FBgn0027219,FBgn0027234,FBgn0028290,FBgn0028364,FBgn0029583,FBgn0029585,FBgn0029586,FBgn0029584	CG11491	official_symbol	Yes
+brk	brk	FBgn0024250	brinker	brinker|BRK|Brk|CG9653|Dm brk|ssg-1		CG9653	official_symbol	No
+bsh	bsh	FBgn0000529	brain-specific homeobox	BSH|Bsh|bsk|CG10604|E86|Hox11-310|lambdaE86|λE86	FBgn0010392	CG10604	official_symbol	Yes
+btd	btd	FBgn0000233	buttonhead	BTD|Btd|buttonhead|CG12653		CG12653	official_symbol	Yes
+btn	btn	FBgn0014949	buttonless	1261/13|BTN|btn/MEOX|CG5264		CG5264	official_symbol	Yes
+byn	byn	FBgn0011723	brachyenteron	apro|Bra|Byn|byn/apro|CG7260|D-TRA|D-Trg|Dm-BYN|dm-Trg|DTrg|Tra|Trg|trg	FBgn0014890	CG7260	official_symbol	No
+C15	C15	FBgn0004863	C15	311|93Bal|c15|CG7937|Cll|cll|Ect5|Hox11-311	FBgn0002943,FBgn0008640,FBgn0010393	CG7937	official_symbol	No
+cad	cad	FBgn0000251	caudal	38E.19|anon-WO2004063362.83|CAD|Cad|Cadf|Caudal|caudal|cd|CG1759|Dm-Cad|S67	FBgn0082204	CG1759	official_symbol	Yes
+Camta	Camta	FBgn0287478	Calmodulin-binding transcription activator	camta|CG13952|CG13953|CG42332|CG8809|cro|dCAMTA|DmCAMTA|tes	FBgn0020554,FBgn0259234,FBgn0033417,FBgn0033415,FBgn0033416	CG42332	official_symbol	No
+cas	cas	FBgn0004878	castor	CAS|Cas|CG2102|l(3)j1C2|l(3)neo33|ming	FBgn0005769,FBgn0011311,FBgn0011466,FBgn0014137,FBgn0037367	CG2102	official_symbol	Yes
+caup	caup	FBgn0015919	caupolican	Caup|CG10605|Iro|iro|IRO-C|Iro-C|iro-C|IroC	FBgn0014195	CG10605	official_symbol	No
+Cf2	Cf2	FBgn0000286	Chorion factor 2	BcDNA:GM09668|CF-2|CF2|cf2|CF2.5|Cf2_II|CG11924	FBgn0062475	CG11924	official_symbol	No
+CG11085	CG11085	FBgn0030408				CG11085	official_symbol	No
+CG11294	CG11294	FBgn0030058		CT31519		CG11294	official_symbol	No
+CG11617	CG11617	FBgn0031232		Mkx		CG11617	official_symbol	No
+CG15696	CG15696	FBgn0038833				CG15696	official_symbol	No
+CG16863	CG16863	FBgn0028931		BG:DS00797.6|DS00797.6		CG16863	official_symbol	No
+CG18599	CG18599	FBgn0038592				CG18599	official_symbol	No
+CG32532	CG32532	FBgn0052532		CG14201|CG14202|CG14203	FBgn0031027,FBgn0031028,FBgn0031029	CG32532	official_symbol	No
+CG33557	soul	FBgn0053557	soul	CG12648|CG33557	FBgn0040938	CG33557	synonym	No
+CG34031	CG34031	FBgn0054031		BP1068|CG34031|CR34031	FBgn0082838	CG34031	official_symbol	No
+CG42516	CG42516	FBgn0260390		Dromel_CG11508_FBtr0088817_uORF	FBgn0033267	CG42516	official_symbol	No
+CG4328	CG4328	FBgn0036274				CG4328	official_symbol	No
+CG7785	CG7785	FBgn0038564		CLLD6		CG7785	official_symbol	No
+CG9876	CG9876	FBgn0034821				CG9876	official_symbol	No
+chn	chn	FBgn0015371	charlatan	anon-EST:Liang-1.13|CG11798|chl|Chn|clone 1.13|EPIL#6|EPIL6|l(2)02064|l(2)k04218|taco	FBgn0010506,FBgn0026007,FBgn0033992,FBgn0046116	CG11798	official_symbol	Yes
+ci	ci	FBgn0004859	cubitus interruptus	Ce|CG2125|CI|Ci|ci-D|Ci/GLI|Ci/Gli|Ci155|ci155|Ci[D]|ci[D]|ciA|CID|CiD|ciD|ciR|d Ci|Gli|l(4)102ABc|l(4)13|l(4)17|Siah	FBgn0000314,FBgn0000315,FBgn0010154,FBgn0010155,FBgn0017411,FBgn0019831	CG2125	official_symbol	No
+Clk	Clk	FBgn0023076	Clock	bHLHe10|CG7391|CLK|clk|CLOCK|Clock|clock|dClck|dCLK|dClk|dclk|dCLK/JRK|dCLOCK|dClock|Jerk|Jrk|jrk|PAS1		CG7391	official_symbol	Yes
+cnc	cnc	FBgn0262975	cap-n-collar	5134|anon-WO0153538.6|anon-WO0153538.7|BcDNA:RE05559|CG13826|CG17894|CG43286|CG4566|CG4578|CNC|CnC|Cnc|Cnc-C|cnc-C|cnc14|CNC_DROME|CNcC|CnCC|CncC|Cncc|cncC|cncc|cncC/Nrf2|DM12|dNrf2|l(3)03921|l(3)j5E7|NRF|Nrf-2|NRF2|Nrf2|nrf2	FBgn0000338,FBgn0010824,FBgn0039062,FBgn0039063,FBgn0045881,FBgn0045892,FBgn0040590,FBgn0047182	CG43286	official_symbol	No
+CoRest	CoRest	FBgn0261573	CoRest	BcDNA:GH01486|BcDNA:LD11215|CG32534|CG32535|CG33525|CG3878|CG42687|CoREST|CoRESTG|dCoREST|i169	FBgn0052534,FBgn0053525,FBgn0031025,FBgn0046809,FBgn0052535,FBgn0063163	CG42687	official_symbol	No
+crc	crc	FBgn0000370	cryptocephal	929|ATF-4|ATF4|Atf4|atf4|ATF4/crc|CG8669|Crc|dATF-4|dATF4|dAtf4|DM6|Ire1|l(2)crc	FBgn0020511,FBgn0032941	CG8669	official_symbol	Yes
+CrebA	CrebA	FBgn0004396	Cyclic-AMP response element binding protein A	Bbbf2|BBF-2|BBF2_DROME|BcDNA:SD05937|BOX B Binding Factor-2|CG7450|CRE-BP|CREB|Creb|creb|Creb A|CREB-A|CREB-a|Creb-A|CREBA|crebA|creba|dCREB|dCREB-A|dCreb-A|dCREBA|dCrebA|DM4|l(3)03576	FBgn0004848,FBgn0010804,FBgn0041115,FBgn0062892	CG7450	official_symbol	No
+CrebB	CrebB	FBgn0265784	Cyclic-AMP response element binding protein B	CG6103|CRE-BP|CREB|Creb|Creb B 17A|CREB-B|CREB-b|Creb-B|Creb17A|CREB2|Creb2|creb2|CREB2-b|Creb2-b|Creb2.b|CREB2a|CREB2b|Creb2b|CREBB|crebB|CrebB-17A|CrebB-17B|CrebB17-A|dCbz|dCREB|dCREB-2|dCREB-2a|dCREB-B|dCREB2|dCreb2|dCREB2-a|dCREB2-b|dCreb2-b|dcreb2-b|dCREB2a|dCREB2b|dCreb2b|dCREBB|dCrebB2|DM9|FBgn0014467|l(1)17Af|S162	FBgn0014467,FBgn0004972,FBgn0014468	CG6103	official_symbol	No
+croc	croc	FBgn0014143	crocodile	CG5069|Croc|Dm-FoxC|Dmfd1|FD1|fd1|fd78E|FoxC	FBgn0004894	CG5069	official_symbol	No
+crp	crp	FBgn0001994	cropped	35F(AT)[[17]]|AP-4|AP4|BG:DS02740.3|bHLHe63|CG7664|CRP|Crp|dAP-4|l(2)00232|l(2)35Fd|l(2)k00809|l(2)k03505|l(2)SH1614|l(2)SH2 1614|MS:35F.AT17	FBgn0024216,FBgn0026860,FBgn0041143,FBgn0065396	CG7664	official_symbol	Yes
+ct	ct	FBgn0004198	cut	BcDNA:GH10590|CG11387|CT|Ct|CUT|Cut|cut|kf|l(1)7Ba|l(1)7Bb|l(1)VE614	FBgn0000383,FBgn0001303,FBgn0029953,FBgn0062500	CG11387	official_symbol	Yes
+cwo	cwo	FBgn0259938	clockwork orange	AAF24476.1|bHLHe49|CG17100|CWO|Cwo|dcwo|GM05287|mel_cwo	FBgn0259894,FBgn0016941,FBgn0011718,FBgn0037813	CG17100	official_symbol	No
+cyc	cyc	FBgn0023094	cycle	bHLHe7|BMAL1|Bmal1|bMAL1|CG8727|CYC|Cyc|CYCLE|Cycle|cycle|dBma1|dBMAL|dBmal|dbmal|dBMAL1|dbmal1|dCYC|MOP3|Mop3|TGO_CYC	FBgn0024953,FBgn0025108	CG8727	official_symbol	Yes
+D	D	FBgn0000411	Dichaete	CG5893|d|Dic|Dichaete|DM10|DM23|DM33|DM36|DM63|fish|l(3)LG9|loD|Sox B2-1|SOX70|Sox70|SOX70D|Sox70D|SOXB2.1|SOXDP|Sry-rDM10|Sry-rDM23|Sry-rDM33|Sry-rDM36|Sry-rDM63	FBgn0010271,FBgn0010273,FBgn0010274,FBgn0010275,FBgn0010276,FBgn0013641,FBgn0014030	CG5893	official_symbol	Yes
+D1	D1	FBgn0000412	D1 chromosomal protein	CG9745|dD1|dHMGx|EP(3)0473|HMGI|RE69409		CG9745	official_symbol	Yes
+da	da	FBgn0267821	daughterless	5102|bHLHb22|CG5102|DA|Da|l(2)31Ea|l(2)k08611|SC_DA	FBgn0000413,FBgn0022036	CG5102	official_symbol	Yes
+dac	dac	FBgn0005677	dachshund	BG:DS02780.3|CG4952|DAC|Dac|Dac2-3|Dach|dach|Dachs|Dachshund|Dm-DAC|l(2)36Ae|l(2)rK364|spn		CG4952	official_symbol	Yes
+Dbx	Dbx	FBgn0261723	Dbx	CG12361|CG13925|CG42234|DBX|dbx|dDbx	FBgn0062390,FBgn0250756,FBgn0035291,FBgn0035292	CG42234	official_symbol	Yes
+Deaf1	Deaf1	FBgn0013799	Deformed epidermal autoregulatory factor-1	CG8567|DEAF-1|Deaf-1|DEAF1|deaf1|l(3)76BDv		CG8567	official_symbol	No
+Dfd	Dfd	FBgn0000439	Deformed	BG:DS00276.5|CG2189|DFD|dfd|DmDfd|EbR11|l(3)84Ae		CG2189	official_symbol	No
+Dif	Dif	FBgn0011274	Dorsal-related immunity factor	6794|CG6794|DIF|dif|Dif2|NF-kappaB|NF-KB|NF-κB|NFkappaB|NFκB		CG6794	official_symbol	Yes
+disco	disco	FBgn0000459	disconnected	CG9908|disc|DISCO|Disco		CG9908	official_symbol	No
+dl	dl	FBgn0260632	dorsal	anon-EST:GressD7|CG6667|DL|Dl|dL|Dor|Dorsal|dorsal|fs(2)k10816|GSd447|mat(2)dorsal|NF-kappaB|NF-KB|NF-κB|NFkappaB|NFκB|p65	FBgn0000462,FBgn0025325,FBgn0260285	CG6667	official_symbol	Yes
+Dlip3	Dlip3	FBgn0040465	Dorsal interacting protein 3	anon-WO0118547.169|CG12767|diap3|Dip3|dip3|dlip3	FBgn0034302,FBgn0062195	CG12767	official_symbol	Yes
+Dll	Dll	FBgn0000157	Distal-less	2.7|Art|Ba|BcDNA:LP01770|CG3629|Distal-less|DLL|dll|E(Arp)|En(Arp)|l(2)01092|l(2)387	FBgn0010474,FBgn0026807,FBgn0063133	CG3629	official_symbol	No
+Doc1	Doc1	FBgn0028789	Dorsocross1	CG5133|Dm-DOC1|Doc|doc|Doc-1|doc1|Dorsocross1|ECT2|Ect2|Tb66F2|TBX6		CG5133	official_symbol	Yes
+Dp	Dp	FBgn0011763	DP transcription factor	49Fk|CG4654|dDP|dDp|DDP1|dDP1|DmDP|DP|dp|DP1|Dp1|l(2)49Fk|l(2)vr10|TFPD2|vr10	FBgn0002082	CG4654	official_symbol	Yes
+dpn	dpn	FBgn0010109	deadpan	44C|anon-EST:fe1B12|bHLHe50|CG8704|Deadpan|DPN|Dpn	FBgn0025271	CG8704	official_symbol	No
+Dr	Dr	FBgn0000492	Drop	153515_at|99B|CG1897|Dr/Msh|Dr/msh|Drop|l(3)FA30|ltt|Msh|msh|msh-1|msh1|Msx	FBgn0002849,FBgn0015510,FBgn0020528	CG1897	official_symbol	Yes
+Dref	Dref	FBgn0015664	DNA replication-related element factor	CG5838|dDREF|DmDREF|Dmel_DREF|DREF|dref|p80|p80/DREF	FBgn0010077	CG5838	official_symbol	No
+dsf	dsf	FBgn0015381	dissatisfaction	CG9019|dissatisfaction|DSF|Dsf|NR2E4		CG9019	official_symbol	No
+Dsp1	Dsp1	FBgn0278608	Dorsal switch protein 1	CG12223|DSP1|dsp1|hmg|Hmg14B|Hmg14D|HMGB1|HMGD1|Ssrp2|ssrp2	FBgn0011764,FBgn0015237,FBgn0015301,FBgn0019980	CG12223	official_symbol	Yes
+dsx	dsx	FBgn0000504	doublesex	CG11094|Dmdsx|doublesex|DSX|Dsx|DSXF|dsxF|DSXM|dsxM|Hr|ix-62c		CG11094	official_symbol	No
+dwg	dwg	FBgn0000520	deformed wings	CG2711|CG2714|DWG|Dwg|EG:95B7.6|l(1)3Be|l(1)zw5|SBP|Sbp|ves|ZW-5|Zw-5|zw-5|ZW5|Zw5|zw5	FBgn0003974,FBgn0024976,FBgn0026052	CG2711	official_symbol	No
+dysf	dysf	FBgn0290398	dysfusion	CG12561|CG14552|CG14553|CG14554|CG32474|dNXFL|Dys|dys|DYSF|Dysf|l(3)CHh|NXFL	FBgn0039411,FBgn0039409,FBgn0039410,FBgn0039412,FBgn0086424	CG32474	official_symbol	No
+E(spl)m3-HLH	E(spl)m3-HLH	FBgn0002609	Enhancer of split m3, helix-loop-helix	bHLHc14|CG8346|E(spl)-C|E(Spl)-HLH-m3|E(spl)-m3|E(spl)C|E(spl)C m3|E(spl)M3|E(spl)m3|HLH-m3|HLHM3|HLHm3|m3	FBgn0010046	CG8346	official_symbol	No
+E(spl)m5-HLH	E(spl)m5-HLH	FBgn0002631	Enhancer of split m5, helix-loop-helix	bHLHb36|CG6096|E(spl) m5|E(spl) transcription unit m5|E(spl)-M5|E(spl)-m5|E(spl)M5|E(spl)m5|HLH-m5|HLHm5|M5|m5		CG6096	official_symbol	No
+E(spl)m7-HLH	E(spl)m7-HLH	FBgn0002633	Enhancer of split m7, helix-loop-helix	bHLHb35|CG8361|E(spl) m7|E(spl)-M7|E(spl)-m7|E(SPL)m7|E(spl)M7|E(spl)m7|En(spl)m7|ESPL|HLH-m7|HLHm7|HlHm7|M7|m7	FBgn0020009,FBgn0020922	CG8361	official_symbol	No
+E(spl)m8-HLH	E(spl)m8-HLH	FBgn0000591	Enhancer of split m8, helix-loop-helix	anon-EST:Liang-1.71|bHLHb36|CG8365|clone 1.71|E(Spl)|E(spl)|e(spl)|E(spl) m8|E(spl)-C|E(spl)-M8|E(spl)-m8|E(spl)bHLH|E(spl)M8|E(spl)m8|e(spl)m8|E(Spl)m8-HLH|En(spl)|En(spl)-C|Enhancer of split m8|Espl|HES|Hes|HLHm8|l(3)96Fd|M8|m8|Su(H)[[m8]]		CG8365	official_symbol	No
+E(spl)mdelta-HLH	E(spl)mdelta-HLH	FBgn0002734	Enhancer of split mdelta, helix-loop-helix	bHLHc14|CG8328|E(Spl) HLH-m delta|E(spl) mdelta|E(spl) mδ|E(Spl)-HLH-mdelta|E(Spl)-HLH-mδ|E(spl)-mdelta|E(spl)-mδ|E(spl)delta|E(spl)mC|E(spl)Mdelta|E(spl)mdelta|E(spl)mdelta-HLH|E(spl)Mδ|E(spl)mδ|E(spl)δ|HLH-mdelta|HLH-mδ|HLHmC|HLHMD|HLHMdelta|HLHmdelta|HLHMδ|HLHmδ|m delta|mC|md|Mdelta|mdelta|mdelta0.5|Mδ|mδ|mδ0.5		CG8328	official_symbol	No
+E(spl)mgamma-HLH	E(spl)mgamma-HLH	FBgn0002735	Enhancer of split mgamma, helix-loop-helix	anon-EST:Liang-1.49|bHLHb34|CG8333|clone 1.49|Dm-mB|E(Spl) HLH-m gamma|E(spl) m gamma|E(spl) mg|E(spl) mgamma|E(spl) mγ|E(spl)-Mgamma|E(spl)-mgamma|E(spl)-Mγ|E(spl)-mγ|E(spl)gamma|E(spl)m-gamma|E(spl)mB|E(spl)Mgamma|E(spl)mgamma|e(spl)mgamma|E(spl)mgamma-HLH|E(spl)Mγ|E(spl)mγ|E(spl)γ|EE(spl)mgamma-HLH|EE(spl)mγ-HLH|Enhancer of split mgamma|Enhancer of split mγ|gamma|HLH-mgamma|HLH-mγ|HLHmB|HlHmg|HLHMgamma|HLHmgamma|HLHMγ|HLHmγ|m gamma|mB|mg|Mgamma|mgamma|Mγ|mγ|γ		CG8333	official_symbol	No
+e(y)3	e(y)3	FBgn0087008	enhancer of yellow 3	CG12238|E(y)3|e(y)[3]|e(y3|l(1)G0084|l(1)G0266|l(1)G0283|l(1)G0381|l(1)G0409|SAYP|SayP|sayp	FBgn0000619,FBgn0027204,FBgn0027235,FBgn0027245,FBgn0028301,FBgn0031046,FBgn0026680	CG12238	official_symbol	No
+E2f1	E2f1	FBgn0011766	E2F transcription factor 1	CG6376|dE2F|dE2f|dE2F1|dE2f1|de2f1|def21|DmE2F-1|Dp|drosE2F1|DRTF1/E2F|E(Sev-CycE)3A|E(var)3-93E|E(var)3-95E|E(var)93E|E2F|E2f|e2f|E2F transcription factor 1|E2F-1|E2F1|E2f1|e2F1|e2f1|Evar(3)164|l(3)07172|l(3)j3B1|l(3)j3C2|l(3)rM729	FBgn0010918,FBgn0011343,FBgn0011351,FBgn0011520,FBgn0011767,FBgn0013944,FBgn0016652	CG6376	official_symbol	No
+E2f2	E2f2	FBgn0024371	E2F transcription factor 2	CG1071|dE2F-2|dE2F2|dE2f2|de2f2|E2F|E2f|E2F2|e2f2		CG1071	official_symbol	No
+E5	E5	FBgn0008646	E5	CG9930	FBgn0038187	CG9930	official_symbol	Yes
+EcR	EcR	FBgn0000546	Ecdysone receptor	anon-WO0229075.1|CG1765|CG8347|DEcR|dECR|Dhr23|DmEcR|dmEcR|EcdR|ECR|Ecr|ecr|EcR-A|EcR-B|EcR-B1|ECR-C|EcR1b|Ecr1B|EcRA|EcRB|EcRB-1|EcRB1|EcrB1|EcRC|lie|ms(2)06410|ms(2)42A|NR1H1|snt|USP|Usp	FBgn0011242,FBgn0021762,FBgn0033064,FBgn0062534	CG1765	official_symbol	No
+Eip74EF	Eip74EF	FBgn0000567	Ecdysone-induced protein 74EF	3.3|74EF|CG32180|CG6273|CG6285|DmE74|E-74|E74|e74|E74-B|E74A|E74A/B|E74B|e74B|e74b|ECIP|Eip74|Eip74 A|Eip74A|Eip74E|Eip74ef|eip74EF|eip74ef|l(3)24|l(3)neo24|mE74	FBgn0011459,FBgn0026806,FBgn0036739,FBgn0052180	CG32180	official_symbol	No
+emc	emc	FBgn0000575	extra macrochaetae	0094/26|0203/10|0587/01|0977/09|Ach|bHLHb28|CG1007|Dm0688|Emc|gov|l(3)04322|l(3)05592|l(3)61Da|l(3)j4E11|ms(3)61CD	FBgn0010839,FBgn0010869,FBgn0011251,FBgn0011371,FBgn0013464	CG1007	official_symbol	No
+ems	ems	FBgn0000576	empty spiracles	ant|CG2988|E4|empty spiracles|EMS|Ems|W13	FBgn0000145	CG2988	official_symbol	No
+en	en	FBgn0000577	engrailed	153867_at|Apa|CG9015|EN|En|en1|Eng|Engr|Engrailed|engrailed|Engrailed/Invected|EnR|Es|spa2|spt|V	FBgn0003492,FBgn0014157,FBgn0016969	CG9015	official_symbol	No
+ERR	ERR	FBgn0035849	estrogen-related receptor	CG7404|Derr|dERR|NR3B4		CG7404	official_symbol	Yes
+esg	esg	FBgn0287768	escargot	4B7|BG01042|BG:DS07851.7|br43|CG3758|dgl|Esg|flg|l(2)07082|l(2)35Ce|l(2)4B7|l(2)br43|l(2)esg|l35Ce|shof|wiz	FBgn0001981,FBgn0000445,FBgn0011711,FBgn0015967,FBgn0263955	CG3758	official_symbol	No
+eve	eve	FBgn0000606	even skipped	10.5|10.9|14.10|20.35|CG2328|Dm-eve|dm-eve|E(eve)|EVE|Eve|eve2|Even|even|F|l(2)46Ce|l(2)46CFg|l(2)46CFh|l(2)46CFj|l(2)46CFp|l(2)46Cg|V|VI	FBgn0014159,FBgn0014984,FBgn0015483,FBgn0017400,FBgn0019712,FBgn0019718,FBgn0019720,FBgn0019721,FBgn0019816,FBgn0023205	CG2328	official_symbol	No
+exd	exd	FBgn0000611	extradenticle	anon-EST:fe1H3|CG8933|DExd|Dm-EXD|Dpbx|EXD|Exd|l(1)IV|lincRNA.S9404|Pbx1|td48	FBgn0010248,FBgn0025242	CG8933	official_symbol	No
+exex	exex	FBgn0041156	extra-extra	CG8254|DHB9|dHB9|dHb9|dhb9|Exex|HB9|Hb9|hb9	FBgn0035828	CG8254	official_symbol	No
+ey	ey	FBgn0005558	eyeless	CG1464|DPax-6|EY|Ey|Ey/Pax6|eye|EYEL|eyeless|l(4)102CDh|l(4)102CDr|l(4)33|OK107|Pax-6|Pax6|pax6|Pax6/ey	FBgn0000616,FBgn0004525,FBgn0004547,FBgn0010156	CG1464	official_symbol	No
+eyg	eyg	FBgn0000625	eyegone	BK27|Bk27|CG10488|EYG|Eyg|lun	FBgn0011647	CG10488	official_symbol	No
+Fer1	Fer1	FBgn0037475	48 related 1	BcDNA:RH30329|bHLHa30|CG10066|CG14611|CG33323|fer1	FBgn0037476,FBgn0053323,FBgn0063658	CG33323	official_symbol	Yes
+Fer3	Fer3	FBgn0037937	48 related 3	BcDNA:LD04689|bHLHa32|CG6913|Dnato3|fer3|nato3	FBgn0062470	CG6913	official_symbol	Yes
+foxo	foxo	FBgn0038197	forkhead box, sub-group O	3143|Afx|Akh|anon-WO0118547.374|CG3143|cg3143|DFOXO|DfoxO|Dfoxo|dFOXO|dFoXo|dFoxO|dFoxo|dfoxO|dfoxo|DmQ95V5|dsfoxo|fd88A|FKHR|FOXO|FoxO|Foxo|fOXO|foxO|FOXO1|Foxo1|Q95V55|TORC	FBgn0062059	CG3143	official_symbol	No
+ftz	ftz	FBgn0001077	fushi tarazu	BG:DS07876.1|CG2047|Dm-Ftz|Dm-ftz|DmFtz|Dmftz|FTZ|Ftz|l(3)84Ag|Ual	FBgn0014176	CG2047	official_symbol	No
+ftz-f1	ftz-f1	FBgn0001078	ftz transcription factor 1	alphaFTZ-F1|alphaftz-f1|alphaFTZF1|beta FTZ-F1|beta Ftz-f1|beta-FTZ-F1|beta-Ftz-F1|betaFTZ-F1|betaFtz-F1|betaFtz-f1|betaftz-F1|betaftz-f1|betaFTZF1|betaftzf1|BFTZ-F1|bFTZ-F1|CG13378|CG4059|DEP1|dFTZ-F1alpha|dFtz-F1alpha|dFTZ-F1α|dFtz-F1α|DmFTZ-F1|dmFTZ-f1|FIP1|FTZ-F1|Ftz-F1|Ftz-f1|ftz-F1|FTZ-F1A|FTZ-F1alpha|ftz-f1alpha|FTZ-F1α|ftz-f1α|FTZ-Fl|ftz_f1|FTZF1|Ftzf1|ftzF1|ftzf1|FTZf1alpha|FTZf1α|l(3)03649|NR5A3|αFTZ-F1|αftz-f1|αFTZF1|β FTZ-F1|β Ftz-f1|β-FTZ-F1|β-Ftz-F1|βFTZ-F1|βFtz-F1|βFtz-f1|βftz-F1|βftz-f1|βFTZF1|βftzf1	FBgn0010807,FBgn0040788	CG4059	official_symbol	No
+GATAe	GATAe	FBgn0038391	GATAe	CG10278|CG10278-PA|dGATA-E|dGATAe|GATAE		CG10278	official_symbol	No
+gcm	gcm	FBgn0014179	glial cells missing	CG12245|GCM|Gcm|GCM1|GCMa|glide|glide/gcm|l(2)N7-4|N7-4|ucc	FBgn0014259	CG12245	official_symbol	No
+gl	gl	FBgn0004618	glass	CG7672|E(sina)5|Gl|Gla|gla|Glass|glass|none|rh|SS3-2|SY3-3	FBgn0001107,FBgn0002960	CG7672	official_symbol	Yes
+grau	grau	FBgn0001133	grauzone	CG3282|CG33133|Grau|Grauzone	FBgn0034571,FBgn0053133	CG33133	official_symbol	No
+grh	grh	FBgn0259211	grainy head	BcDNA:LD38807|CG30111|CG42311|CG5058|DREB|EG:191D12.1|Elf-1|Elf-1/NTF-1|ELF1|Elf1|elf1|elf1(CAG)[[7]]|Gh|GRH|Grh|hsk|l(2)06850|l(2)IM45|l(2)s2140|NTF|Ntf|NTF-1|ntf-1|NTF-1/Elf-1|NTF1|Ntf1|SN2-1	FBgn0004586,FBgn0000572,FBgn0001136,FBgn0010628,FBgn0010683,FBgn0013964,FBgn0014968,FBgn0026798,FBgn0050111,FBgn0047195	CG42311	official_symbol	No
+grn	grn	FBgn0001138	grain	CG9656|CG9656-PA|dGATA-2|dGATAc|dGatac|Gata-c|Gata2|GATAc|gra|GRAIN|Grn|l(3)84Fa	FBgn0004213,FBgn0015228,FBgn0019991	CG9656	official_symbol	No
+gsb	gsb	FBgn0001148	gooseberry	BSH-9|BSH9|BSH9c2|CG3388|Gsb|gsb-2|GSB-D|Gsb-d|gsb-d|gsb-distal|gsbBSH9|gsbd|l(2)01155|l(2)gsb		CG3388	official_symbol	Yes
+gsb-n	gsb-n	FBgn0001147	gooseberry-neuro	BSH-4|BSH4|CG2692|gsb|GSB-N|Gsb-n|gsb-neuro|Gsb-p|gsb-p|GsbN|Gsbn|gsbN|gsbn|gsbp		CG2692	official_symbol	No
+Gsc	Gsc	FBgn0010323	Goosecoid	60Mun1|60Mun2|CG2851|D-Gsc|D-gsc|GSC|gsc|l(2)05341|M72|PPH25|Pph25	FBgn0004887,FBgn0008637,FBgn0010598	CG2851	official_symbol	No
+gt	gt	FBgn0001150	giant	CG7952|Dm-gt|DM17|EG:BACH7M4.5|GIAN_DROME|Giant|giant|GT|Gt|l(1)3Aa|l(1)giant		CG7952	official_symbol	Yes
+Gug	Gug	FBgn0010825	Grunge	Atro|atro|CG6964|GUG|gug|l(3)01323|l(3)03928|l(3)j5A3|l(3)rO116|l(3)S146907	FBgn0011373,FBgn0011523,FBgn0020427,FBgn0024868,FBgn0035897	CG6964	official_symbol	Yes
+h	hry	FBgn0001168	hairy	8247|bHLHb39|bHLHc14|brr|CG6494|dDr1|H|h|Hairy|hairy|HRY|hry|l(3)08247|l(3)rM384	FBgn0011517,FBgn0019807,FBgn0019998	CG6494	synonym	Yes
+H2.0	H2.0	FBgn0001170	Homeodomain protein 2.0	CG11607		CG11607	official_symbol	No
+Hand	Hand	FBgn0032209	Hand	bHLHa28|CG18144|Dhand|dHAND|dHand|HAND|hand|hand-C		CG18144	official_symbol	No
+hb	hb	FBgn0001180	hb transcription factor	CG9786|Dm-Hb|Dm-hb|HB|Hb|hbHLH|Hunchback|l(3)85Ah|R-pbx|Rg-bx|Rg-pbx	FBgn0015224	CG9786	official_symbol	Yes
+hbn	hbn	FBgn0008636	homeobrain	57San|CG10614|CG15647|CG15648|CG33152|Hbn	FBgn0034561,FBgn0034562,FBgn0040654,FBgn0053152	CG33152	official_symbol	No
+HHEX	HHEX	FBgn0038852	Hematopoietically expressed homeobox	CG7056|dHHEX		CG7056	official_symbol	No
+hkb	hkb	FBgn0261434	huckebein	5953|anon-82B3|CG9768|gurt|HKB|Hkb	FBgn0086720,FBgn0001204,FBgn0014111	CG9768	official_symbol	No
+Hmx	Hmx	FBgn0264005	H6-like-homeobox	CG18139|CG34419|CG43748|CG5829|CG5832|DHmx|hmx	FBgn0038522,FBgn0085448,FBgn0038521,FBgn0014858,FBgn0038520	CG43748	official_symbol	No
+Hnf4	Hnf4	FBgn0004914	Hepatocyte nuclear factor 4	CG9310|dHNF-4|dHNF4|dHnf4|DmHNF4|HNF-4|Hnf-4|HNF-4(D)|Hnf-4h|HNF4|hnf4|HNF4alpha|HNF4α|NHF4|NR2A4	FBgn0032062	CG9310	official_symbol	No
+Hr3	Hr3	FBgn0000448	Hormone receptor 3	12.6|2.4|CG11823|CG12208|CG33183|D|DHR3|Dhr3|dHR3|dhr3|DmHr3|DmRORalpha|DmRORα|HR3|Hr3|Hr46|hr46|l(2)46CFi|l(2)k09242|NR1F4	FBgn0019719,FBgn0026805,FBgn0033496	CG33183	official_symbol	No
+Hr38	Hr38	FBgn0014859	Hormone receptor-like in 38	38E.3|38E.7|CG1864|DHR38|Dhr38|dHR38|dhr38|HR38|hr38|l(2)02306|NR4A4	FBgn0010510	CG1864	official_symbol	No
+Hr39	Hr39	FBgn0261239	Hormone receptor-like in 39	betaFTZ-E1|CG8676|dFTZ-F1beta|dFTZ-F1β|DHR30|DHR39|DHR39/Ftz-F1beta|DHR39/Ftz-F1β|EP(2)2490|fs(2)04443|fs(2)neo8|FTZ-F1B|FTZ-F1beta|ftz-F1beta|ftz-f1beta|FTZ-F1β|ftz-F1β|ftz-f1β|Hr-39|HR39|HR39C|i70|NR5B1|βFTZ-E1	FBgn0010229,FBgn0014175,FBgn0013458,FBgn0026243	CG8676	official_symbol	No
+Hr78	Hr78	FBgn0015239	Hormone-receptor-like in 78	CG7199|DHR78|Dhr78|HR78|Hr78D|NR2D1|XR78E/F		CG7199	official_symbol	No
+Hr83	Hr83	FBgn0037436	Hormone receptor 83	CG10296|DHR83|HR83|NR2E5		CG10296	official_symbol	No
+Hr96	Hr96	FBgn0015240	Hormone receptor-like in 96	CG11783|DHR96|Dhr96|dHR96|HR96|NR1J1		CG11783	official_symbol	No
+Hsf	Hsf	FBgn0001222	Heat shock factor	CG5748|D-HSF|dHSF|dHSF1|dHSFa|Dm-Hsf|DmHSF|DmHSFa|heat shock factor|HSF|hsf|hsf-1|HSF1|Hsf1|hsf1|HSFa|l(2)03091	FBgn0010529,FBgn0020929	CG5748	official_symbol	Yes
+hth	hth	FBgn0001235	homothorax	1323/07|1422/04|anon-EST:Liang-2.13|CG17117|clone 2.13|Dm-HTH|dtl|homothorax|HTH|Hth|hth1|hth2|l(3)05745|l(3)86Ca|MEIS1|Meis1|P53	FBgn0010875,FBgn0011583,FBgn0015762,FBgn0016022,FBgn0025968	CG17117	official_symbol	No
+ind	ind	FBgn0025776	intermediate neuroblasts defective	CG11551|Ind|ind/Gsx		CG11551	official_symbol	Yes
+inv	inv	FBgn0001269	invected	CG17835|Engrailed/Invected|er|in|INV|Inv|IV		CG17835	official_symbol	Yes
+Irbp18	Irbp18	FBgn0036126	Inverted repeat binding protein 18 kDa	BCAT1|BcDNA:GH10915|CEBPG|CG6272|CT19628|DM10|IRBP18	FBgn0063258	CG6272	official_symbol	No
+Jon99Fii	Jon99Fii	FBgn0039777	Jonah 99Fii	CG2229|Jon99F|Jon99FII|Jon99fii|SP135	FBgn0001289	CG2229	official_symbol	No
+Jra	Jra	FBgn0001291	Jun-related antigen	AP-1|Ap-1|AP1|Ap1|c-Jun|CG2275|cJun|cjun|d-JRA|D-Jun|D-jun|d-Jun|d-jun|D-jun/Jra|D.Jun|dAP-1|dJRA|dJra|DJUN|DJun|Djun|dJUN|dJun|djun|dm-Jun|DM14|JRA|jra|JUN|Jun|jun|l(2)46Ef|l(2)IA109|l(2R)IA109|V	FBgn0002124,FBgn0015487,FBgn0017591,FBgn0023037	CG2275	official_symbol	No
+kay	kay	FBgn0001297	kayak	AP-1|AP1|Ap1|c-Fos|c-fos|CG15507|CG15509|CG33956|D-Fos|D-fos|d-Fos|d-fos|D-fos/kay|dAP-1|DFOS|DFos|Dfos|dFos|dfos|DFra|dFRA|dFra|dlhD|DM3|DM30|fbz|FOS|Fos|fos|Fra|fra|KAY|Kay|kayak	FBgn0053956,FBgn0000468,FBgn0000725,FBgn0003506,FBgn0039693	CG33956	official_symbol	No
+kni	kni	FBgn0001320	knirps	CG4717|Dm-kni|Kn|kn|KNI|Kni|KNIRPS|NR0A1|ri	FBgn0003253,FBgn0017615	CG4717	official_symbol	No
+Kr	Kr	FBgn0001325	Kr transcription factor	CG3340|Dm-Kr|If|KR|kr|Kru|Kruppel	FBgn0001251,FBgn0015732	CG3340	official_symbol	No
+l(1)sc	l(1)sc	FBgn0002561	lethal of scute	AS-C T3|AS-T3|ASC-T3|ascT3|bHLHc28|CG3839|EG:198A6.2|L'Sc|L'sc|l'sc|l(1)1Ba|L(1)sc|l-sc|l[1]sc|lsc|sc/T3|T3		CG3839	official_symbol	Yes
+lab	lab	FBgn0002522	labial	BG:DS00004.9|CG1264|Dm lab|DmLab|Dmlab|EfR9|F121|F24|F90|F90-2|l(3)01241|l(3)84Ac|LAB|Lab|lb	FBgn0010742	CG1264	official_symbol	Yes
+lbe	lbe	FBgn0011278	ladybird early	CG6545|Hox11-D125|Lb|lb|Lbe|NK?	FBgn0010394	CG6545	official_symbol	No
+lbl	lbl	FBgn0008651	ladybird late	CG6570|Lb|lb|Lbl|lbllbe|NK?|NKch4|nkch4		CG6570	official_symbol	Yes
+Lim1	Lim1	FBgn0026411	LIM homeobox 1	BcDNA:GH04929|CG10760|CG11354|dlim-1|Dlim1|dLim1|dlim1|Lim|LIM1|lim1	FBgn0028495,FBgn0030064	CG11354	official_symbol	No
+Lim3	Lim3	FBgn0002023	Lim3	CG10699|CG15174|l(2)37Bd|l(2)Bd|Lim-3A|LIM3|lim3|Lim3A	FBgn0032756	CG10699	official_symbol	No
+lmd	lmd	FBgn0039039	lame duck	anon-EST:CL2d4|CG4677|gfl|gfl.Imd|gfl.lmd|K|LMD|Lmd|minc	FBgn0019860	CG4677	official_symbol	No
+lms	lms	FBgn0034520	lateral muscles scarcer	CG13424|Lms		CG13424	official_symbol	No
+Lmx1a	Lmx1a	FBgn0052105	LIM homeobox transcription factor 1 alpha	CG10432|CG17615|CG32105|dLmx1a	FBgn0036275,FBgn0036276	CG32105	official_symbol	No
+lz	lz	FBgn0002576	lozenge	amx|CG1689|fs(1)A1569|fs(1)M69|Lozenge|lozenge|LZ|Lz|spe		CG1689	official_symbol	No
+Mad	Mad	FBgn0011648	Mothers against dpp	2/23|apg|c28|CG12399|dMAD|dMad|E(zen)2|En(vvl)|l(2)K00237|l(2)k00237|MAD|mad|Mat|P-Mad|P-mad|p-MAD|p-Mad|PMad|pMAD|pMad|pSmad|SMAD|Smad|Smad1	FBgn0000105,FBgn0013945,FBgn0022270,FBgn0024356	CG12399	official_symbol	Yes
+maf-S	maf-S	FBgn0034534	maf-S	anon-EST:Posey173|CG9954|DM19|DM31|Maf|maf|MAF-S|Maf-S|maf2|MafS|mafS|mafs	FBgn0020275,FBgn0027740	CG9954	official_symbol	No
+Max	Max	FBgn0017578	Max	bHLHd9|CG9648|dMax|dmax|MAX|max		CG9648	official_symbol	Yes
+MBD-like	MBD-like	FBgn0027950	Methyl-CpG binding domain protein-like	CG8208|Dm Mbd2/3|dMBD-like|dMBD2/3|dMbD2/3|DmMbd2/3|MBD2|MBD2-3|MBD2/3|MBD3	FBgn0029156	CG8208	official_symbol	No
+mbf1	mbf1	FBgn0262732	multiprotein bridging factor 1	BcDNA:GH10148|BcDNA:GM01267|CG4143|MBF-1|Mbf-1|MBF1|Mbf1|MRE4	FBgn0026208,FBgn0027555,FBgn0063210,FBgn0086536	CG4143	official_symbol	No
+Med	Med	FBgn0288966	Medea	3R16|anon-EST:Posey121|CG1775|demented|DMT|dSmad4|E(zen)3|l(3)11m-254|l(3)12m-137|l(3)SG36|l(3)SG70|l(3)XIIm137|MED|med|Medea|medea|SMAD4|Smad4|smad4	FBgn0011655,FBgn0002479,FBgn0002509,FBgn0013946,FBgn0027760,FBgn0015927	CG1775	official_symbol	Yes
+Mef2	Mef2	FBgn0011656	Myocyte enhancer factor 2	22.21|BEST:SD04091|C|CG1429|D-MEF2|D-Mef2|D-mef2|DMedf2|Dmef|DMEF-2|DMef-2|Dmef-2|DMEF2|DMef2|Dmef2|dMEF2|dMEf2|dMef2|dmef2|l(2)46CFr|mb247|Mef|mef|MEF-2|Mef-2|mef-2|MEF2|mef2|MEF2C|mef2c|SD04091	FBgn0010437,FBgn0019710,FBgn0047353	CG1429	official_symbol	No
+Met	Met	FBgn0002723	Methoprene-tolerant	bHLHe59|CG1705|DmMet|MET|Met|met|Met/Met1|Mett|Rst(1)JH		CG1705	official_symbol	Yes
+Mi-2	Mi-2	FBgn0262519	Mi-2	0006/06|0854/01|CG8103|Chd4|Dm-Mi-2|dMi|dMI-2|dMi-2|dMi2|hip76|l(3)01058|l(3)76BDe|l(3)A154.3M3|l(3)j3D4|l(3)L1243|l(3)S000606|l(3)S085401|M-i2|Mi 2|MI-2|MI2|Mi2|Pha|pha	FBgn0013591,FBgn0010735,FBgn0011790,FBgn0028080,FBgn0028245,FBgn0024536	CG8103	official_symbol	No
+mip120	mip120	FBgn0033846	Myb-interacting protein 120	CG6061|l(3)L4569|MIP120|Mip120|p120		CG6061	official_symbol	No
+mirr	mirr	FBgn0014343	mirror	CG10601|cre|crep|De1|De3|DH1|Group F|group F|Iro|iro|IRO-C|Iro-C|iro-C|IroC|l(3)69Ca|l(3)69Da|l(3)6D1|l(3)A5-3-42|mir|MIRR|Mirr|Mrr|mrr|Sai	FBgn0013332,FBgn0013561,FBgn0013593,FBgn0016017,FBgn0017368,FBgn0020310	CG10601	official_symbol	No
+Mondo	Mondo	FBgn0032940	Mondo	154826_at|anon-39Da|bHLHd12|CG18362|ChREBP|dmondo|gene Y|Mio|mio|mlx|Mondo|mondo|Mondo-Mlx	FBgn0041170	CG18362	official_symbol	No
+Mrtf	Mrtf	FBgn0052296	Myocardin-related transcription factor	CG12188|CG14951|CG32296|DMRTF|dMRTF|dMrtf|mal|MAL-D|Mal-D|mal-d|MRTF	FBgn0035368,FBgn0035369	CG32296	official_symbol	No
+MTF-1	MTF-1	FBgn0040305	Metal response element-binding Transcription Factor-1	anon-WO0118547.411|CG3743|dMTF-1|Mtf-1|mtf-1	FBgn0035991,FBgn0062029	CG3743	official_symbol	No
+mTTF	mTTF	FBgn0028530	mitochondrial transcription termination factor	BG:DS01068.4|CG18124|DmTTF|DS01068.4|TTF	FBgn0027850	CG18124	official_symbol	No
+Myb	Myb	FBgn0002914	Myb oncogene-like	c-Myb|c-myb|CG9045|D-myb|Dm Myb|Dm myb|Dm-Myb|Dm-myb|DmMYB|DmMyb|dmMYB|DMyb|Dmyb|dMyb|dmyb|l(1)XVI|MYB|myb|p85		CG9045	official_symbol	No
+nau	nau	FBgn0002922	nautilus	CG10250|Dmyd|Mdrf|MYOD|MyoD|NAU|Nau		CG10250	official_symbol	No
+nej	nej	FBgn0261617	nejire	anon-WO0147981.11|anon-WO03040301.89|CBP|Cbp|cbp|CBP/p300|CBP_|CG15319|CG15321|Crbp|dCBP|dKAT3|dmCBP|l(1)G0112|l(1)G0350|l(1)G0470|Nej|nej CBP|Nejire|nejire|P300|p300|p300/CBP	FBgn0015624,FBgn0030149,FBgn0066809,FBgn0028319,FBgn0027307,FBgn0040152,FBgn0030150	CG15319	official_symbol	No
+NFAT	NFAT	FBgn0030505	NFAT nuclear factor	CG11172|dNFAT|EP1335|MESR1|NF-AT5|Nfat|NFAT5	FBgn0043371,FBgn0043579	CG11172	official_symbol	No
+Nf-YB	Nf-YB	FBgn0032816	Nuclear factor Y-box B	BcDNA:RH50436|CG10447|dNF-YB|NF-YB|NF-yB	FBgn0062432	CG10447	official_symbol	No
+Nf-YC	Nf-YC	FBgn0029905	Nuclear factor Y-box C	CG3075|dNF-YC|NF-YC|Nf-yc|nf-yc|NFYC		CG3075	official_symbol	Yes
+NK7.1	NK7.1	FBgn0024321	NK7.1	CG8524|NK-7.1|NK7		CG8524	official_symbol	No
+nub	nub	FBgn0085424	nubbin	CG15488|CG15489|CG34395|CG6246|dOct1|dPOU-19|dPOU-19/pdm-1|dPOU19|Nb|nb|NUB|Nub|Nubbin|Oct-1|Oct1|Pdm|pdm|PDM-1|Pdm-1|pdm-1|PDM1|Pdm1|pdm1|Pdm1/nubbin|POU33F1|twn	FBgn0032438,FBgn0002970,FBgn0032440,FBgn0004393	CG34395	official_symbol	No
+oc	oc	FBgn0004102	ocelliless	CG12154|l(1)7Ff|l(1)8Ac|OC|Oc|oc2|ocelliless|ort|orthodenticle|Otd|otd|Otx|uvi	FBgn0002979,FBgn0003021	CG12154	official_symbol	No
+odd	odd	FBgn0002985	odd skipped	CG3851|l(2)01863|ODD|Odd|ods	FBgn0010502	CG3851	official_symbol	No
+OdsH	OdsH	FBgn0026058	Ods-site homeobox	CG6352|Odsh|odsH|odsh|OdsH[mel]		CG6352	official_symbol	No
+onecut	onecut	FBgn0028996	onecut	A1|CG1922|Onecut	FBgn0039913	CG1922	official_symbol	No
+Optix	Optix	FBgn0025360	Optix	anon-WO0153538.79|CG18455|D-Six3|Dsix3|opt|OPTIX|optix|opx|Six3|six3	FBgn0027365,FBgn0033251,FBgn0045871	CG18455	official_symbol	No
+org-1	org-1	FBgn0021767	optomotor-blind-related-gene-1	CG11202|Dm-ORG-1|Org-1|org1	FBgn0024203	CG11202	official_symbol	No
+osa	osa	FBgn0261885	osa	anon-WO0118547.314|anon-WO0172774.126|ARID1B|C819|CG7467|E(E2F)3C|eld|en(lz)4F/4H|eyelid|l(3)00090|l(3)04539|l(3)j9C3|OSA|Osa|p300	FBgn0003013,FBgn0010708,FBgn0011421,FBgn0015384,FBgn0046467,FBgn0062101,FBgn0259443	CG7467	official_symbol	No
+otp	otp	FBgn0015524	orthopedia	BcDNA:RE58095|bk24|CG10036|CG2965|Otp|W26|w26	FBgn0034559,FBgn0047081	CG10036	official_symbol	No
+ovo	ovo	FBgn0003028	ovo	CG15467|CG6824|Fs(1)K1103|Fs(1)K1237|fs(1)K1237|Fs(1)K155|fs(1)M1|fs(1)M38|OVO|Ovo|Ovo-D|ovo/shavenbaby|ovo/svb|ovoB|ovoD|Shv|Svb|svb|Svb/Ovo|svb/ovo	FBgn0000825,FBgn0000849,FBgn0003650,FBgn0029741	CG6824	official_symbol	No
+p53	p53	FBgn0039044	p53	CG10873|CG31325|CG33336|D-p53|Dm-P53|DMP53|DmP53|Dmp53|dmP53|dmp53|Dp53|dp53|P53|prac	FBgn0051325,FBgn0053336	CG33336	official_symbol	Yes
+pan	pan	FBgn0085432	pangolin	CG17964|CG32005|CG34403|d-TCF|Dm Pan|DTCF|DTcf|dTCF|dTcf|IA5|l(4)102ABb|l(4)13|LEF|Lef|LEF-1|LEF/TCF|LEF/TCF-1|LEF1|Lef1|lef1|LEF1/TCF|PAN|Pan|pan.dTCF|TCF|Tcf|tcf|Tcf-1|TCF/LEF|Tcf/LEF|Tcf/Lef|TCF/LEF1|TCF/Pan	FBgn0022393,FBgn0052005,FBgn0019664	CG34403	official_symbol	Yes
+pb	pb	FBgn0051481	proboscipedia	BG:DS01719.1|CG17880|CG31481|Dmpb|l(3)04498|PB|Pb|pd|pr	FBgn0003040,FBgn0010841,FBgn0063631	CG31481	official_symbol	Yes
+Pbp49	Pbp49	FBgn0260398	PSEA-binding protein 49kD	CG11508|CG42515|DmPBP|DMPBP49|DmPBP49|DmSNAP50|DmSNAPc|Dromel_CG11508_FBtr0088817_mORF	FBgn0033267,FBgn0022383,FBgn0260389	CG42515	official_symbol	No
+pdm2	pdm2	FBgn0004394	POU domain protein 2	CG12287|CG15486|CG15487|dim|dOct2|dPOU-28|dPOU28|dpou28|dPOU28/pdm-2|Miti|miti|Oct-2|Oct2|Pdm|pdm|Pdm-2|pdm-2|Pdm2|POU domain protein 2	FBgn0032441,FBgn0032443	CG12287	official_symbol	No
+Pdp1	Pdp1	FBgn0016694	PAR-domain protein 1	anon-WO0140519.206|CG17888|DM1|DM32|gr|mel_pdp1|PAR-domain protein 1|PDP|pdp|Pdp-1|PDP-1epsilon|PDP-1ε|PDP1|pdp1|PDP1 epsilon|Pdp1 epsilon|PDP1 ε|Pdp1 ε|Pdp1&e|Pdp1e|PDP1epsilon|Pdp1epsilon|pdp1epsilon|PDP1ε|Pdp1ε|pdp1ε	FBgn0035820,FBgn0044667	CG17888	official_symbol	No
+Pep	Pep	FBgn0004401	Protein on ecdysone puffs	CG6143|p100|PEP|pep|PEP/X4|X4/PEP	FBgn0036743	CG6143	official_symbol	Yes
+PHDP	PHDP	FBgn0025334	Putative homeodomain protein	anon-60Ac|CG11182		CG11182	official_symbol	No
+pho	pho	FBgn0002521	pleiohomeotic	CG17743|dYY1|l(4)102EFc|l(4)29|l(4)BU-2|l(4)OC-1|l(4)pho|Ph|PHO|Pho|PHO/YY1|YY1	FBgn0005575,FBgn0024914	CG17743	official_symbol	No
+phol	phol	FBgn0035997	pleiohomeotic like	CG3445|Pho1|PHOL|Phol		CG3445	official_symbol	No
+pnr	pnr	FBgn0003117	pannier	CG3978|CG3978-PA|dGATAa|dGATAa/pannier|GATA|GATA4|GATAa|GATAa/Pannier|l(3)89B3|PNR|Pnr|prn	FBgn0038393	CG3978	official_symbol	Yes
+pnt	pnt	FBgn0003118	pointed	0123/09|0608/07|0998/12|3520|CG17077|D-Ets-2|D-ets-2|DMPOINT1A|E(E2F)3D|EC3-2|EK3-2|Ets|Ets1/2|ETS2|Ets2|Ets58AB|Ets94F|ets94F|EY3-1|l(3)07825|l(3)j1B7|l(3)s118306|png|PNT|Pnt|PNT-P1|Pnt-P1|pnt-P1|pnt-P2|pnt.P1|Pnt2|pntegfr|PNTP1|PntP1|PNTP2|PntP2|pntP2|POINT|Pointed|pointed|Pointed-P1|pointed-RC|ptd|Punt|punt	FBgn0004060,FBgn0005657,FBgn0010925,FBgn0011309	CG17077	official_symbol	Yes
+Pph13	Pph13	FBgn0023489	PvuII-PstI homology 13	60Mun1|CG2819|hazy|Mu|PPH13|pph13	FBgn0008638	CG2819	official_symbol	No
+prd	prd	FBgn0003145	paired	CG6716|paired|pr|PRD|Prd		CG6716	official_symbol	No
+pros	pros	FBgn0004595	prospero	0244/09|0320/10|0441/16|0451/09|0563/18|0585/13|0664/07|0671/02|0763/13|0989/01|1135/07|1135/09|1167/13|1316/02|671/2|anon-WO0140519.15|BcDNA:HL08040|CG17228|DMPROSPER|DROPROSA|l(3)10419|l(3)j12C8|l(3)j6E2|l(3)rH013|l(3)rI160|l(3)rJ806|l(3)rK137|l(3)rK204|l(3)rL433|l(3)rO534|Pro|pro|PROS|Pros|PROS-1|PROS-2|Prosp|prosp|Prospero|Voila|voila	FBgn0010941,FBgn0011397,FBgn0011437,FBgn0011497,FBgn0011499,FBgn0011504,FBgn0011507,FBgn0011515,FBgn0011524,FBgn0020281,FBgn0024917,FBgn0026852,FBgn0044730,FBgn0063172	CG17228	official_symbol	No
+psq	psq	FBgn0263102	pipsqueak	BTB-V|BtbV|CG2368|eyeful|Lola|pip|Pipsqueak|Piq|psk|PSQ|Psq|psq-1|rum|zep	FBgn0069087,FBgn0004399,FBgn0012047,FBgn0045853	CG2368	official_symbol	No
+Ptx1	Ptx1	FBgn0020912	Ptx1	CG1447|D-Ptx1|Ptx|ptx1		CG1447	official_symbol	No
+Pur-alpha	Pur-alpha	FBgn0022361	Purine-rich binding protein-alpha	CG1507|dPur alpha|dPur α|Pur alpha|Pur α|Pur-a|Pur-alpha|pur-alpha|pur-α|purA|PURalpha|Puralpha|PURα|Purα		CG1507	official_symbol	No
+Rel	Rel	FBgn0014018	Relish	CG11992|ird|ird4|l(3)neo36|NF-kappaB|NF-kappaBeta|NF-kappabeta|NF-KB|NF-κB|NF-κΒ|NF-κβ|NFkappaB|NFκB|REL|rel|Rel-p110|Rel/NF-kappaB|Rel/NF-κB|Rel1|Rel49|RelA|RELI|Relish|relish	FBgn0011469,FBgn0024223	CG11992	official_symbol	No
+repo	repo	FBgn0011701	reversed polarity	3702|AbRK2|CG31240|CG8045(CT24072)|CT24072|l(3)03702|REPO|Repo|RK2|rk2	FBgn0010814,FBgn0013744,FBgn0051240	CG31240	official_symbol	No
+retn	retn	FBgn0004795	retained	2535|BcDNA:LD35748|CG5403|Dead Ringer/Retain|DRI|Dri|dri|EHMT|EY2-10|l(2)02535|Retn|retn/dri	FBgn0010517,FBgn0014151,FBgn0063144	CG5403	official_symbol	No
+Rfx	Rfx	FBgn0020379	Rfx	CG6312|dRFX|dRfx|RFX|rfx		CG6312	official_symbol	No
+rn	rn	FBgn0267337	rotund	5.3|CG10040|CG14600|CG14601|CG14603|CG32466|CG32467|CG42277|Dipr|P5.3|Rn|roe|tod|tot	FBgn0259172,FBgn0003263,FBgn0003269,FBgn0037494,FBgn0037495,FBgn0037496,FBgn0037497,FBgn0052466,FBgn0052467,FBgn0260876,FBgn0260875	CG42277	official_symbol	No
+ro	ro	FBgn0003267	rough	CG6348|DROROUGH|Ro		CG6348	official_symbol	No
+run	run	FBgn0003300	runt	1|2|AA33|CG1849|l(1)19Ea|l(1)AA33|l(1)B2/13.1|l(1)LB9|LB5|leg|lLB5|P235|Rnt|RUN|Run|run, runt|Runt|runt	FBgn0019659,FBgn0019997	CG1849	official_symbol	No
+Rx	Rx	FBgn0020617	Retinal Homeobox	bk50|CG10052|DRx|Drx|drx|E97|PPH17|rx|W60|wom	FBgn0000530,FBgn0003998,FBgn0005641	CG10052	official_symbol	Yes
+sage	sage	FBgn0037672	salivary gland-expressed bHLH	bHLHc7|CG12952|Sage		CG12952	official_symbol	No
+sc	sc	FBgn0004170	scute	AS-C T4|AS-C T4sc|ascT4|bHLHc28|CG3827|DROACS2|EG:198A6.1|Hw|l(1)1Ba|Sc|sc/T4|SC_DA|scalpha|Scute|scute|scute/sisterlessB|scα|sis b|sis-b|sisB|sisb|T4|T4 AS-C	FBgn0003324,FBgn0003412,FBgn0026842	CG3827	official_symbol	Yes
+schlank	schlank	FBgn0040918	schlank	CerS|cerS|CG15898|CG3576|DLAG1|DLag1|Dlag1|Iag1|l(1)G0061|l(1)G0365|l(1)G0489|Lag1|lag1|lon|Schlank	FBgn0026692,FBgn0028312,FBgn0029852,FBgn0040141	CG3576	official_symbol	No
+Scr	Scr	FBgn0003339	Sex combs reduced	BG:DS07876.2|CG1030|DmScr|l(3)84Af|Msc|SCR|scr	FBgn0002844	CG1030	official_symbol	Yes
+scro	scro	FBgn0287186	scarecrow	80Fb|CG17594|CG17595|CG18452|l(3)80Fb|l(3)Lh7|l7|l7B|mdcds_36132|Scro|scrou	FBgn0002291,FBgn0040044,FBgn0040516,FBgn0042215,FBgn0028993	CG17594	official_symbol	No
+sd	sd	FBgn0003345	scalloped	anon-EST:Liang-2.14|CG8544|clone 2.14|DROEXO|DROEXO2|EP(X)1088|EP1088|l(1)G0239|l(1)G0262|l(1)G0309|l(1)G0315|l(1)G0483|l(1)HF394|l(1)III|SD|Sd|sp|TEAD	FBgn0025967,FBgn0026840,FBgn0027221,FBgn0027225,FBgn0027247,FBgn0027258,FBgn0040146,FBgn0062702	CG8544	official_symbol	Yes
+sens	sens	FBgn0002573	senseless	1228/04|CG10714|CG32120|Gfi1|l(3)70Ad|Ly|Ly-1|Sen|sen|SENS|Sens|sense|Senseless|senseless|Ss	FBgn0011709,FBgn0027151,FBgn0036355,FBgn0052120	CG32120	official_symbol	No
+shn	shn	FBgn0003396	schnurri	BEST:SD06302|CG7734|EP(2)2359|EP2359|l(2)04738|quo|Schnurri|schnurri|SD06302|SHN|Shn	FBgn0010584,FBgn0013727,FBgn0043359	CG7734	official_symbol	No
+sim	sim	FBgn0004666	single-minded	0483/09|0716/08|0899/14|0953/08|1002/10|1034/02|1050/13|1110/04|1111/10|1330/08|1479/04|bHLHe16|CG7771|l(3)87Ea|l(3)E320|l(3)RD|l(3)S8|l(3)s8|S8|schm|shm|SIM|Sim	FBgn0003333,FBgn0003409	CG7771	official_symbol	No
+sima	sima	FBgn0266411	similar	7951|bHLHe56|CG31031|CG45051|CG7951|dHIF-1alpha|dHIF-1α|dHIF-alpha|dHIF-α|DMU43090|hif|HIF alpha|HIF-1|HIF-1a|Hif-1A|HIF-1alpha|HIF-1α|HIF-alpha/sima|HIF-α/sima|HIF1|hif1|HIF1A|HIF1alpha|Hif1alpha|HIF1α|Hif1α|HIFalpha|Hifalpha|HIFα|Hifα|l(3)j11B7|SIMA|Sima	FBgn0015542,FBgn0011432,FBgn0051031	CG45051	official_symbol	Yes
+Six4	Six4	FBgn0027364	Six4	CG3871|D-Six4|D-six4|DSix4|Dsix4|six4|six4/5		CG3871	official_symbol	No
+slbo	slbo	FBgn0005638	slow border cells	C/EBP|CG4354|DC/EBP|Dm-c/EBP|DM8|DmC/EBP|fs(2)7|fs(2)8|fs(2)ry7|fs(2)ry8|SLBO|Slbo|slobo	FBgn0013451,FBgn0015734,FBgn0016064,FBgn0016065,FBgn0016066	CG4354	official_symbol	No
+slou	slou	FBgn0002941	slouch	CG6534|NK-1|NK1|Nk1|NK1/S59|prd9|S-59|S59|s59|S59/NK-1|Slou|slou/NK1	FBgn0004442	CG6534	official_symbol	No
+slp1	slp1	FBgn0003430	sloppy paired 1	CG16738|Dmslp1|FD6|FoxG|l(2)05965|sko1|Sloppy-paired|SLP|Slp|slp|slp 1|Slp-1|slp-1|slp-2|SLP1|Slp1	FBgn0010610	CG16738	official_symbol	No
+slp2	slp2	FBgn0004567	sloppy paired 2	CG2939|Dmslp2|FD7|FoxG|Sloppy-paired|SLP|Slp|slp|Slp2		CG2939	official_symbol	No
+sna	sna	FBgn0003448	snail	BG:DS01845.1|br28|br29|CG3956|l(2)35Db|l(2)br28|l(2)br29|l(3)br28|l35Db|Sco|sn|SNA|Sna|SNAIL|Snail|snail	FBgn0016654	CG3956	official_symbol	No
+so	so	FBgn0003460	sine oculis	ami|CG11121|Drl|mda|med|old|Sine oculis|sine oculis|SO|So|soD|somda	FBgn0004392,FBgn0004874	CG11121	official_symbol	No
+Sox100B	Sox100B	FBgn0024288	Sox100B	CG12098|CG15552|CG18674|CT6009|dSox9|Sox100|SOX100B|sox100b|Sox9|SoxB|SOXE	FBgn0039814,FBgn0039815,FBgn0040626	CG15552	official_symbol	No
+Sox14	Sox14	FBgn0005612	Sox box protein 14	CG17263|CG3090|DSox-14|Dsox-14|DSox14|DSox60B|Sox-14|SOX14|sox14|SOX60B|SOXC	FBgn0034949	CG3090	official_symbol	No
+Sox21b	Sox21b	FBgn0042630	Sox21b	CG13483|CG32139|CG6419|Sox B2-2|Sox21B|SOXB2.2|SoxB2.2	FBgn0036412,FBgn0036413,FBgn0043569,FBgn0052139	CG32139	official_symbol	No
+SoxN	SoxN	FBgn0029123	SoxNeuro	CG18024|DM64|Sox B1|SOX29F|SOXB1|soxN|SoxNeuro|soxNeuro|Sry-rDM64	FBgn0010277,FBgn0032070	CG18024	official_symbol	No
+Sp1	Sp1	FBgn0020378	Sp1	CG1343|D-Sp1|D-Sp8|D.Sp1|dSp1|SP1|sp1		CG1343	official_symbol	Yes
+SREBP	SREBP	FBgn0261283	Sterol regulatory element binding protein	CG8522|dSREBP|dSrebp|dsrebp|HLH106|HlH106|l(3)76BDw|SREBF1|SREBP|Srebp|srebp|SREBP1	FBgn0015234,FBgn0063456,FBgn0260652	CG8522	official_symbol	No
+srp	srp	FBgn0003507	serpent	A7.1|ABF|Abf|abf|CG3992|dGATAb|DmGATAb|GATA|GATAb|l(3)01549|l(3)89B2|l(3)neo45|spt|SRP|Srp|srpD	FBgn0010376,FBgn0010753,FBgn0011478	CG3992	official_symbol	No
+Sry-beta	Sry-beta	FBgn0003511	Serendipity beta	CG7938|ser|sry|sry beta|sry β|sry-b|SrY-beta|Sry-beta|sry-beta|SrY-β|sry-β|sryb|Srybeta|srybeta|Sryβ|sryβ		CG7938	official_symbol	No
+Sry-delta	Sry-delta	FBgn0003512	Serendipity delta	anon-EH8|CG17958|EH8|sry|Sry delta|sry delta|Sry δ|sry δ|Sry-delta|sry-delta|sry-δ|Srydelta|srydelta|Sryδ|sryδ	FBgn0014946	CG17958	official_symbol	No
+ss	ss	FBgn0003513	spineless	AHR|AhR|CG6993|dAHR|SS|Ss|ssa		CG6993	official_symbol	Yes
+Ssb-c31a	Ssb-c31a	FBgn0015299	Single stranded-binding protein c31A	C31A|c31A|CG8396|p11|PC4-like|Ssb-C31a		CG8396	official_symbol	No
+Stat92E	Stat92E	FBgn0016917	Signal-transducer and activator of transcription protein at 92E	CG4257|D-STAT|D-Stat|D-stat|d-STAT|D-stat/stat92E|DmSTAT|DRODSRC|DSRC|Dst|dst|DSTAT|Dstat|dSTAT|dstat|Dstat 92E|Dstat92E|dSTAT92E|dSTAT92E/marelle|l(3)06346|l(3)j6C8|mrL|mrl|mrl stat92E|pSTAT|pSTAT92E|SD-stat|Sta92E|STAT|Stat|stat|STAT 92E|STAT-92E|Stat1alpha-like|Stat1α-like|STAT92|Stat92|stat92|STAT92E|STAT92e|Stat92e|stat92E|stat92e|Stat9E|stat[92E]	FBgn0010885,FBgn0011396,FBgn0015512	CG4257	official_symbol	No
+Su(H)	Su(H)	FBgn0004837	Suppressor of Hairless	anon-WO0257455.3|BG:DS00929.10|br7|C|CBF1|CG3497|CSL|D|dCSL|dRBP-J[[Kappa]]|dRBP-J[[Κ]]|dRBP-JK|dRBP-Jk|E(H)|FTZ-F2|l(1)br7|l(2)35Bh|l(2)br7|l(2)k07904|oss|RBJK_DROME|RBP-J kappa|RBP-J[[Kappa]]|RBP-J[[Κ]]|RBP-Jkappa|SU(H)|Su(h)|su(H)|Su_H|SUH|SuH	FBgn0003566,FBgn0004467,FBgn0021969,FBgn0022068,FBgn0063792	CG3497	official_symbol	No
+su(Hw)	su(Hw)	FBgn0003567	suppressor of Hairy wing	CG8573|SU(HW)|Su(HW)|Su(Hw)|Su(hw)|su(HW)|su(hw)|Su[Hw]|SUHW|SuHW|SuHw|suHw	FBgn0015225	CG8573	official_symbol	Yes
+Su(var)205	Su(var)205	FBgn0003607	Suppressor of variegation 205	CBX5|CG8409|dHP-1a|dHP1|dHP1a|DmHP-1|DmHP1|E(var)29|E(var)29A|FBgn0003607|HP-1|HP1|Hp1|hp1|HP1-VS|HP1A|HP1a|Hp1a|hp1a|HP1alpha|HP1α|Su(var)|Su(var)2-05|Su(Var)2-5|Su(var)2-5|Su(var)2-501|SU(VAR)205|Su(Var)205|su(var)205|Su(var)29A|Su(var)[205]|Su-var(2)5|Su[Var]205|Su[var]205|Sur(var)205|Suvar(2)5|Suvar2-5		CG8409	official_symbol	No
+Su(var)3-7	Su(var)3-7	FBgn0003598	Suppressor of variegation 3-7	CG8599|DmSu(var)3-7|l(3)87El|Su(var)(3)3|Su(var)(3)7|SU(VAR)3-7|Su(Var)3-7|Su-var(3)7|Suv3-7|Suvar(3)7|Suvar37		CG8599	official_symbol	No
+sv	sv	FBgn0005561	shaven	Cat|CG11049|D-pax-2|D-Pax2|D-pax2|d-Pax2|DPax-2|Dpax-2|DPax2|Dpax2|dPax2|dPax258|en(lz)4G/I|l(4)40|PAX2|Pax2|Pax2/5/8|pax2/sparkling|Pax258|pol|shaven/sparkling|spa|spa-sv|Sv	FBgn0003468,FBgn0003649,FBgn0004541,FBgn0020913	CG11049	official_symbol	No
+svp	svp	FBgn0003651	seven up	0005/12|0042/01|0106/18|0114/20|0351/01|0598/01|0861/07|BcDNA:GH08189|CG11502|CG18158|ck16|don|l(3)07842|l(3)87Bd|l(3)ck16|l(3)j2E2|l(3)rA028|l(3)rL069|NR2F3|Seven-up|SVP|Svp|SVP-1|SVP1	FBgn0011337,FBgn0011492,FBgn0011510,FBgn0038010,FBgn0063263	CG11502	official_symbol	No
+tai	tai	FBgn0041092	taiman	58/2|bs13g05.y1|CG13109|CG18494|DAIB1|DmTai|DmTaiman|EP(2)2630|l(2)01351|l(2)k05802|l(2)k05809|NEST:bs13g05|pdig1|TAI|Tai|Taiman	FBgn0010485,FBgn0022157,FBgn0024593,FBgn0032102,FBgn0032103,FBgn0045313	CG13109	official_symbol	No
+TFAM	TFAM	FBgn0038805	mitochondrial transcription factor A	CG4217|D-mtTFA|d-mttfa|d-TFAM|d-tfam|DmtTFA|MTTFA|mtTFA|mttfa|Tfam|tfam		CG4217	official_symbol	No
+TfAP-2	TfAP-2	FBgn0261953	Transcription factor AP-2	AP-2|AP-2alpha|AP-2α|CG7807|DAP-2|dAP-2|dAP-2alpha|dAP-2α|dTfap2|l(3)1215|TfaP-2|Tfap-2|tfAP-2|Tfap2	FBgn0023417,FBgn0002411	CG7807	official_symbol	No
+tgo	tgo	FBgn0264075	tango	ARNT|Arnt|arnt|bHLHe4|CG11987|DARNT|dARNT|darnt|dHIF-1beta|dHIF-1β|dTgo|HIF-1|HIF-1b|HIF-1beta|HIF-1β|HIF1|Hif1|HIF1B|HIF1b|HIF1B/ARNT|jay|prd7|Tango|tango|TGO|Tgo|tgo/Arnt|TGO_CYC	FBgn0015014,FBgn0003147,FBgn0011605	CG11987	official_symbol	No
+tin	tin	FBgn0004110	tinman	CG7895|DmNK-4|DROHOXHK4|DROHOXNK4|HOX|msh-2|msh2|NK-4|NK-4/msh-2|NK4|NK4/msh-2|NKX2.5|TIN|Tin|tin/NK4|Tinman|tinman	FBgn0002850,FBgn0002944	CG7895	official_symbol	No
+tll	tll	FBgn0003720	tailless	CG1378|dm-tll|NR2E2|Tailless|tailless|TLL|Tll		CG1378	official_symbol	No
+toy	toy	FBgn0019650	twin of eyeless	CG11186|l(4)102CDg|l(4)8|Pax-6|TOY|Toy|twin of eyeless	FBgn0004523	CG11186	official_symbol	No
+Trf	Trf	FBgn0010287	TBP-related factor	CG7562|dTRF-1|dTRF1|TRF|trf|TRF1|Trf1|trf1|X70838		CG7562	official_symbol	Yes
+trh	trh	FBgn0262139	trachealess	3.1|bHLHe13|BP1081|CG13885|CG42865|CG6883|DMU42699|HDC07747|l(3)10512|trachealess|TRH|Trh	FBgn0010944,FBgn0026793,FBgn0082659,FBgn0003749,FBgn0040689,FBgn0260471	CG42865	official_symbol	Yes
+Trl	Trl	FBgn0013263	Trithorax-like	Adf-2|Adf-2-519|Adf2|anon-EST:fe2E12|CG33261|CG9343|E(var)3-trl|E(var)62|GAF|Gaf|gaf|GAGA|Gaga|gaga|GAGA factor|l(3)s2325|LBC|NC70F|Nc70F|TfGAGA/Adf-2|trithorax-like|TRL|trl|Trl-GAGA|Try	FBgn0036445,FBgn0053261,FBgn0005691,FBgn0010008,FBgn0010418,FBgn0011024,FBgn0025220	CG33261	official_symbol	Yes
+tsh	tsh	FBgn0003866	teashirt	ae|ae[l]|CG1374|l(2)04319|l(2)B4-2-12|T shirt|TSH|Tsh	FBgn0000058,FBgn0010570,FBgn0013543	CG1374	official_symbol	No
+ttk	ttk	FBgn0003870	tramtrack	0037/17|0250/25|0438/31|0702/07|1049/07|1119/04|1184/16|1209/05|1209/10|1260/10|1281/04|1325/15|1372/08|1396/14|1418/06|3540|5125|5311|anon-EST:Liang-2.9|CG11558|CG1856|clone 2.9|E(yan)100D|FTZ-F2|ftz-f2|ftzf2/ttk|l(3)02667|l(3)j2A1|l(3)j7B8|osn|oss|ovs|Tkt69|Tramtrack|tramtrak|TTK|Ttk|ttk/FTZ-F2|TTK69|Ttk69|ttk69|Ttk69k|TTK88|Ttk88|TTKA|ttkp69	FBgn0011319,FBgn0011402,FBgn0011681,FBgn0039865,FBgn0039866	CG1856	official_symbol	No
+tup	tup	FBgn0003896	tailup	CG10619|Isl|isl|Islet|islet|l(2)37Aa|l(2)E41|Tailup|TUP|Tup	FBgn0002017,FBgn0015395	CG10619	official_symbol	No
+twi	twi	FBgn0003900	twist	bHLHb17|CG2956|dip5|DTwist|EC9|Tw|TWI|Twi|Twist|twist		CG2956	official_symbol	No
+tx	tx	FBgn0288888	taxi	bHLHc10|CG5441|Dei|dei|del|Delilah|delilah|ju	FBgn0263118,FBgn0008649,FBgn0003904,FBgn0004684	CG5441	official_symbol	No
+Ubx	Ubx	FBgn0003944	Ultrabithorax	abx|abx/bx|bx|BX-C|bx[D]|bxd|bxd/pbx|bxd[D]|Bxl|bxl|Cbx|CG10388|Dm Ubx|DmUbx|DUbx|Hm|l(3)89Eb|pbx|Uab|UBX|UBx|ubx|Ubx1b|Ubx[[Drosophila]]	FBgn0024276	CG10388	official_symbol	No
+unc-4	unc-4	FBgn0024184	unc-4	CG6269|DPHD-1|Dunc-4|Unc-4|Unc4		CG6269	official_symbol	No
+unpg	unpg	FBgn0015561	unplugged	1912|anon-45C|CG1650|Gbx|unp|upg	FBgn0014101	CG1650	official_symbol	No
+Usf	Usf	FBgn0029711	Usf	bHLHb13|CG17592|Dm Usf|DmUsf|dUSF|dUSF2		CG17592	official_symbol	No
+ush	ush	FBgn0003963	u-shaped	CG2762|dFOG|FOG|l(2)19|u-sh|USH|Ush|ushaped|ZFPM2		CG2762	official_symbol	No
+usp	usp	FBgn0003964	ultraspiracle	2C|CF1|Cf1|cf1|CF1/USP|CF1/Usp|CG4380|DmUSP|DmUsp|dmUSP|dUSP|EG:22E5.1|l(1)2Cf|l(1)usp|NR2B4|USP|Usp|XR2C		CG4380	official_symbol	Yes
+vis	vis	FBgn0033748	vismay	achi/vis|CG8821|dTGIFa|TGIFa|zaa	FBgn0026155	CG8821	official_symbol	Yes
+vnd	vnd	FBgn0261930	ventral nervous system defective	CG6172|Dm vnd|Dm-NK2|dNK-2|EC6|EG:118B3.1|HDC16822|l(1)1Bf|l(1)EA142|l(1)EC6|l(1)GA100|l(1)GA122|l(1)RC24|l(1)VA208|l(1)VE769|lab|NK-2|nk-2|NK2|Nkx2|VND|Vnd|vnd/NK-2	FBgn0003986,FBgn0002942,FBgn0084188	CG6172	official_symbol	No
+vri	vri	FBgn0016076	vrille	argo|CG14029|DM16|jf23|l(2)25Db|l(2)jf23|mat(2)ea-G|mat(2)earlyRS32|mel_vri|VRI|Vri|Vrille|vrille	FBgn0001927,FBgn0002670	CG14029	official_symbol	No
+Vsx1	Vsx1	FBgn0263511	Visual system homeobox 1	CG4136|Chx1|DChx1|Dchx1|dChx1|DVSX1|dVsx1|lincRNA.S8688|Vsx|Vsx-1	FBgn0029775,FBgn0026559	CG4136	official_symbol	No
+Vsx2	Vsx2	FBgn0263512	Visual system homeobox 2	CG15781|CG15782|CG15783|CG33980|Chx2|DChx2|dChx2|dVsx2|Vsx|vsx2	FBgn0053980,FBgn0029772,FBgn0029773,FBgn0029774,FBgn0026558	CG33980	official_symbol	No
+vvl	vvl	FBgn0086680	ventral veins lacking	Cf1-a|CF1A|Cf1a|Cf1a/drifter|Cf1a/drifter/vvl|Cfla|CG10037|DFR|Dfr|dfr|dfr-vvl|Dfr/Vvl|dfr/vvl|Drf|drf|prd3|sep|ut|Vv1|VVL|VVl|Vvl|vvl/dfr|vvl/dfr/ut	FBgn0003995,FBgn0010170,FBgn0000285,FBgn0003146,FBgn0011727	CG10037	official_symbol	No
+yem	yem	FBgn0005596	yemanuclein	CG11879|CG14513|yem|yem-alpha|yem-α|yema|Yemalpha|yemalpha|yemα|yG4.5|yT4.5	FBgn0004042,FBgn0040620	CG14513	official_symbol	No
+z	z	FBgn0004050	zeste	CG7803|e(bx)|EG:BACH59J11.3|en-bx|Z|Zeste|zeste		CG7803	official_symbol	Yes
+zen	zen	FBgn0004053	zerknullt	BG:DS00276.9|CG1046|dm-zen|l(3)84Ad|z1|ZEN|Zen|ZEN VRE|Zen1|zen1|zerknullt	FBgn0013967,FBgn0019915	CG1046	official_symbol	No
+zen2	zen2	FBgn0004054	zerknullt-related	BG:DS00276.10|CG1048|z2|zpr		CG1048	official_symbol	No
+zfh1	zfh1	FBgn0004606	Zn finger homeodomain 1	CG1322|l(3)00865|ZFH-1|Zfh-1|zfh-1|ZFH1|ZFh1|Zfh1|Zfh1a|zfl-1|zhf1	FBgn0010733	CG1322	official_symbol	No
+zfh2	zfh2	FBgn0004607	Zn finger homeodomain 2	CG1449|ZFH-2|Zfh-2|zfh-2|ZFH2|Zfh2		CG1449	official_symbol	No
