@@ -12,6 +12,7 @@ from dataset_finder.clients.flyatlas import (
     FlyAtlasExpression,
 )
 from dataset_finder.flybase_resolver import FlyBaseGene, FlyBaseResolver
+from dataset_finder.metadata import extract_biological_metadata
 from dataset_finder.models import DatasetRecord
 from dataset_finder.relevance import assess_relevance
 from dataset_finder.search import (
@@ -189,6 +190,14 @@ class BatchSearchService:
                 if not relevance.accepted:
                     continue
 
+                biological_metadata = extract_biological_metadata(
+                    record.title,
+                    record.description,
+                    record.study_type,
+                    record.organism,
+                    record.raw_metadata,
+                )
+
                 confidence = self._combined_confidence(
                     gene_confidence=self._confidence_label(
                         resolved_gene
@@ -209,6 +218,47 @@ class BatchSearchService:
                         synonyms=resolved_gene.synonyms,
                         database=source_database,
                         technique=record.technique or technique,
+                        tissue=(
+                            record.tissue
+                            or biological_metadata.tissue
+                        ),
+                        cell_type=(
+                            record.cell_type
+                            or biological_metadata.cell_type
+                        ),
+                        developmental_stage=(
+                            record.developmental_stage
+                            or biological_metadata.developmental_stage
+                        ),
+                        sex=record.sex or biological_metadata.sex,
+                        genotype=(
+                            record.genotype
+                            or biological_metadata.genotype
+                        ),
+                        strain=(
+                            record.strain
+                            or biological_metadata.strain
+                        ),
+                        treatment=(
+                            record.treatment
+                            or biological_metadata.treatment
+                        ),
+                        control_status=(
+                            record.control_status
+                            or biological_metadata.control_status
+                        ),
+                        disease=(
+                            record.disease
+                            or biological_metadata.disease
+                        ),
+                        time_point=(
+                            record.time_point
+                            or biological_metadata.time_point
+                        ),
+                        perturbation=(
+                            record.perturbation
+                            or biological_metadata.perturbation
+                        ),
                         match_type=relevance.match_type,
                         confidence=confidence,
                         evidence_text=(

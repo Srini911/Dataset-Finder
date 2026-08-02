@@ -327,3 +327,111 @@ def test_batch_limits_final_accepted_results_per_gene() -> None:
     )
 
     assert len(result.records) == 3
+
+
+def test_batch_search_extracts_biological_metadata() -> None:
+    class MetadataSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            return [
+                DatasetRecord(
+                    uid="GSE_META",
+                    accession="GSE_META",
+                    title=(
+                        "RNA-seq of adult male Drosophila "
+                        "brain neurons after hairy RNAi"
+                    ),
+                    organism="Drosophila melanogaster",
+                    study_type=(
+                        "Expression profiling by "
+                        "high throughput sequencing"
+                    ),
+                    sample_count=6,
+                    publication_date="2026/01/01",
+                    url="https://example.org/GSE_META",
+                    description=(
+                        "w1118 control and treated samples "
+                        "collected after 24 hours"
+                    ),
+                )
+            ]
+
+    service = BatchSearchService(
+        search_service=MetadataSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+    )
+
+    assert len(result.records) == 1
+
+    record = result.records[0]
+
+    assert record.tissue == "brain"
+    assert record.cell_type == "neuron"
+    assert record.developmental_stage == "adult"
+    assert record.sex == "male"
+    assert record.strain == "w1118"
+    assert record.control_status == "control"
+    assert record.time_point == "24 hours"
+    assert record.perturbation == "RNAi"
+
+
+def test_existing_record_metadata_is_preserved() -> None:
+    class MetadataSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            return [
+                DatasetRecord(
+                    uid="GSE_EXISTING",
+                    accession="GSE_EXISTING",
+                    title="hairy gene study in adult male brain",
+                    organism="Drosophila melanogaster",
+                    study_type="RNA-seq",
+                    sample_count=4,
+                    publication_date="2026/01/01",
+                    url="https://example.org/GSE_EXISTING",
+                    tissue="head",
+                    sex="female",
+                    strain="Canton-S",
+                )
+            ]
+
+    service = BatchSearchService(
+        search_service=MetadataSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+    )
+
+    record = result.records[0]
+
+    assert record.tissue == "head"
+    assert record.sex == "female"
+    assert record.strain == "Canton-S"

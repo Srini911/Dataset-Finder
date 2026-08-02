@@ -53,6 +53,26 @@ def test_export_excel_creates_expected_sheets(tmp_path) -> None:
     assert "Gene_Summary" in workbook.sheetnames
     assert "Gene_Annotations" in workbook.sheetnames
     assert "All_Datasets" in workbook.sheetnames
+
+    all_datasets_headers = [
+        cell.value
+        for cell in workbook["All_Datasets"][1]
+    ]
+
+    for column_name in (
+        "Tissue",
+        "Cell Type",
+        "Developmental Stage",
+        "Sex",
+        "Genotype",
+        "Strain",
+        "Treatment",
+        "Control Status",
+        "Disease",
+        "Time Point",
+        "Perturbation",
+    ):
+        assert column_name in all_datasets_headers
     assert "RNA_seq" in workbook.sheetnames
     assert "Errors" in workbook.sheetnames
 
