@@ -245,6 +245,15 @@ TIME_POINT_PATTERN = re.compile(
 )
 
 
+def _extract_time_points(text: str) -> str:
+    """Return every distinct time point in source order."""
+    matches = [
+        match.group(0).strip()
+        for match in TIME_POINT_PATTERN.finditer(text)
+    ]
+    return "; ".join(dict.fromkeys(matches))
+
+
 def _flatten_text(value: Any) -> list[str]:
     """Convert nested values into searchable text fragments."""
     if value is None:
@@ -311,6 +320,29 @@ def _first_match(
     return labels[0] if labels else ""
 
 
+def _joined_matches(
+    text: str,
+    patterns: dict[str, tuple[str, ...]],
+    *,
+    suppress: dict[str, set[str]] | None = None,
+) -> str:
+    """Return distinct normalized labels joined for export."""
+    labels = _matched_labels(text, patterns)
+
+    if suppress:
+        label_set = set(labels)
+
+        for specific_label, broader_labels in suppress.items():
+            if specific_label in label_set:
+                labels = [
+                    label
+                    for label in labels
+                    if label not in broader_labels
+                ]
+
+    return "; ".join(dict.fromkeys(labels))
+
+
 def _mixed_or_first(
     text: str,
     patterns: dict[str, tuple[str, ...]],
@@ -364,12 +396,24 @@ def extract_biological_metadata(
     """Extract normalized biological metadata from arbitrary values."""
     text = _combined_text(texts)
 
-    time_point_match = TIME_POINT_PATTERN.search(text)
-
     return BiologicalMetadata(
-        tissue=_first_match(text, TISSUE_PATTERNS),
-        cell_type=_first_match(text, CELL_TYPE_PATTERNS),
-        developmental_stage=_first_match(
+        tissue=_joined_matches(
+            text,
+            TISSUE_PATTERNS,
+            suppress={
+                "midgut": {"gut"},
+                "hindgut": {"gut"},
+                "wing disc": {"imaginal disc"},
+            },
+        ),
+        cell_type=_joined_matches(
+            text,
+            CELL_TYPE_PATTERNS,
+            suppress={
+                "astrocyte-like glia": {"glia"},
+            },
+        ),
+        developmental_stage=_joined_matches(
             text,
             DEVELOPMENTAL_STAGE_PATTERNS,
         ),
@@ -379,20 +423,16 @@ def extract_biological_metadata(
             mixed_when={"male", "female"},
         ),
         genotype=_extract_genotype(text),
-        strain=_first_match(text, STRAIN_PATTERNS),
-        treatment=_first_match(text, TREATMENT_PATTERNS),
-        disease=_first_match(text, DISEASE_PATTERNS),
+        strain=_joined_matches(text, STRAIN_PATTERNS),
+        treatment=_joined_matches(text, TREATMENT_PATTERNS),
+        disease=_joined_matches(text, DISEASE_PATTERNS),
         control_status=_mixed_or_first(
             text,
             CONTROL_PATTERNS,
             mixed_when={"control", "treated"},
         ),
-        time_point=(
-            time_point_match.group(0)
-            if time_point_match
-            else ""
-        ),
-        perturbation=_first_match(
+        time_point=_extract_time_points(text),
+        perturbation=_joined_matches(
             text,
             PERTURBATION_PATTERNS,
         ),

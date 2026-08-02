@@ -44,7 +44,7 @@ def test_extracts_perturbation_and_tissue() -> None:
 
     assert metadata.tissue == "brain"
     assert metadata.developmental_stage == "larva"
-    assert metadata.perturbation == "RNAi"
+    assert metadata.perturbation == "RNAi; knockdown"
 
 
 def test_extracts_nested_metadata_values() -> None:
@@ -226,3 +226,63 @@ def test_zygosity_with_mutant_word_is_not_mixed() -> None:
 
     assert homozygous.genotype == "homozygous"
     assert heterozygous.genotype == "heterozygous"
+
+
+def test_extracts_multiple_time_points() -> None:
+    metadata = extract_biological_metadata(
+        "Samples collected at 3 days, 6 days, and 9 days",
+    )
+
+    assert metadata.time_point == "3 days; 6 days; 9 days"
+
+
+def test_extracts_multiple_strains() -> None:
+    metadata = extract_biological_metadata(
+        "Comparison of w1118, Canton-S, and DGRP-551 flies",
+    )
+
+    assert metadata.strain == "w1118; Canton-S; DGRP-551"
+
+
+def test_extracts_multiple_perturbations() -> None:
+    metadata = extract_biological_metadata(
+        "RNAi knockdown and CRISPR knockout experiments",
+    )
+
+    assert metadata.perturbation == (
+        "RNAi; knockdown; knockout; CRISPR"
+    )
+
+
+def test_specific_gut_tissue_suppresses_generic_gut() -> None:
+    metadata = extract_biological_metadata(
+        "RNA-seq from adult midgut and hindgut",
+    )
+
+    assert metadata.tissue == "midgut; hindgut"
+
+
+def test_wing_disc_suppresses_generic_imaginal_disc() -> None:
+    metadata = extract_biological_metadata(
+        "Drosophila wing imaginal disc samples",
+    )
+
+    assert metadata.tissue == "wing disc"
+
+
+def test_multiple_developmental_stages_are_retained() -> None:
+    metadata = extract_biological_metadata(
+        "Embryonic, larval, pupal, and adult samples",
+    )
+
+    assert metadata.developmental_stage == (
+        "embryo; larva; pupa; adult"
+    )
+
+
+def test_specific_glial_cell_type_suppresses_generic_glia() -> None:
+    metadata = extract_biological_metadata(
+        "astrocyte-like glia from adult brains",
+    )
+
+    assert metadata.cell_type == "astrocyte-like glia"

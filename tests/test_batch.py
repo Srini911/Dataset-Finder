@@ -540,7 +540,7 @@ def test_batch_enriches_accepted_geo_record_with_sample_metadata() -> None:
     assert record.tissue == "brain"
     assert record.developmental_stage == "larva"
     assert record.genotype == "transgenic"
-    assert record.perturbation == "RNAi"
+    assert record.perturbation == "RNAi; knockdown"
     assert record.sample_accessions == (
         "GSM8193871",
         "GSM8193872",
