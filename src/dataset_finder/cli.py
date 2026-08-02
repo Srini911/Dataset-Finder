@@ -8,6 +8,11 @@ from pathlib import Path
 
 from dataset_finder import __version__
 from dataset_finder.batch import BatchSearchService
+from dataset_finder.builtin_gene_sets import (
+    BuiltinGeneSetError,
+    available_gene_sets,
+    load_builtin_gene_set,
+)
 from dataset_finder.exporters import export_csv, export_excel, export_json
 from dataset_finder.gene_sets import GeneInputError, collect_genes
 from dataset_finder.models import DatasetRecord
@@ -73,9 +78,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Plain-text file containing one or more gene symbols.",
     )
     search_parser.add_argument(
+        "--gene-set",
+        choices=available_gene_sets(),
+        help="Load a built-in curated gene set: rbp or tf.",
+    )
+    search_parser.add_argument(
         "--gene-set-name",
         default="",
-        help="Label stored in exports, for example RBP or TF.",
+        help="Custom label stored in exports, for example RBP or TF.",
     )
     search_parser.add_argument(
         "--database",
@@ -160,12 +170,21 @@ def run_search(args: argparse.Namespace) -> int:
     database = args.database.strip().lower()
 
     try:
+        builtin_genes = (
+            load_builtin_gene_set(args.gene_set)
+            if args.gene_set
+            else []
+        )
+
         genes = collect_genes(
             query=args.query,
-            genes=args.genes,
+            genes=[
+                *(args.genes or []),
+                *builtin_genes,
+            ],
             gene_file=args.gene_file,
         )
-    except GeneInputError as exc:
+    except (GeneInputError, BuiltinGeneSetError) as exc:
         print(f"Dataset Finder error: {exc}", file=sys.stderr)
         return 2
 
@@ -230,7 +249,10 @@ def run_search(args: argparse.Namespace) -> int:
             genes=genes,
             database=database,
             max_results_per_gene=args.max_results,
-            gene_set=args.gene_set_name.strip(),
+            gene_set=(
+                args.gene_set_name.strip()
+                or (args.gene_set.upper() if args.gene_set else "")
+            ),
         )
     except ValueError as exc:
         print(f"Dataset Finder error: {exc}", file=sys.stderr)

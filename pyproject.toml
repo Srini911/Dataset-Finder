@@ -54,6 +54,11 @@ Repository = "https://github.com/Srini911/Dataset-Finder"
 Issues = "https://github.com/Srini911/Dataset-Finder/issues"
 Changelog = "https://github.com/Srini911/Dataset-Finder/blob/main/CHANGELOG.md"
 
+[tool.setuptools.package-data]
+dataset_finder = [
+    "data/gene_sets/*.txt",
+]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
