@@ -135,3 +135,18 @@ def test_maternal_to_zygotic_transition_maps_to_embryo() -> None:
     )
 
     assert metadata.developmental_stage == "embryo"
+
+
+def test_gal4_driver_genotype_is_transgenic() -> None:
+    metadata = extract_biological_metadata(
+        {
+            "characteristics": {
+                "genotype": [
+                    "inscGAL4>wRNAi",
+                    "inscGAL4>orb2RNAi",
+                ]
+            }
+        }
+    )
+
+    assert metadata.genotype == "transgenic"

@@ -150,8 +150,9 @@ GENOTYPE_PATTERNS = {
     ),
     "transgenic": (
         r"\btransgenic\b",
-        r"\buas[- ]\w+\b",
-        r"\bgal4\b",
+        r"\buas[- ]?[a-z0-9_-]+\b",
+        r"\b[a-z0-9_-]*gal4\b",
+        r"\bgal4[- >]",
     ),
     "mutant": (
         r"\bmutant\b",
