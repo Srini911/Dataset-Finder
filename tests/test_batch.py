@@ -327,3 +327,338 @@ def test_batch_limits_final_accepted_results_per_gene() -> None:
     )
 
     assert len(result.records) == 3
+
+
+def test_batch_search_extracts_biological_metadata() -> None:
+    class MetadataSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            return [
+                DatasetRecord(
+                    uid="GSE_META",
+                    accession="GSE_META",
+                    title=(
+                        "RNA-seq of adult male Drosophila "
+                        "brain neurons after hairy RNAi"
+                    ),
+                    organism="Drosophila melanogaster",
+                    study_type=(
+                        "Expression profiling by "
+                        "high throughput sequencing"
+                    ),
+                    sample_count=6,
+                    publication_date="2026/01/01",
+                    url="https://example.org/GSE_META",
+                    description=(
+                        "w1118 control and treated samples "
+                        "collected after 24 hours"
+                    ),
+                )
+            ]
+
+    service = BatchSearchService(
+        search_service=MetadataSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+    )
+
+    assert len(result.records) == 1
+
+    record = result.records[0]
+
+    assert record.tissue == "brain"
+    assert record.cell_type == "neuron"
+    assert record.developmental_stage == "adult"
+    assert record.sex == "male"
+    assert record.strain == "w1118"
+    assert record.control_status == "mixed"
+    assert record.time_point == "24 hours"
+    assert record.perturbation == "RNAi"
+
+
+def test_existing_record_metadata_is_preserved() -> None:
+    class MetadataSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            return [
+                DatasetRecord(
+                    uid="GSE_EXISTING",
+                    accession="GSE_EXISTING",
+                    title="hairy gene study in adult male brain",
+                    organism="Drosophila melanogaster",
+                    study_type="RNA-seq",
+                    sample_count=4,
+                    publication_date="2026/01/01",
+                    url="https://example.org/GSE_EXISTING",
+                    tissue="head",
+                    sex="female",
+                    strain="Canton-S",
+                )
+            ]
+
+    service = BatchSearchService(
+        search_service=MetadataSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+    )
+
+    record = result.records[0]
+
+    assert record.tissue == "head"
+    assert record.sex == "female"
+    assert record.strain == "Canton-S"
+
+
+class FakeGEOSampleMetadataClient:
+    """Return deterministic GEO sample-level metadata."""
+
+    def __init__(self) -> None:
+        self.accessions: list[str] = []
+
+    def fetch_sample_metadata(
+        self,
+        accession: str,
+    ) -> dict[str, object]:
+        self.accessions.append(accession)
+
+        return {
+            "sample_accessions": [
+                "GSM8193871",
+                "GSM8193872",
+            ],
+            "biosample_accessions": [
+                "SAMN40876891",
+                "SAMN40876892",
+            ],
+            "experiment_accessions": [
+                "SRX24191199",
+                "SRX24191200",
+            ],
+            "source_names": ["brain"],
+            "characteristics": {
+                "tissue": ["brain"],
+                "genotype": [
+                    "inscGAL4>wRNAi",
+                    "inscGAL4>orb2RNAi",
+                ],
+            },
+            "treatment_protocols": [
+                "RNAi depletion of white or orb2",
+            ],
+            "growth_protocols": [
+                "wandering L3 larvae",
+            ],
+            "library_strategies": ["RNA-Seq"],
+            "library_sources": ["transcriptomic"],
+            "library_selections": ["cDNA"],
+            "instrument_models": [
+                "Illumina NovaSeq 6000",
+            ],
+        }
+
+
+def test_batch_enriches_accepted_geo_record_with_sample_metadata() -> None:
+    class GEOSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            return [
+                DatasetRecord(
+                    uid="GSE263513",
+                    accession="GSE263513",
+                    title=(
+                        "Effect of hairy RNAi depletion "
+                        "in Drosophila larval brains"
+                    ),
+                    organism="Drosophila melanogaster",
+                    study_type=(
+                        "Expression profiling by "
+                        "high throughput sequencing"
+                    ),
+                    sample_count=2,
+                    publication_date="2024/04/09",
+                    url="https://example.org/GSE263513",
+                    database="GEO",
+                )
+            ]
+
+    geo_client = FakeGEOSampleMetadataClient()
+
+    service = BatchSearchService(
+        search_service=GEOSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+        geo_client=geo_client,
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+    )
+
+    assert len(result.records) == 1
+    assert geo_client.accessions == ["GSE263513"]
+
+    record = result.records[0]
+
+    assert record.tissue == "brain"
+    assert record.developmental_stage == "larva"
+    assert record.genotype == "transgenic"
+    assert record.perturbation == "RNAi; knockdown"
+    assert record.sample_accessions == (
+        "GSM8193871",
+        "GSM8193872",
+    )
+    assert record.biosample_accessions == (
+        "SAMN40876891",
+        "SAMN40876892",
+    )
+    assert record.experiment_accessions == (
+        "SRX24191199",
+        "SRX24191200",
+    )
+    assert record.library_strategy == "RNA-Seq"
+    assert record.library_source == "transcriptomic"
+    assert record.library_selection == "cDNA"
+    assert record.platform == "Illumina NovaSeq 6000"
+
+
+def test_rejected_geo_record_does_not_fetch_sample_metadata() -> None:
+    class IrrelevantGEOSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            return [
+                DatasetRecord(
+                    uid="GSE_OTHER",
+                    accession="GSE_OTHER",
+                    title="Unrelated adult fly transcriptome",
+                    organism="Drosophila melanogaster",
+                    study_type="RNA-seq",
+                    sample_count=4,
+                    publication_date="2026/01/01",
+                    url="https://example.org/GSE_OTHER",
+                    database="GEO",
+                )
+            ]
+
+    geo_client = FakeGEOSampleMetadataClient()
+
+    service = BatchSearchService(
+        search_service=IrrelevantGEOSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+        geo_client=geo_client,
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+    )
+
+    assert result.records == ()
+    assert geo_client.accessions == []
+
+
+def test_geo_sample_metadata_is_retained_in_raw_metadata() -> None:
+    class GEOSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            return [
+                DatasetRecord(
+                    uid="GSE_META_RAW",
+                    accession="GSE_META_RAW",
+                    title="hairy RNAi in larval brain",
+                    organism="Drosophila melanogaster",
+                    study_type="RNA-seq",
+                    sample_count=2,
+                    publication_date="2026/01/01",
+                    url="https://example.org/GSE_META_RAW",
+                    database="GEO",
+                    raw_metadata={
+                        "series_source": "NCBI GEO",
+                    },
+                )
+            ]
+
+    geo_client = FakeGEOSampleMetadataClient()
+
+    service = BatchSearchService(
+        search_service=GEOSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+        geo_client=geo_client,
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+    )
+
+    record = result.records[0]
+
+    assert record.raw_metadata[
+        "series_source"
+    ] == "NCBI GEO"
+
+    geo_metadata = record.raw_metadata[
+        "geo_sample_metadata"
+    ]
+
+    assert geo_metadata["sample_accessions"] == [
+        "GSM8193871",
+        "GSM8193872",
+    ]

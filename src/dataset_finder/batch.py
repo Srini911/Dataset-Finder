@@ -11,7 +11,9 @@ from dataset_finder.clients.flyatlas import (
     FlyAtlasClientError,
     FlyAtlasExpression,
 )
+from dataset_finder.clients.ncbi_geo import NCBIGEOClient
 from dataset_finder.flybase_resolver import FlyBaseGene, FlyBaseResolver
+from dataset_finder.metadata import extract_biological_metadata
 from dataset_finder.models import DatasetRecord
 from dataset_finder.relevance import assess_relevance
 from dataset_finder.search import (
@@ -70,10 +72,12 @@ class BatchSearchService:
         search_service: SearchService | None = None,
         flybase_resolver: FlyBaseResolver | None = None,
         flyatlas_client: FlyAtlasClient | None = None,
+        geo_client: NCBIGEOClient | None = None,
     ) -> None:
         self.search_service = search_service or SearchService()
         self.flybase_resolver = flybase_resolver or FlyBaseResolver()
         self.flyatlas_client = flyatlas_client or FlyAtlasClient()
+        self.geo_client = geo_client or NCBIGEOClient()
 
     def search_many(
         self,
@@ -189,6 +193,30 @@ class BatchSearchService:
                 if not relevance.accepted:
                     continue
 
+                geo_sample_metadata: dict[str, object] = {}
+
+                if (
+                    source_database.casefold() == "geo"
+                    and record.accession
+                ):
+                    try:
+                        geo_sample_metadata = (
+                            self.geo_client.fetch_sample_metadata(
+                                record.accession
+                            )
+                        )
+                    except Exception:
+                        geo_sample_metadata = {}
+
+                biological_metadata = extract_biological_metadata(
+                    record.title,
+                    record.description,
+                    record.study_type,
+                    record.organism,
+                    record.raw_metadata,
+                    geo_sample_metadata,
+                )
+
                 confidence = self._combined_confidence(
                     gene_confidence=self._confidence_label(
                         resolved_gene
@@ -209,6 +237,120 @@ class BatchSearchService:
                         synonyms=resolved_gene.synonyms,
                         database=source_database,
                         technique=record.technique or technique,
+                        experiment_accessions=(
+                            record.experiment_accessions
+                            or tuple(
+                                geo_sample_metadata.get(
+                                    "experiment_accessions",
+                                    [],
+                                )
+                            )
+                        ),
+                        sample_accessions=(
+                            record.sample_accessions
+                            or tuple(
+                                geo_sample_metadata.get(
+                                    "sample_accessions",
+                                    [],
+                                )
+                            )
+                        ),
+                        biosample_accessions=(
+                            record.biosample_accessions
+                            or tuple(
+                                geo_sample_metadata.get(
+                                    "biosample_accessions",
+                                    [],
+                                )
+                            )
+                        ),
+                        library_strategy=(
+                            record.library_strategy
+                            or "; ".join(
+                                geo_sample_metadata.get(
+                                    "library_strategies",
+                                    [],
+                                )
+                            )
+                        ),
+                        library_source=(
+                            record.library_source
+                            or "; ".join(
+                                geo_sample_metadata.get(
+                                    "library_sources",
+                                    [],
+                                )
+                            )
+                        ),
+                        library_selection=(
+                            record.library_selection
+                            or "; ".join(
+                                geo_sample_metadata.get(
+                                    "library_selections",
+                                    [],
+                                )
+                            )
+                        ),
+                        platform=(
+                            record.platform
+                            or "; ".join(
+                                geo_sample_metadata.get(
+                                    "instrument_models",
+                                    [],
+                                )
+                            )
+                        ),
+                        raw_metadata=(
+                            {
+                                **record.raw_metadata,
+                                "geo_sample_metadata": (
+                                    geo_sample_metadata
+                                ),
+                            }
+                            if geo_sample_metadata
+                            else record.raw_metadata
+                        ),
+                        tissue=(
+                            record.tissue
+                            or biological_metadata.tissue
+                        ),
+                        cell_type=(
+                            record.cell_type
+                            or biological_metadata.cell_type
+                        ),
+                        developmental_stage=(
+                            record.developmental_stage
+                            or biological_metadata.developmental_stage
+                        ),
+                        sex=record.sex or biological_metadata.sex,
+                        genotype=(
+                            record.genotype
+                            or biological_metadata.genotype
+                        ),
+                        strain=(
+                            record.strain
+                            or biological_metadata.strain
+                        ),
+                        treatment=(
+                            record.treatment
+                            or biological_metadata.treatment
+                        ),
+                        control_status=(
+                            record.control_status
+                            or biological_metadata.control_status
+                        ),
+                        disease=(
+                            record.disease
+                            or biological_metadata.disease
+                        ),
+                        time_point=(
+                            record.time_point
+                            or biological_metadata.time_point
+                        ),
+                        perturbation=(
+                            record.perturbation
+                            or biological_metadata.perturbation
+                        ),
                         match_type=relevance.match_type,
                         confidence=confidence,
                         evidence_text=(

@@ -261,3 +261,144 @@ def test_geo_retries_transient_http_status() -> None:
 
     assert records == []
     assert session.calls == 2
+
+
+def test_parse_geo_sample_soft() -> None:
+    from dataset_finder.clients.ncbi_geo import (
+        parse_geo_sample_soft,
+    )
+
+    soft_text = """^SAMPLE = GSM8193871
+!Sample_title = insc-GAL4>wRNAi brains, sample 1
+!Sample_source_name_ch1 = brain
+!Sample_characteristics_ch1 = tissue: brain
+!Sample_characteristics_ch1 = genotype: inscGAL4>wRNAi
+!Sample_treatment_protocol_ch1 = RNAi depletion of white or orb2
+!Sample_growth_protocol_ch1 = wandering L3 larvae
+!Sample_instrument_model = Illumina NovaSeq 6000
+!Sample_library_selection = cDNA
+!Sample_library_source = transcriptomic
+!Sample_library_strategy = RNA-Seq
+!Sample_relation = BioSample: https://www.ncbi.nlm.nih.gov/biosample/SAMN40876891
+!Sample_relation = SRA: https://www.ncbi.nlm.nih.gov/sra?term=SRX24191199
+^SAMPLE = GSM8193872
+!Sample_title = insc-GAL4>orb2RNAi brains, sample 2
+!Sample_source_name_ch1 = brain
+!Sample_characteristics_ch1 = tissue: brain
+!Sample_characteristics_ch1 = genotype: inscGAL4>orb2RNAi
+!Sample_treatment_protocol_ch1 = RNAi depletion of white or orb2
+!Sample_growth_protocol_ch1 = wandering L3 larvae
+!Sample_instrument_model = Illumina NovaSeq 6000
+!Sample_library_selection = cDNA
+!Sample_library_source = transcriptomic
+!Sample_library_strategy = RNA-Seq
+!Sample_relation = BioSample: https://www.ncbi.nlm.nih.gov/biosample/SAMN40876892
+!Sample_relation = SRA: https://www.ncbi.nlm.nih.gov/sra?term=SRX24191200
+"""
+
+    metadata = parse_geo_sample_soft(soft_text)
+
+    assert metadata["sample_count"] == 2
+    assert metadata["sample_accessions"] == [
+        "GSM8193871",
+        "GSM8193872",
+    ]
+    assert metadata["source_names"] == ["brain"]
+    assert metadata["characteristics"]["tissue"] == ["brain"]
+    assert metadata["characteristics"]["genotype"] == [
+        "inscGAL4>wRNAi",
+        "inscGAL4>orb2RNAi",
+    ]
+    assert metadata["library_strategies"] == ["RNA-Seq"]
+    assert metadata["library_sources"] == ["transcriptomic"]
+    assert metadata["library_selections"] == ["cDNA"]
+    assert metadata["instrument_models"] == [
+        "Illumina NovaSeq 6000"
+    ]
+    assert metadata["biosample_accessions"] == [
+        "SAMN40876891",
+        "SAMN40876892",
+    ]
+    assert metadata["experiment_accessions"] == [
+        "SRX24191199",
+        "SRX24191200",
+    ]
+
+
+def test_parse_geo_sample_soft_handles_empty_text() -> None:
+    from dataset_finder.clients.ncbi_geo import (
+        parse_geo_sample_soft,
+    )
+
+    metadata = parse_geo_sample_soft("")
+
+    assert metadata["sample_count"] == 0
+    assert metadata["samples"] == []
+    assert metadata["characteristics"] == {}
+
+
+def test_fetch_geo_sample_metadata() -> None:
+    class SoftResponse:
+        status_code = 200
+
+        def __init__(self, text: str) -> None:
+            self.text = text
+
+        def raise_for_status(self) -> None:
+            return None
+
+    class SoftSession:
+        def __init__(self) -> None:
+            self.calls: list[dict[str, Any]] = []
+
+        def get(
+            self,
+            url: str,
+            *,
+            params: dict[str, Any],
+            timeout: float,
+        ) -> SoftResponse:
+            self.calls.append(
+                {
+                    "url": url,
+                    "params": params,
+                    "timeout": timeout,
+                }
+            )
+
+            return SoftResponse(
+                """^SAMPLE = GSM1
+!Sample_title = adult brain sample
+!Sample_source_name_ch1 = brain
+!Sample_characteristics_ch1 = tissue: brain
+!Sample_library_strategy = RNA-Seq
+"""
+            )
+
+    session = SoftSession()
+    client = NCBIGEOClient(
+        session=session,  # type: ignore[arg-type]
+    )
+
+    metadata = client.fetch_sample_metadata("GSE123")
+
+    assert metadata["sample_count"] == 1
+    assert metadata["sample_accessions"] == ["GSM1"]
+    assert metadata["source_names"] == ["brain"]
+    assert metadata["characteristics"]["tissue"] == ["brain"]
+    assert metadata["library_strategies"] == ["RNA-Seq"]
+
+    assert session.calls[0]["params"] == {
+        "acc": "GSE123",
+        "targ": "gsm",
+        "form": "text",
+        "view": "full",
+    }
+
+
+def test_fetch_geo_sample_metadata_handles_empty_accession() -> None:
+    client = NCBIGEOClient()
+
+    metadata = client.fetch_sample_metadata("")
+
+    assert metadata["sample_count"] == 0

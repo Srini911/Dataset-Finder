@@ -96,6 +96,34 @@ class FakeSRAClient:
         return []
 
 
+class FakeBioSampleClient:
+    """Return no BioSample records during combined-search tests."""
+
+    def search(
+        self,
+        *,
+        species: str,
+        query: str,
+        max_results: int,
+    ) -> list[DatasetRecord]:
+        del species, query, max_results
+        return []
+
+
+class FakeENAClient:
+    """Return no ENA records during combined-search tests."""
+
+    def search(
+        self,
+        *,
+        species: str,
+        query: str,
+        max_results: int,
+    ) -> list[DatasetRecord]:
+        del species, query, max_results
+        return []
+
+
 class FakeBioStudiesClient:
     """Return no BioStudies records during combined-search tests."""
 
@@ -132,6 +160,7 @@ def test_search_service_calls_geo_client() -> None:
         encode_client=FakeENCODEClient(),
         sra_client=FakeSRAClient(),
         bioproject_client=FakeBioProjectClient(),
+        biosample_client=FakeBioSampleClient(),
         biostudies_client=FakeBioStudiesClient(),
     )
 
@@ -159,7 +188,9 @@ def test_all_combines_supported_clients() -> None:
         encode_client=encode_client,
         sra_client=FakeSRAClient(),
         bioproject_client=FakeBioProjectClient(),
+        biosample_client=FakeBioSampleClient(),
         biostudies_client=FakeBioStudiesClient(),
+        ena_client=FakeENAClient(),
     )
 
     records = service.search(
