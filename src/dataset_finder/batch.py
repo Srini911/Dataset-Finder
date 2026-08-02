@@ -300,6 +300,16 @@ class BatchSearchService:
                                 )
                             )
                         ),
+                        raw_metadata=(
+                            {
+                                **record.raw_metadata,
+                                "geo_sample_metadata": (
+                                    geo_sample_metadata
+                                ),
+                            }
+                            if geo_sample_metadata
+                            else record.raw_metadata
+                        ),
                         tissue=(
                             record.tissue
                             or biological_metadata.tissue

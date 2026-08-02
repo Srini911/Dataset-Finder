@@ -602,3 +602,63 @@ def test_rejected_geo_record_does_not_fetch_sample_metadata() -> None:
 
     assert result.records == ()
     assert geo_client.accessions == []
+
+
+def test_geo_sample_metadata_is_retained_in_raw_metadata() -> None:
+    class GEOSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            return [
+                DatasetRecord(
+                    uid="GSE_META_RAW",
+                    accession="GSE_META_RAW",
+                    title="hairy RNAi in larval brain",
+                    organism="Drosophila melanogaster",
+                    study_type="RNA-seq",
+                    sample_count=2,
+                    publication_date="2026/01/01",
+                    url="https://example.org/GSE_META_RAW",
+                    database="GEO",
+                    raw_metadata={
+                        "series_source": "NCBI GEO",
+                    },
+                )
+            ]
+
+    geo_client = FakeGEOSampleMetadataClient()
+
+    service = BatchSearchService(
+        search_service=GEOSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+        geo_client=geo_client,
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+    )
+
+    record = result.records[0]
+
+    assert record.raw_metadata[
+        "series_source"
+    ] == "NCBI GEO"
+
+    geo_metadata = record.raw_metadata[
+        "geo_sample_metadata"
+    ]
+
+    assert geo_metadata["sample_accessions"] == [
+        "GSM8193871",
+        "GSM8193872",
+    ]

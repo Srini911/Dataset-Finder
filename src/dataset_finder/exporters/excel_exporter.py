@@ -82,7 +82,7 @@ DISPLAY_NAMES = {
     "accession": "Accession",
     "project_accession": "Project Accession",
     "experiment_accessions": "Experiment Accessions",
-    "sample_accessions": "Run Accessions",
+    "sample_accessions": "Sample / Run Accessions",
     "biosample_accessions": "BioSample Accessions",
     "library_strategy": "Library Strategy",
     "library_source": "Library Source",
