@@ -243,3 +243,87 @@ def test_batch_search_adds_flyatlas_expression() -> None:
     assert record.flyatlas_top_male_tissue == "Testis"
     assert record.flyatlas_top_female_tissue == "Ovary"
     assert record.flyatlas_top_larval_tissue == "Hindgut"
+
+
+def test_batch_overfetches_candidates_before_relevance_filtering() -> None:
+    class CandidateSearchService:
+        def __init__(self) -> None:
+            self.max_results = 0
+
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database
+            self.max_results = max_results
+
+            return [
+                make_record(
+                    f"GSE{index}",
+                    (
+                        "unrelated transcriptome"
+                        if index < 4
+                        else "hairy gene RNA-seq"
+                    ),
+                )
+                for index in range(5)
+            ]
+
+    search_service = CandidateSearchService()
+
+    service = BatchSearchService(
+        search_service=search_service,
+        flybase_resolver=FakeFlyBaseResolver(),
+        flyatlas_client=FakeFlyAtlasClient(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=1,
+    )
+
+    assert search_service.max_results == 20
+    assert len(result.records) == 1
+    assert result.records[0].gene == "h"
+
+
+def test_batch_limits_final_accepted_results_per_gene() -> None:
+    class ManyAcceptedSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            return [
+                make_record(
+                    f"GSE{index}",
+                    "hairy gene RNA-seq",
+                )
+                for index in range(10)
+            ]
+
+    service = BatchSearchService(
+        search_service=ManyAcceptedSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+        flyatlas_client=FakeFlyAtlasClient(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=3,
+    )
+
+    assert len(result.records) == 3

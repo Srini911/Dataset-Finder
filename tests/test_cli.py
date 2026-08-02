@@ -280,3 +280,57 @@ def test_geo_search_exports_json(
     assert '"accession": "GSE123456"' in output_path.read_text(
         encoding="utf-8"
     )
+
+
+def test_single_genes_option_uses_batch_mode(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """A single --genes value should still use batch search."""
+    from dataset_finder.batch import BatchSearchResult
+
+    captured: dict[str, object] = {}
+
+    def fake_search_many(self, **kwargs):
+        del self
+        captured.update(kwargs)
+
+        return BatchSearchResult(
+            records=(),
+            issues=(),
+            database_statuses=(),
+            gene_annotations=(),
+            genes=("orb2",),
+            gene_set="",
+            database="geo",
+        )
+
+    monkeypatch.setattr(
+        "dataset_finder.cli.BatchSearchService.search_many",
+        fake_search_many,
+    )
+
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "dataset-finder",
+            "search",
+            "--species",
+            "Drosophila melanogaster",
+            "--genes",
+            "orb2",
+            "--database",
+            "geo",
+            "--max-results",
+            "3",
+        ],
+    )
+
+    exit_code = main()
+    output = capsys.readouterr().out
+
+    assert exit_code == 0
+    assert captured["genes"] == ["orb2"]
+    assert captured["max_results_per_gene"] == 3
+    assert "Dataset Finder multi-gene search" in output
+    assert "Genes searched: 1" in output

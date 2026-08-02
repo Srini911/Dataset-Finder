@@ -191,7 +191,17 @@ def run_search(args: argparse.Namespace) -> int:
         print(f"Dataset Finder error: {exc}", file=sys.stderr)
         return 2
 
-    if len(genes) == 1 and args.format != "xlsx":
+    batch_requested = bool(
+        args.genes
+        or args.gene_file
+        or args.gene_set
+    )
+
+    if (
+        len(genes) == 1
+        and args.format != "xlsx"
+        and not batch_requested
+    ):
         service = SearchService()
 
         try:

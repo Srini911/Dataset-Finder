@@ -115,13 +115,18 @@ class BatchSearchService:
                 resolved_gene,
             )
 
+            candidate_limit = max(
+                20,
+                max_results_per_gene * 10,
+            )
+
             try:
                 if hasattr(self.search_service, "search_with_status"):
                     outcome = self.search_service.search_with_status(
                         species=species,
                         query=query,
                         database=database,
-                        max_results=max_results_per_gene,
+                        max_results=candidate_limit,
                     )
                     gene_records = list(outcome.records)
 
@@ -137,7 +142,7 @@ class BatchSearchService:
                         species=species,
                         query=query,
                         database=database,
-                        max_results=max_results_per_gene,
+                        max_results=candidate_limit,
                     )
             except Exception as exc:
                 issues.append(
@@ -149,7 +154,12 @@ class BatchSearchService:
                 )
                 continue
 
+            accepted_for_gene = 0
+
             for record in gene_records:
+                if accepted_for_gene >= max_results_per_gene:
+                    break
+
                 source_database = (
                     record.database
                     or self._infer_database(record)
@@ -240,6 +250,7 @@ class BatchSearchService:
                         ),
                     )
                 )
+                accepted_for_gene += 1
 
         return BatchSearchResult(
             records=tuple(self._deduplicate(records)),
