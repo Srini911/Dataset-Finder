@@ -116,3 +116,22 @@ def test_specific_zygosity_precedes_generic_mutant() -> None:
     )
 
     assert metadata.genotype == "heterozygous"
+
+
+def test_extracts_plural_brain_and_depletion() -> None:
+    metadata = extract_biological_metadata(
+        "Effect of Orb2 depletion on mRNA expression "
+        "in Drosophila larval brains"
+    )
+
+    assert metadata.tissue == "brain"
+    assert metadata.developmental_stage == "larva"
+    assert metadata.perturbation == "knockdown"
+
+
+def test_maternal_to_zygotic_transition_maps_to_embryo() -> None:
+    metadata = extract_biological_metadata(
+        "Orb2 regulation during the maternal-to-zygotic transition"
+    )
+
+    assert metadata.developmental_stage == "embryo"

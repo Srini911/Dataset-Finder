@@ -26,8 +26,8 @@ class BiologicalMetadata:
 
 TISSUE_PATTERNS = {
     "brain": (
-        r"\bbrain\b",
-        r"\bcentral nervous system\b",
+        r"\bbrains?\b",
+        r"\bcentral nervous systems?\b",
         r"\bcns\b",
     ),
     "head": (r"\bhead\b",),
@@ -79,7 +79,11 @@ CELL_TYPE_PATTERNS = {
 
 
 DEVELOPMENTAL_STAGE_PATTERNS = {
-    "embryo": (r"\bembryo\b", r"\bembryonic\b"),
+    "embryo": (
+        r"\bembryos?\b",
+        r"\bembryonic\b",
+        r"\bmaternal[- ]to[- ]zygotic\b",
+    ),
     "larva": (
         r"\blarva\b",
         r"\blarval\b",
@@ -113,7 +117,14 @@ STRAIN_PATTERNS = {
 
 PERTURBATION_PATTERNS = {
     "RNAi": (r"\brnai\b", r"\brna interference\b"),
-    "knockdown": (r"\bknockdown\b", r"\bknock-down\b"),
+    "knockdown": (
+        r"\bknockdown\b",
+        r"\bknock-down\b",
+        r"\bdepletion\b",
+        r"\bdepleted\b",
+        r"\bsilencing\b",
+        r"\bsilenced\b",
+    ),
     "knockout": (r"\bknockout\b", r"\bknock-out\b"),
     "overexpression": (
         r"\boverexpression\b",
