@@ -79,9 +79,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     search_parser.add_argument(
         "--database",
-        choices=("geo", "encode", "all"),
+        choices=("geo", "encode", "sra", "bioproject", "all"),
         default="geo",
-        help="Database to search. Default: geo.",
+        help=("Database to search: GEO, ENCODE, SRA, BioProject, ""or all. Default: geo."),
     )
     search_parser.add_argument(
         "--max-results",

@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 
 from dataset_finder.models import DatasetRecord
-from dataset_finder.search import SearchService, UnsupportedDatabaseError
+from dataset_finder.search import SearchService
 
 
 class FakeGEOClient:
@@ -23,7 +23,6 @@ class FakeGEOClient:
         query: str,
         max_results: int,
     ) -> list[DatasetRecord]:
-        """Return one predictable record."""
         self.received_species = species
         self.received_query = query
         self.received_max_results = max_results
@@ -47,25 +46,6 @@ class FakeGEOClient:
         ]
 
 
-def test_search_service_calls_geo_client() -> None:
-    """The service should delegate GEO searches to the GEO client."""
-    client = FakeGEOClient()
-    service = SearchService(geo_client=client)
-
-    records = service.search(
-        species=" Drosophila melanogaster ",
-        query=" brain RNA-seq ",
-        database="geo",
-        max_results=5,
-    )
-
-    assert len(records) == 1
-    assert records[0].accession == "GSE123456"
-    assert client.received_species == "Drosophila melanogaster"
-    assert client.received_query == "brain RNA-seq"
-    assert client.received_max_results == 5
-
-
 class FakeENCODEClient:
     """Small test replacement for the live ENCODE client."""
 
@@ -81,7 +61,6 @@ class FakeENCODEClient:
         query: str,
         max_results: int,
     ) -> list[DatasetRecord]:
-        """Return one predictable ENCODE record."""
         self.received_species = species
         self.received_query = query
         self.received_max_results = max_results
@@ -103,13 +82,68 @@ class FakeENCODEClient:
         ]
 
 
-def test_all_combines_geo_and_encode_clients() -> None:
-    """The all option should combine GEO and ENCODE records."""
+class FakeSRAClient:
+    """Return no SRA records during combined-search tests."""
+
+    def search(
+        self,
+        *,
+        species: str,
+        query: str,
+        max_results: int,
+    ) -> list[DatasetRecord]:
+        del species, query, max_results
+        return []
+
+
+class FakeBioProjectClient:
+    """Return no BioProject records during combined-search tests."""
+
+    def search(
+        self,
+        *,
+        species: str,
+        query: str,
+        max_results: int,
+    ) -> list[DatasetRecord]:
+        del species, query, max_results
+        return []
+
+
+def test_search_service_calls_geo_client() -> None:
+    """The service should delegate GEO searches to the GEO client."""
+    client = FakeGEOClient()
+    service = SearchService(
+        geo_client=client,
+        encode_client=FakeENCODEClient(),
+        sra_client=FakeSRAClient(),
+        bioproject_client=FakeBioProjectClient(),
+    )
+
+    records = service.search(
+        species=" Drosophila melanogaster ",
+        query=" brain RNA-seq ",
+        database="geo",
+        max_results=5,
+    )
+
+    assert len(records) == 1
+    assert records[0].accession == "GSE123456"
+    assert client.received_species == "Drosophila melanogaster"
+    assert client.received_query == "brain RNA-seq"
+    assert client.received_max_results == 5
+
+
+def test_all_combines_supported_clients() -> None:
+    """The all option should combine supported client records."""
     geo_client = FakeGEOClient()
     encode_client = FakeENCODEClient()
+
     service = SearchService(
         geo_client=geo_client,
         encode_client=encode_client,
+        sra_client=FakeSRAClient(),
+        bioproject_client=FakeBioProjectClient(),
     )
 
     records = service.search(
@@ -132,19 +166,53 @@ def test_all_combines_geo_and_encode_clients() -> None:
     assert encode_client.received_max_results == 3
 
 
-def test_sra_is_not_implemented() -> None:
-    """The service should clearly reject SRA until it is implemented."""
-    service = SearchService(geo_client=FakeGEOClient())
+def test_sra_search_is_supported() -> None:
+    """The service should route SRA searches to the SRA client."""
 
-    with pytest.raises(
-        UnsupportedDatabaseError,
-        match="SRA search is not implemented",
-    ):
-        service.search(
-            species="Drosophila melanogaster",
-            query="brain RNA-seq",
-            database="sra",
-        )
+    class OneRecordSRAClient:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, max_results
+
+            return [
+                DatasetRecord(
+                    uid="101",
+                    accession="SRP123456",
+                    title="Drosophila brain RNA-seq",
+                    organism="Drosophila melanogaster",
+                    study_type="Sequence Read Archive",
+                    sample_count=2,
+                    publication_date="2026/01/01",
+                    url=(
+                        "https://www.ncbi.nlm.nih.gov/sra/"
+                        "?term=SRP123456"
+                    ),
+                    database="SRA",
+                )
+            ]
+
+    service = SearchService(
+        geo_client=FakeGEOClient(),
+        encode_client=FakeENCODEClient(),
+        sra_client=OneRecordSRAClient(),
+        bioproject_client=FakeBioProjectClient(),
+    )
+
+    records = service.search(
+        species="Drosophila melanogaster",
+        query="bru1",
+        database="sra",
+        max_results=5,
+    )
+
+    assert len(records) == 1
+    assert records[0].accession == "SRP123456"
+    assert records[0].database == "SRA"
 
 
 @pytest.mark.parametrize(
@@ -160,7 +228,12 @@ def test_search_service_validates_text_inputs(
     message: str,
 ) -> None:
     """The service should reject empty required search values."""
-    service = SearchService(geo_client=FakeGEOClient())
+    service = SearchService(
+        geo_client=FakeGEOClient(),
+        encode_client=FakeENCODEClient(),
+        sra_client=FakeSRAClient(),
+        bioproject_client=FakeBioProjectClient(),
+    )
 
     with pytest.raises(ValueError, match=message):
         service.search(
@@ -171,7 +244,12 @@ def test_search_service_validates_text_inputs(
 
 def test_search_service_rejects_invalid_result_limit() -> None:
     """The service should reject nonpositive result limits."""
-    service = SearchService(geo_client=FakeGEOClient())
+    service = SearchService(
+        geo_client=FakeGEOClient(),
+        encode_client=FakeENCODEClient(),
+        sra_client=FakeSRAClient(),
+        bioproject_client=FakeBioProjectClient(),
+    )
 
     with pytest.raises(
         ValueError,

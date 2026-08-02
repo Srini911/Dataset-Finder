@@ -6,6 +6,7 @@ import pytest
 
 from dataset_finder.cli import build_parser, main
 from dataset_finder.clients.ncbi_geo import GEORecord
+from dataset_finder.models import DatasetRecord
 
 
 def test_parser_program_name() -> None:
@@ -132,11 +133,29 @@ def test_geo_search_handles_no_results(
     assert "No matching GEO Series records were found." in output
 
 
-def test_sra_search_is_rejected_by_argument_parser(
+def test_sra_search_is_supported(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """The CLI should reject SRA because it is not an implemented choice."""
+    """The CLI should support SRA searches."""
+    fake_records = [
+        DatasetRecord(
+            uid="101",
+            accession="SRP123456",
+            title="Drosophila brain RNA-seq",
+            organism="Drosophila melanogaster",
+            study_type="Sequence Read Archive",
+            sample_count=2,
+            publication_date="2026/01/01",
+            url="https://www.ncbi.nlm.nih.gov/sra/?term=SRP123456",
+            database="SRA",
+        )
+    ]
+
+    monkeypatch.setattr(
+        "dataset_finder.search.NCBISRAClient.search",
+        lambda self, **kwargs: fake_records,
+    )
     monkeypatch.setattr(
         "sys.argv",
         [
@@ -151,20 +170,13 @@ def test_sra_search_is_rejected_by_argument_parser(
         ],
     )
 
-    with pytest.raises(SystemExit) as exc_info:
-        main()
+    exit_code = main()
+    output = capsys.readouterr().out
 
-    captured = capsys.readouterr()
-
-    error_output = captured.err.lower()
-
-    assert exc_info.value.code == 2
-    assert "invalid choice" in error_output
-    assert "sra" in error_output
-    assert "geo" in error_output
-    assert "encode" in error_output
-    assert "all" in error_output
-
+    assert exit_code == 0
+    assert "Dataset Finder SRA search" in output
+    assert "Results found: 1" in output
+    assert "SRP123456" in output
 
 def test_geo_search_exports_csv(
     monkeypatch: pytest.MonkeyPatch,
