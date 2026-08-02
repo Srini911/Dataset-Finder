@@ -71,3 +71,48 @@ def test_unknown_metadata_remains_empty() -> None:
     )
 
     assert metadata == BiologicalMetadata()
+
+
+def test_extracts_genotype_treatment_and_disease() -> None:
+    metadata = extract_biological_metadata(
+        "Adult male brain RNA-seq from homozygous mutant flies",
+        "oxidative stress model of Parkinson disease",
+    )
+
+    assert metadata.genotype == "homozygous"
+    assert metadata.treatment == "oxidative stress"
+    assert metadata.disease == "Parkinson disease"
+
+
+def test_extracts_wild_type_heat_shock() -> None:
+    metadata = extract_biological_metadata(
+        "Wild-type Drosophila exposed to heat shock",
+    )
+
+    assert metadata.genotype == "wild type"
+    assert metadata.treatment == "heat shock"
+
+
+def test_extracts_transgenic_infection_model() -> None:
+    metadata = extract_biological_metadata(
+        "Transgenic GAL4 flies after bacterial infection",
+    )
+
+    assert metadata.genotype == "transgenic"
+    assert metadata.treatment == "infection"
+
+
+def test_extracts_alzheimer_disease() -> None:
+    metadata = extract_biological_metadata(
+        "Drosophila model of Alzheimer's disease",
+    )
+
+    assert metadata.disease == "Alzheimer disease"
+
+
+def test_specific_zygosity_precedes_generic_mutant() -> None:
+    metadata = extract_biological_metadata(
+        "heterozygous mutant Drosophila adults",
+    )
+
+    assert metadata.genotype == "heterozygous"

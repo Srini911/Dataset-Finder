@@ -124,6 +124,90 @@ PERTURBATION_PATTERNS = {
 }
 
 
+GENOTYPE_PATTERNS = {
+    "homozygous": (
+        r"\bhomozygous\b",
+        r"\bhomozygote\b",
+    ),
+    "heterozygous": (
+        r"\bheterozygous\b",
+        r"\bheterozygote\b",
+    ),
+    "wild type": (
+        r"\bwild[- ]type\b",
+        r"\bwt\b",
+    ),
+    "transgenic": (
+        r"\btransgenic\b",
+        r"\buas[- ]\w+\b",
+        r"\bgal4\b",
+    ),
+    "mutant": (
+        r"\bmutant\b",
+        r"\bmutation\b",
+        r"\bnull allele\b",
+        r"\bloss[- ]of[- ]function\b",
+    ),
+}
+
+
+TREATMENT_PATTERNS = {
+    "heat shock": (
+        r"\bheat shock\b",
+        r"\bheat-shock\b",
+    ),
+    "oxidative stress": (
+        r"\boxidative stress\b",
+        r"\bparaquat\b",
+        r"\bhydrogen peroxide\b",
+    ),
+    "starvation": (
+        r"\bstarvation\b",
+        r"\bstarved\b",
+    ),
+    "infection": (
+        r"\binfection\b",
+        r"\binfected\b",
+    ),
+    "drug treatment": (
+        r"\bdrug[- ]treated\b",
+        r"\bdrug treatment\b",
+    ),
+    "irradiation": (
+        r"\birradiation\b",
+        r"\birradiated\b",
+    ),
+}
+
+
+DISEASE_PATTERNS = {
+    "Alzheimer disease": (
+        r"\balzheimer(?:'s)? disease\b",
+        r"\balzheimer(?:'s)?\b",
+    ),
+    "Parkinson disease": (
+        r"\bparkinson(?:'s)? disease\b",
+        r"\bparkinson(?:'s)?\b",
+    ),
+    "amyotrophic lateral sclerosis": (
+        r"\bamyotrophic lateral sclerosis\b",
+        r"\bals\b",
+    ),
+    "frontotemporal dementia": (
+        r"\bfrontotemporal dementia\b",
+        r"\bftd\b",
+    ),
+    "Huntington disease": (
+        r"\bhuntington(?:'s)? disease\b",
+        r"\bhuntington(?:'s)?\b",
+    ),
+    "cancer": (
+        r"\bcancer\b",
+        r"\btumou?r\b",
+    ),
+}
+
+
 CONTROL_PATTERNS = {
     "control": (
         r"\bcontrol\b",
@@ -220,7 +304,10 @@ def extract_biological_metadata(
             DEVELOPMENTAL_STAGE_PATTERNS,
         ),
         sex=_first_match(text, SEX_PATTERNS),
+        genotype=_first_match(text, GENOTYPE_PATTERNS),
         strain=_first_match(text, STRAIN_PATTERNS),
+        treatment=_first_match(text, TREATMENT_PATTERNS),
+        disease=_first_match(text, DISEASE_PATTERNS),
         control_status=_first_match(
             text,
             CONTROL_PATTERNS,
