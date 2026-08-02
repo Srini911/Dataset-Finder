@@ -93,3 +93,89 @@ def test_batch_search_records_gene_errors() -> None:
     assert len(result.records) == 1
     assert len(result.issues) == 1
     assert result.issues[0].gene == "bad"
+
+
+class FakeFlyBaseGene:
+    """Minimal resolved FlyBase record used by tests."""
+
+    submitted_symbol = "h"
+    official_symbol = "hry"
+    flybase_id = "FBgn0001168"
+    synonyms = ("hairy", "h")
+    match_type = "synonym"
+    ambiguous = True
+    flybase_url = (
+        "https://flybase.org/reports/"
+        "FBgn0001168.html"
+    )
+
+
+class FakeFlyBaseResolver:
+    """Return deterministic FlyBase metadata."""
+
+    def resolve(self, symbol: str) -> FakeFlyBaseGene:
+        del symbol
+        return FakeFlyBaseGene()
+
+
+def test_batch_search_adds_flybase_metadata() -> None:
+    service = BatchSearchService(
+        search_service=FakeSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+        gene_set="TF",
+    )
+
+    record = result.records[0]
+
+    assert record.gene == "h"
+    assert record.official_symbol == "hry"
+    assert record.flybase_id == "FBgn0001168"
+    assert record.synonyms == ("hairy", "h")
+    assert record.match_type == "synonym"
+    assert record.confidence == "Medium"
+    assert record.flybase_url.endswith(
+        "FBgn0001168.html"
+    )
+
+
+def test_batch_search_query_includes_resolved_flybase_terms() -> None:
+    class CapturingSearchService:
+        def __init__(self) -> None:
+            self.query = ""
+
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, database, max_results
+            self.query = query
+            return [make_record("GSE1", "RNA-seq")]
+
+    search_service = CapturingSearchService()
+
+    service = BatchSearchService(
+        search_service=search_service,
+        flybase_resolver=FakeFlyBaseResolver(),
+    )
+
+    service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+    )
+
+    assert '"h"' in search_service.query
+    assert '"hry"' in search_service.query
+    assert '"FBgn0001168"' in search_service.query
