@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
+from dataset_finder.clients.biostudies import BioStudiesClient
 from dataset_finder.clients.encode import ENCODEClient
 from dataset_finder.clients.ncbi_bioproject import (
     NCBIBioProjectClient,
@@ -27,6 +28,7 @@ class SearchService:
         encode_client: ENCODEClient | None = None,
         sra_client: NCBISRAClient | None = None,
         bioproject_client: NCBIBioProjectClient | None = None,
+        biostudies_client: BioStudiesClient | None = None,
     ) -> None:
         self.geo_client = geo_client or NCBIGEOClient()
         self.encode_client = encode_client or ENCODEClient()
@@ -34,6 +36,10 @@ class SearchService:
         self.bioproject_client = (
             bioproject_client
             or NCBIBioProjectClient()
+        )
+        self.biostudies_client = (
+            biostudies_client
+            or BioStudiesClient()
         )
 
     def search(
@@ -65,6 +71,7 @@ class SearchService:
             "encode": self.encode_client,
             "sra": self.sra_client,
             "bioproject": self.bioproject_client,
+            "biostudies": self.biostudies_client,
         }
 
         if database in clients:
@@ -100,25 +107,12 @@ class SearchService:
 
     @staticmethod
     def _interleave_records(
-        *record_groups: Iterable[list[DatasetRecord]],
+        record_groups: Iterable[list[DatasetRecord]],
+        *,
         max_results: int,
     ) -> list[DatasetRecord]:
         """Interleave and deduplicate multiple result groups."""
-        if (
-            len(record_groups) == 1
-            and not isinstance(record_groups[0], list)
-        ):
-            groups = list(record_groups[0])
-        elif (
-            len(record_groups) == 1
-            and record_groups
-            and record_groups[0]
-            and isinstance(record_groups[0][0], list)
-        ):
-            groups = list(record_groups[0])
-        else:
-            groups = list(record_groups)
-
+        groups = list(record_groups)
         merged: list[DatasetRecord] = []
         seen: set[tuple[str, str]] = set()
 

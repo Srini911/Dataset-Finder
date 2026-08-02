@@ -96,6 +96,20 @@ class FakeSRAClient:
         return []
 
 
+class FakeBioStudiesClient:
+    """Return no BioStudies records during combined-search tests."""
+
+    def search(
+        self,
+        *,
+        species: str,
+        query: str,
+        max_results: int,
+    ) -> list[DatasetRecord]:
+        del species, query, max_results
+        return []
+
+
 class FakeBioProjectClient:
     """Return no BioProject records during combined-search tests."""
 
@@ -118,6 +132,7 @@ def test_search_service_calls_geo_client() -> None:
         encode_client=FakeENCODEClient(),
         sra_client=FakeSRAClient(),
         bioproject_client=FakeBioProjectClient(),
+        biostudies_client=FakeBioStudiesClient(),
     )
 
     records = service.search(
@@ -144,6 +159,7 @@ def test_all_combines_supported_clients() -> None:
         encode_client=encode_client,
         sra_client=FakeSRAClient(),
         bioproject_client=FakeBioProjectClient(),
+        biostudies_client=FakeBioStudiesClient(),
     )
 
     records = service.search(
@@ -201,6 +217,7 @@ def test_sra_search_is_supported() -> None:
         encode_client=FakeENCODEClient(),
         sra_client=OneRecordSRAClient(),
         bioproject_client=FakeBioProjectClient(),
+        biostudies_client=FakeBioStudiesClient(),
     )
 
     records = service.search(
@@ -233,6 +250,7 @@ def test_search_service_validates_text_inputs(
         encode_client=FakeENCODEClient(),
         sra_client=FakeSRAClient(),
         bioproject_client=FakeBioProjectClient(),
+        biostudies_client=FakeBioStudiesClient(),
     )
 
     with pytest.raises(ValueError, match=message):
@@ -249,6 +267,7 @@ def test_search_service_rejects_invalid_result_limit() -> None:
         encode_client=FakeENCODEClient(),
         sra_client=FakeSRAClient(),
         bioproject_client=FakeBioProjectClient(),
+        biostudies_client=FakeBioStudiesClient(),
     )
 
     with pytest.raises(

@@ -120,7 +120,10 @@ class BatchSearchService:
         if accession.startswith(("PRJNA", "PRJEB", "PRJDB")):
             return "BioProject"
 
-        if accession.startswith(("E-", "S-BSST")) or "biostudies" in url:
+        if (
+            accession.startswith(("E-", "S-BSST"))
+            or "biostudies" in url
+        ):
             return "BioStudies"
 
         return ""
