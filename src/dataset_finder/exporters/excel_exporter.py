@@ -485,7 +485,9 @@ def _write_gene_summary(
             "ENCODE",
             "SRA",
             "BioProject",
+            "BioSample",
             "BioStudies",
+            "ENA",
         ):
             row[database_name] = int(
                 (

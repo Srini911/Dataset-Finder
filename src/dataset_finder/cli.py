@@ -89,11 +89,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     search_parser.add_argument(
         "--database",
-        choices=("geo", "encode", "sra", "bioproject", "biostudies", "all"),
+        choices=(
+            "geo",
+            "encode",
+            "sra",
+            "bioproject",
+            "biosample",
+            "biostudies",
+            "ena",
+            "all",
+        ),
         default="geo",
         help=(
             "Database to search: GEO, ENCODE, SRA, BioProject, "
-            "BioStudies/ArrayExpress, or all. Default: geo."
+            "BioSample, BioStudies/ArrayExpress, ENA, or all. "
+            "Default: geo."
         ),
     )
     search_parser.add_argument(
