@@ -43,6 +43,17 @@ class DatasetRecord:
     search_date: str = ""
     flyatlas_url: str = ""
     flybase_url: str = ""
+    flyatlas_brain_male_fpkm: float | None = None
+    flyatlas_brain_female_fpkm: float | None = None
+    flyatlas_brain_larval_fpkm: float | None = None
+    flyatlas_head_male_fpkm: float | None = None
+    flyatlas_head_female_fpkm: float | None = None
+    flyatlas_top_male_tissue: str = ""
+    flyatlas_top_male_fpkm: float | None = None
+    flyatlas_top_female_tissue: str = ""
+    flyatlas_top_female_fpkm: float | None = None
+    flyatlas_top_larval_tissue: str = ""
+    flyatlas_top_larval_fpkm: float | None = None
     raw_metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:

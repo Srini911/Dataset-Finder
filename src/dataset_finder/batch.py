@@ -6,6 +6,11 @@ from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 
 from dataset_finder.assay_classifier import classify_technique
+from dataset_finder.clients.flyatlas import (
+    FlyAtlasClient,
+    FlyAtlasClientError,
+    FlyAtlasExpression,
+)
 from dataset_finder.flybase_resolver import FlyBaseGene, FlyBaseResolver
 from dataset_finder.models import DatasetRecord
 from dataset_finder.search import SearchService
@@ -39,9 +44,11 @@ class BatchSearchService:
         *,
         search_service: SearchService | None = None,
         flybase_resolver: FlyBaseResolver | None = None,
+        flyatlas_client: FlyAtlasClient | None = None,
     ) -> None:
         self.search_service = search_service or SearchService()
         self.flybase_resolver = flybase_resolver or FlyBaseResolver()
+        self.flyatlas_client = flyatlas_client or FlyAtlasClient()
 
     def search_many(
         self,
@@ -63,6 +70,10 @@ class BatchSearchService:
         for submitted_gene in genes:
             resolved_gene = self.flybase_resolver.resolve(
                 submitted_gene
+            )
+
+            flyatlas_expression = self._fetch_flyatlas(
+                resolved_gene,
             )
 
             query = self._build_search_query(
@@ -120,6 +131,39 @@ class BatchSearchService:
                         search_date=record.search_date or search_date,
                         flybase_url=resolved_gene.flybase_url,
                         flyatlas_url=resolved_gene.flyatlas_url,
+                        flyatlas_brain_male_fpkm=(
+                            flyatlas_expression.brain_male_fpkm
+                        ),
+                        flyatlas_brain_female_fpkm=(
+                            flyatlas_expression.brain_female_fpkm
+                        ),
+                        flyatlas_brain_larval_fpkm=(
+                            flyatlas_expression.brain_larval_fpkm
+                        ),
+                        flyatlas_head_male_fpkm=(
+                            flyatlas_expression.head_male_fpkm
+                        ),
+                        flyatlas_head_female_fpkm=(
+                            flyatlas_expression.head_female_fpkm
+                        ),
+                        flyatlas_top_male_tissue=(
+                            flyatlas_expression.top_male_tissue
+                        ),
+                        flyatlas_top_male_fpkm=(
+                            flyatlas_expression.top_male_fpkm
+                        ),
+                        flyatlas_top_female_tissue=(
+                            flyatlas_expression.top_female_tissue
+                        ),
+                        flyatlas_top_female_fpkm=(
+                            flyatlas_expression.top_female_fpkm
+                        ),
+                        flyatlas_top_larval_tissue=(
+                            flyatlas_expression.top_larval_tissue
+                        ),
+                        flyatlas_top_larval_fpkm=(
+                            flyatlas_expression.top_larval_fpkm
+                        ),
                     )
                 )
 
@@ -130,6 +174,27 @@ class BatchSearchService:
             gene_set=gene_set,
             database=database,
         )
+
+    def _fetch_flyatlas(
+        self,
+        resolved_gene: FlyBaseGene,
+    ) -> FlyAtlasExpression:
+        """Fetch FlyAtlas values without interrupting dataset searches."""
+        if not resolved_gene.flybase_id:
+            return FlyAtlasExpression(
+                flybase_id="",
+                symbol="",
+            )
+
+        try:
+            return self.flyatlas_client.fetch(
+                resolved_gene.flybase_id
+            )
+        except FlyAtlasClientError:
+            return FlyAtlasExpression(
+                flybase_id=resolved_gene.flybase_id,
+                symbol=resolved_gene.official_symbol,
+            )
 
     @staticmethod
     def _build_search_query(

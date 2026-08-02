@@ -186,3 +186,49 @@ def test_batch_search_query_includes_resolved_flybase_terms() -> None:
     assert '"h"' in search_service.query
     assert '"hry"' in search_service.query
     assert '"FBgn0001168"' in search_service.query
+
+
+class FakeFlyAtlasClient:
+    """Return deterministic FlyAtlas expression values."""
+
+    def fetch(self, flybase_id: str):
+        from dataset_finder.clients.flyatlas import FlyAtlasExpression
+
+        return FlyAtlasExpression(
+            flybase_id=flybase_id,
+            symbol="hry",
+            brain_male_fpkm=12.5,
+            brain_female_fpkm=10.25,
+            brain_larval_fpkm=7.5,
+            head_male_fpkm=15.0,
+            head_female_fpkm=14.0,
+            top_male_tissue="Testis",
+            top_male_fpkm=100.0,
+            top_female_tissue="Ovary",
+            top_female_fpkm=120.0,
+            top_larval_tissue="Hindgut",
+            top_larval_fpkm=40.0,
+        )
+
+
+def test_batch_search_adds_flyatlas_expression() -> None:
+    service = BatchSearchService(
+        search_service=FakeSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+        flyatlas_client=FakeFlyAtlasClient(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=5,
+    )
+
+    record = result.records[0]
+
+    assert record.flyatlas_brain_male_fpkm == 12.5
+    assert record.flyatlas_brain_female_fpkm == 10.25
+    assert record.flyatlas_top_male_tissue == "Testis"
+    assert record.flyatlas_top_female_tissue == "Ovary"
+    assert record.flyatlas_top_larval_tissue == "Hindgut"
