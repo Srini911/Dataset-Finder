@@ -110,6 +110,34 @@ class FakeBioSampleClient:
         return []
 
 
+class FakeExpressionAtlasClient:
+    """Return no Expression Atlas records in combined tests."""
+
+    def search(
+        self,
+        *,
+        species: str,
+        query: str,
+        max_results: int,
+    ) -> list[DatasetRecord]:
+        del species, query, max_results
+        return []
+
+
+class FakePRIDEClient:
+    """Return no PRIDE records in combined tests."""
+
+    def search(
+        self,
+        *,
+        species: str,
+        query: str,
+        max_results: int,
+    ) -> list[DatasetRecord]:
+        del species, query, max_results
+        return []
+
+
 class FakePubMedClient:
     """Return no PubMed records during combined-search tests."""
 
@@ -206,6 +234,8 @@ def test_all_combines_supported_clients() -> None:
         biostudies_client=FakeBioStudiesClient(),
         ena_client=FakeENAClient(),
         pubmed_client=FakePubMedClient(),
+        expression_atlas_client=FakeExpressionAtlasClient(),
+        pride_client=FakePRIDEClient(),
     )
 
     records = service.search(

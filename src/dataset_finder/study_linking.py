@@ -38,6 +38,14 @@ ACCESSION_PATTERNS: dict[str, re.Pattern[str]] = {
         r"\bENCSR[A-Z0-9]+\b",
         flags=re.IGNORECASE,
     ),
+    "expression_atlas": re.compile(
+        r"\bE-[A-Z0-9]+-\d+\b",
+        flags=re.IGNORECASE,
+    ),
+    "proteomexchange": re.compile(
+        r"\bPXD\d+\b",
+        flags=re.IGNORECASE,
+    ),
     "pmid": re.compile(
         r"\bPMID\s*[:#]?\s*(\d{5,10})\b",
         flags=re.IGNORECASE,
@@ -63,6 +71,8 @@ class StudyLinks:
     related_bioproject_accessions: tuple[str, ...] = ()
     related_biosample_accessions: tuple[str, ...] = ()
     related_encode_accessions: tuple[str, ...] = ()
+    related_expression_atlas_accessions: tuple[str, ...] = ()
+    related_proteomexchange_accessions: tuple[str, ...] = ()
 
     @property
     def all_accessions(self) -> tuple[str, ...]:
@@ -76,6 +86,8 @@ class StudyLinks:
                 *self.related_bioproject_accessions,
                 *self.related_biosample_accessions,
                 *self.related_encode_accessions,
+                *self.related_expression_atlas_accessions,
+                *self.related_proteomexchange_accessions,
             )
         )
 
@@ -96,6 +108,8 @@ class StudyLinks:
                 *self.related_study_accessions,
                 *self.related_bioproject_accessions,
                 *self.related_encode_accessions,
+                *self.related_expression_atlas_accessions,
+                *self.related_proteomexchange_accessions,
             )
         )
 
@@ -214,6 +228,14 @@ def extract_study_links(*values: object) -> StudyLinks:
         related_encode_accessions=_matches(
             text,
             ACCESSION_PATTERNS["encode"],
+        ),
+        related_expression_atlas_accessions=_matches(
+            text,
+            ACCESSION_PATTERNS["expression_atlas"],
+        ),
+        related_proteomexchange_accessions=_matches(
+            text,
+            ACCESSION_PATTERNS["proteomexchange"],
         ),
     )
 

@@ -503,6 +503,8 @@ def _write_gene_summary(
             "BioStudies",
             "ENA",
             "PubMed",
+            "Expression Atlas",
+            "PRIDE",
         ):
             row[database_name] = int(
                 (

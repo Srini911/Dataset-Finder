@@ -8,10 +8,12 @@ from typing import Protocol
 from dataset_finder.clients.biostudies import BioStudiesClient
 from dataset_finder.clients.ena import ENAClient
 from dataset_finder.clients.encode import ENCODEClient
+from dataset_finder.clients.expression_atlas import ExpressionAtlasClient
 from dataset_finder.clients.ncbi_bioproject import NCBIBioProjectClient
 from dataset_finder.clients.ncbi_biosample import NCBIBioSampleClient
 from dataset_finder.clients.ncbi_geo import NCBIGEOClient
 from dataset_finder.clients.ncbi_sra import NCBISRAClient
+from dataset_finder.clients.pride import PRIDEClient
 from dataset_finder.clients.pubmed import PubMedClient
 from dataset_finder.models import DatasetRecord
 
@@ -65,6 +67,8 @@ class SearchService:
         biostudies_client: BioStudiesClient | None = None,
         ena_client: ENAClient | None = None,
         pubmed_client: PubMedClient | None = None,
+        expression_atlas_client: ExpressionAtlasClient | None = None,
+        pride_client: PRIDEClient | None = None,
     ) -> None:
         self.geo_client = geo_client or NCBIGEOClient()
         self.encode_client = encode_client or ENCODEClient()
@@ -74,6 +78,11 @@ class SearchService:
         self.biostudies_client = biostudies_client or BioStudiesClient()
         self.ena_client = ena_client or ENAClient()
         self.pubmed_client = pubmed_client or PubMedClient()
+        self.expression_atlas_client = (
+            expression_atlas_client
+            or ExpressionAtlasClient()
+        )
+        self.pride_client = pride_client or PRIDEClient()
 
     def _clients(self) -> dict[str, SearchClient]:
         return {
@@ -85,6 +94,8 @@ class SearchService:
             "biostudies": self.biostudies_client,
             "ena": self.ena_client,
             "pubmed": self.pubmed_client,
+            "expression-atlas": self.expression_atlas_client,
+            "pride": self.pride_client,
         }
 
     @staticmethod
