@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
+from xlsxwriter.utility import xl_col_to_name
 
 from dataset_finder.assay_classifier import TECHNIQUE_ORDER
 from dataset_finder.batch import BatchSearchResult
@@ -207,6 +208,60 @@ def _safe_sheet_name(value: str) -> str:
     return value[:31] or "Sheet"
 
 
+NEURAL_HIGHLIGHT_TERMS = (
+    "brain",
+    "central nervous system",
+    "cns",
+    "mushroom body",
+    "mushroom bodies",
+    "kenyon cell",
+    "kenyon cells",
+    "optic lobe",
+    "optic lobes",
+    "neuron",
+    "neuronal",
+    "glia",
+    "glial",
+    "neural stem cell",
+    "neural stem cells",
+)
+
+
+def _neural_highlight_formula(
+    columns: list[str],
+) -> str:
+    """Build an Excel formula for strong brain or neural evidence."""
+    searchable_columns = (
+        "Tissue",
+        "Cell Type",
+        "Title",
+        "Description",
+    )
+
+    clauses: list[str] = []
+
+    for column_name in searchable_columns:
+        if column_name not in columns:
+            continue
+
+        column_index = columns.index(column_name)
+        column_letter = xl_col_to_name(
+            column_index,
+            col_abs=True,
+        )
+
+        for term in NEURAL_HIGHLIGHT_TERMS:
+            clauses.append(
+                f'ISNUMBER(SEARCH("{term}",'
+                f'{column_letter}2))'
+            )
+
+    if not clauses:
+        return ""
+
+    return f'=OR({",".join(clauses)})'
+
+
 def _format_dataframe_sheet(
     *,
     worksheet,
@@ -241,6 +296,11 @@ def _format_dataframe_sheet(
             "font_color": "#0563C1",
             "underline": True,
             "valign": "top",
+        }
+    )
+    neural_row_format = workbook.add_format(
+        {
+            "bg_color": "#E2F0D9",
         }
     )
 
@@ -319,6 +379,27 @@ def _format_dataframe_sheet(
                         link_format,
                         string="Open",
                     )
+
+    neural_formula = _neural_highlight_formula(
+        list(dataframe.columns)
+    )
+
+    if (
+        neural_formula
+        and not dataframe.empty
+        and len(dataframe.columns)
+    ):
+        worksheet.conditional_format(
+            1,
+            0,
+            len(dataframe),
+            len(dataframe.columns) - 1,
+            {
+                "type": "formula",
+                "criteria": neural_formula,
+                "format": neural_row_format,
+            },
+        )
 
 
 def _write_readme_sheet(
