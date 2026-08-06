@@ -13,6 +13,7 @@ from dataset_finder.clients.flyatlas import (
 )
 from dataset_finder.clients.ncbi_geo import NCBIGEOClient
 from dataset_finder.flybase_resolver import FlyBaseGene, FlyBaseResolver
+from dataset_finder.historical_search import HistoricalSearchService
 from dataset_finder.metadata import extract_biological_metadata
 from dataset_finder.models import DatasetRecord
 from dataset_finder.relevance import assess_relevance
@@ -77,11 +78,16 @@ class BatchSearchService:
         flybase_resolver: FlyBaseResolver | None = None,
         flyatlas_client: FlyAtlasClient | None = None,
         geo_client: NCBIGEOClient | None = None,
+        historical_search_service: HistoricalSearchService | None = None,
     ) -> None:
         self.search_service = search_service or SearchService()
         self.flybase_resolver = flybase_resolver or FlyBaseResolver()
         self.flyatlas_client = flyatlas_client or FlyAtlasClient()
         self.geo_client = geo_client or NCBIGEOClient()
+        self.historical_search_service = (
+            historical_search_service
+            or HistoricalSearchService()
+        )
 
     def search_many(
         self,
@@ -91,6 +97,10 @@ class BatchSearchService:
         database: str,
         max_results_per_gene: int,
         gene_set: str = "",
+        historical_search: bool = False,
+        historical_start_year: int = 2005,
+        historical_end_year: int | None = None,
+        historical_max_results: int = 100,
     ) -> BatchSearchResult:
         """Search all genes and return enriched, classified records."""
         if not genes:
@@ -139,7 +149,7 @@ class BatchSearchService:
                         database=database,
                         max_results=candidate_limit,
                     )
-                    gene_records = list(outcome.records)
+                    standard_records = list(outcome.records)
 
                     for status in outcome.statuses:
                         database_statuses.append(
@@ -149,12 +159,72 @@ class BatchSearchService:
                             )
                         )
                 else:
-                    gene_records = self.search_service.search(
+                    standard_records = self.search_service.search(
                         species=species,
                         query=query,
                         database=database,
                         max_results=candidate_limit,
                     )
+
+                historical_records: list[DatasetRecord] = []
+
+                if historical_search:
+                    historical_service = (
+                        self.historical_search_service
+                    )
+
+                    if isinstance(
+                        historical_service,
+                        HistoricalSearchService,
+                    ):
+                        historical_service = HistoricalSearchService(
+                            entrez_client=historical_service.entrez,
+                            start_year=historical_start_year,
+                            end_year=historical_end_year,
+                            page_size=historical_service.page_size,
+                            historical_cutoff_year=(
+                                historical_service
+                                .historical_cutoff_year
+                            ),
+                        )
+
+                    historical_outcome = historical_service.search(
+                        species=species,
+                        gene_terms=self._historical_gene_terms(
+                            submitted_gene,
+                            resolved_gene,
+                        ),
+                        max_results_per_query=(
+                            historical_max_results
+                        ),
+                    )
+
+                    historical_records = list(
+                        historical_outcome.records
+                    )
+
+                    for status in historical_outcome.statuses:
+                        database_statuses.append(
+                            BatchDatabaseStatus(
+                                gene=submitted_gene,
+                                database=(
+                                    f"{status.database} Historical "
+                                    f"{status.technique}"
+                                ),
+                                success=status.success,
+                                result_count=(
+                                    status.candidate_count
+                                ),
+                                error=status.error,
+                            )
+                        )
+
+                gene_records = self._deduplicate_candidates(
+                    [
+                        *historical_records,
+                        *standard_records,
+                    ]
+                )
             except Exception as exc:
                 issues.append(
                     BatchSearchIssue(
@@ -476,6 +546,69 @@ class BatchSearchService:
                 flybase_id=resolved_gene.flybase_id,
                 symbol=resolved_gene.official_symbol,
             )
+
+    @staticmethod
+    def _historical_gene_terms(
+        submitted_gene: str,
+        resolved_gene: FlyBaseGene,
+    ) -> tuple[str, ...]:
+        """Return symbols, identifiers, names, and synonyms for searching."""
+        values = [
+            submitted_gene,
+            resolved_gene.official_symbol,
+            resolved_gene.flybase_id,
+            getattr(
+                resolved_gene,
+                "current_fullname",
+                "",
+            ),
+            *resolved_gene.synonyms,
+        ]
+
+        terms: list[str] = []
+        seen: set[str] = set()
+
+        for value in values:
+            normalized = str(value).strip()
+
+            if not normalized:
+                continue
+
+            identity = normalized.casefold()
+
+            if identity in seen:
+                continue
+
+            seen.add(identity)
+            terms.append(normalized)
+
+        return tuple(terms)
+
+    @staticmethod
+    def _deduplicate_candidates(
+        records: list[DatasetRecord],
+    ) -> list[DatasetRecord]:
+        """Deduplicate candidates while preserving historical priority."""
+        output: list[DatasetRecord] = []
+        seen: set[tuple[str, str]] = set()
+
+        for record in records:
+            database = record.database.strip().casefold()
+            accession = (
+                record.accession
+                or record.uid
+                or record.url
+            ).strip().upper()
+
+            identity = (database, accession)
+
+            if identity in seen:
+                continue
+
+            seen.add(identity)
+            output.append(record)
+
+        return output
 
     @staticmethod
     def _build_search_query(

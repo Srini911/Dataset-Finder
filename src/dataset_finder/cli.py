@@ -113,7 +113,41 @@ def build_parser() -> argparse.ArgumentParser:
         "--max-results",
         type=positive_integer,
         default=20,
-        help="Maximum results per gene. Default: 20.",
+        help="Maximum accepted results per gene. Default: 20.",
+    )
+    search_parser.add_argument(
+        "--historical-search",
+        action="store_true",
+        help=(
+            "Run additional technique-specific historical GEO and "
+            "SRA searches."
+        ),
+    )
+    search_parser.add_argument(
+        "--start-year",
+        type=positive_integer,
+        default=2005,
+        help=(
+            "First year included in historical searches. "
+            "Default: 2005."
+        ),
+    )
+    search_parser.add_argument(
+        "--end-year",
+        type=positive_integer,
+        help=(
+            "Last year included in historical searches. "
+            "Default: current year."
+        ),
+    )
+    search_parser.add_argument(
+        "--historical-max-results",
+        type=positive_integer,
+        default=100,
+        help=(
+            "Maximum candidates for each gene alias, technique, "
+            "and historical database query. Default: 100."
+        ),
     )
     search_parser.add_argument(
         "--format",
@@ -208,6 +242,7 @@ def run_search(args: argparse.Namespace) -> int:
         args.genes
         or args.gene_file
         or args.gene_set
+        or args.historical_search
     )
 
     if (
@@ -278,6 +313,12 @@ def run_search(args: argparse.Namespace) -> int:
             gene_set=(
                 args.gene_set_name.strip()
                 or (args.gene_set.upper() if args.gene_set else "")
+            ),
+            historical_search=args.historical_search,
+            historical_start_year=args.start_year,
+            historical_end_year=args.end_year,
+            historical_max_results=(
+                args.historical_max_results
             ),
         )
     except ValueError as exc:
