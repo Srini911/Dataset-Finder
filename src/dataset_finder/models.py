@@ -27,6 +27,14 @@ class DatasetRecord:
     synonyms: tuple[str, ...] = field(default_factory=tuple)
     technique: str = ""
     technique_subtype: str = ""
+    technique_requested: str = ""
+    technique_search_term: str = ""
+    technique_evidence: str = ""
+    technique_evidence_source: str = ""
+    gene_query_used: str = ""
+    search_query_used: str = ""
+    study_year: int | None = None
+    historical_study: bool = False
     project_accession: str = ""
     experiment_accessions: tuple[str, ...] = field(default_factory=tuple)
     sample_accessions: tuple[str, ...] = field(default_factory=tuple)
