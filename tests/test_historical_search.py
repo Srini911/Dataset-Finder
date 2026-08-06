@@ -9,6 +9,7 @@ import pytest
 from dataset_finder.historical_search import (
     HistoricalSearchService,
 )
+from dataset_finder.models import DatasetRecord
 from dataset_finder.search_profiles import (
     TechniqueSearchProfile,
 )
@@ -220,3 +221,49 @@ def test_historical_search_rejects_invalid_year_range() -> None:
             start_year=2026,
             end_year=2005,
         )
+
+
+def test_specific_cut_run_title_overrides_generic_chip_strategy() -> None:
+    record = DatasetRecord(
+        uid="1",
+        accession="SRP1",
+        title="Anti-GFP Cut & Run in Drosophila wing tissue",
+        organism="Drosophila melanogaster",
+        study_type="ChIP-Seq",
+        sample_count=2,
+        publication_date="2023/01/01",
+        url="https://example.org/SRP1",
+        library_strategy="ChIP-Seq",
+    )
+
+    technique, evidence, source = (
+        HistoricalSearchService._verified_technique(record)
+    )
+
+    assert technique == "CUT_RUN"
+    assert "Cut & Run" in evidence
+    assert source == (
+        "Specific assay evidence in title or description"
+    )
+
+
+def test_requested_and_verified_technique_match() -> None:
+    assert HistoricalSearchService._technique_match(
+        requested="CUT&RUN",
+        verified="CUT_RUN",
+    ) == "Exact"
+
+    assert HistoricalSearchService._technique_match(
+        requested="RNA-seq",
+        verified="ChIP_seq",
+    ) == "Mismatch"
+
+    assert HistoricalSearchService._technique_match(
+        requested="CLIP-seq",
+        verified="eCLIP",
+    ) == "Exact"
+
+    assert HistoricalSearchService._technique_match(
+        requested="ChIP-seq",
+        verified="Other_Assays",
+    ) == "Unverified"

@@ -28,6 +28,7 @@ class DatasetRecord:
     technique: str = ""
     technique_subtype: str = ""
     technique_requested: str = ""
+    technique_match: str = ""
     technique_search_term: str = ""
     technique_evidence: str = ""
     technique_evidence_source: str = ""

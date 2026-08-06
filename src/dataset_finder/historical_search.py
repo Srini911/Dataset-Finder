@@ -229,6 +229,10 @@ class HistoricalSearchService:
         technique, evidence, evidence_source = (
             self._verified_technique(record)
         )
+        technique_match = self._technique_match(
+            requested=profile.name,
+            verified=technique,
+        )
 
         study_year = self._extract_year(
             record.publication_date
@@ -239,6 +243,7 @@ class HistoricalSearchService:
             database=record.database or database_name,
             technique=technique,
             technique_requested=profile.name,
+            technique_match=technique_match,
             technique_search_term="; ".join(profile.terms),
             technique_evidence=evidence,
             technique_evidence_source=evidence_source,
@@ -266,15 +271,46 @@ class HistoricalSearchService:
     def _verified_technique(
         record: DatasetRecord,
     ) -> tuple[str, str, str]:
-        """Classify technique using structured metadata first."""
+        """Classify technique with specific assays taking precedence."""
+        descriptive_values = (
+            record.title,
+            record.description,
+            record.evidence_text,
+        )
         structured_values = (
             record.library_strategy,
             record.study_type,
         )
 
+        descriptive_technique = classify_technique(
+            *descriptive_values
+        )
         structured_technique = classify_technique(
             *structured_values
         )
+
+        specific_techniques = {
+            "CUT_RUN",
+            "CUT_TAG",
+            "eCLIP",
+            "iCLIP",
+            "PAR_CLIP",
+            "HITS_CLIP",
+            "CLIP",
+        }
+
+        if descriptive_technique in specific_techniques:
+            evidence = " | ".join(
+                value
+                for value in descriptive_values
+                if value
+            )
+
+            return (
+                descriptive_technique,
+                evidence,
+                "Specific assay evidence in title or description",
+            )
 
         if structured_technique != "Other_Assays":
             evidence = " | ".join(
@@ -289,34 +325,64 @@ class HistoricalSearchService:
                 "Structured repository metadata",
             )
 
-        fallback_values = (
-            record.title,
-            record.description,
-            record.evidence_text,
-        )
+        if descriptive_technique != "Other_Assays":
+            evidence = " | ".join(
+                value
+                for value in descriptive_values
+                if value
+            )
 
-        fallback_technique = classify_technique(
-            *fallback_values
-        )
-
-        evidence = " | ".join(
-            value
-            for value in fallback_values
-            if value
-        )
-
-        if fallback_technique != "Other_Assays":
             return (
-                fallback_technique,
+                descriptive_technique,
                 evidence,
                 "Title and descriptive metadata",
             )
+
+        evidence = " | ".join(
+            value
+            for value in (
+                *structured_values,
+                *descriptive_values,
+            )
+            if value
+        )
 
         return (
             "Other_Assays",
             evidence,
             "No supported technique evidence",
         )
+
+    @staticmethod
+    def _technique_match(
+        *,
+        requested: str,
+        verified: str,
+    ) -> str:
+        """Compare the requested profile with the verified assay."""
+        requested_map = {
+            "RNA-seq": {"RNA_seq", "scRNA_seq", "snRNA_seq"},
+            "ChIP-seq": {"ChIP_seq"},
+            "CUT&RUN": {"CUT_RUN"},
+            "CUT&Tag": {"CUT_TAG"},
+            "CLIP-seq": {
+                "CLIP",
+                "eCLIP",
+                "iCLIP",
+                "PAR_CLIP",
+                "HITS_CLIP",
+            },
+        }
+
+        expected = requested_map.get(requested, set())
+
+        if verified in expected:
+            return "Exact"
+
+        if verified == "Other_Assays":
+            return "Unverified"
+
+        return "Mismatch"
 
     @staticmethod
     def _build_query(

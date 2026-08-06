@@ -35,3 +35,6 @@ outputs/*
 
 # Local FlyBase bulk downloads used to build the compact packaged index
 /data/flybase/*.gz
+
+# Generated spreadsheet outputs
+*.xlsx
