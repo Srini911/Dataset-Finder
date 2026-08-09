@@ -73,6 +73,8 @@ class DatasetRecord:
     evidence_text: str = ""
     match_type: str = ""
     confidence: str = ""
+    ranking_score: int = 0
+    ranking_reasons: tuple[str, ...] = field(default_factory=tuple)
     search_date: str = ""
     flyatlas_url: str = ""
     flybase_url: str = ""

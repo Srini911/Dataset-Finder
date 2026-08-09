@@ -82,6 +82,8 @@ RECORD_COLUMNS = [
     "evidence_text",
     "match_type",
     "confidence",
+    "ranking_score",
+    "ranking_reasons",
     "search_date",
     "uid",
 ]

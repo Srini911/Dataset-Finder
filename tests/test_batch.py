@@ -809,3 +809,70 @@ def test_historical_gene_terms_include_synonyms_and_flybase_id() -> None:
     assert "FBgn0000210" in terms
     assert "bruno 1" in terms
     assert "aret" in terms
+
+
+def test_batch_ranks_all_candidates_before_applying_result_limit() -> None:
+    class RankingSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            generic_records = [
+                DatasetRecord(
+                    uid=f"GSE_GENERIC_{index}",
+                    accession=f"GSE_GENERIC_{index}",
+                    title=f"hairy whole body RNA-seq {index}",
+                    organism="Drosophila melanogaster",
+                    study_type="RNA-seq",
+                    sample_count=2,
+                    publication_date="2026/01/01",
+                    url=f"https://example.org/{index}",
+                    database="GEO",
+                    technique_match="Exact",
+                    evidence_text="hairy RNA-seq",
+                )
+                for index in range(5)
+            ]
+
+            brain_record = DatasetRecord(
+                uid="GSE_BRAIN_LAST",
+                accession="GSE_BRAIN_LAST",
+                title="hairy RNA-seq in Drosophila brain neurons",
+                organism="Drosophila melanogaster",
+                study_type="RNA-seq",
+                sample_count=2,
+                publication_date="2014/01/01",
+                url="https://example.org/brain",
+                database="GEO",
+                technique_match="Exact",
+                tissue="brain",
+                historical_study=True,
+                study_year=2014,
+                evidence_text="hairy brain neuronal RNA-seq",
+            )
+
+            return [
+                *generic_records,
+                brain_record,
+            ]
+
+    service = BatchSearchService(
+        search_service=RankingSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=1,
+    )
+
+    assert len(result.records) == 1
+    assert result.records[0].accession == "GSE_BRAIN_LAST"

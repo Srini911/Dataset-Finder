@@ -16,6 +16,7 @@ from dataset_finder.flybase_resolver import FlyBaseGene, FlyBaseResolver
 from dataset_finder.historical_search import HistoricalSearchService
 from dataset_finder.metadata import extract_biological_metadata
 from dataset_finder.models import DatasetRecord
+from dataset_finder.ranking import rank_records
 from dataset_finder.relevance import assess_relevance
 from dataset_finder.search import (
     DatabaseSearchStatus,
@@ -235,12 +236,9 @@ class BatchSearchService:
                 )
                 continue
 
-            accepted_for_gene = 0
+            accepted_records_for_gene: list[DatasetRecord] = []
 
             for record in gene_records:
-                if accepted_for_gene >= max_results_per_gene:
-                    break
-
                 source_database = (
                     record.database
                     or self._infer_database(record)
@@ -302,7 +300,7 @@ class BatchSearchService:
                     relevance_confidence=relevance.confidence,
                 )
 
-                records.append(
+                accepted_records_for_gene.append(
                     replace(
                         record,
                         gene=submitted_gene,
@@ -498,7 +496,14 @@ class BatchSearchService:
                         ),
                     )
                 )
-                accepted_for_gene += 1
+
+            ranked_records = rank_records(
+                accepted_records_for_gene
+            )
+
+            records.extend(
+                ranked_records[:max_results_per_gene]
+            )
 
         records = list(link_related_records(records))
 
