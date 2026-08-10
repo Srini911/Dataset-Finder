@@ -49,6 +49,7 @@ class HistoricalSearchService:
         end_year: int | None = None,
         page_size: int = 100,
         historical_cutoff_year: int = 2015,
+        use_entrez_date_filter: bool = False,
     ) -> None:
         self.entrez = entrez_client or NCBIEntrezClient()
         self.start_year = start_year
@@ -59,6 +60,7 @@ class HistoricalSearchService:
         )
         self.page_size = page_size
         self.historical_cutoff_year = historical_cutoff_year
+        self.use_entrez_date_filter = use_entrez_date_filter
 
         if self.start_year < 1900:
             raise ValueError(
@@ -175,9 +177,21 @@ class HistoricalSearchService:
             term=query,
             max_results=max_results,
             page_size=self.page_size,
-            minimum_date=f"{self.start_year}/01/01",
-            maximum_date=f"{self.end_year}/12/31",
-            date_type="pdat",
+            minimum_date=(
+                f"{self.start_year}/01/01"
+                if self.use_entrez_date_filter
+                else ""
+            ),
+            maximum_date=(
+                f"{self.end_year}/12/31"
+                if self.use_entrez_date_filter
+                else ""
+            ),
+            date_type=(
+                "pdat"
+                if self.use_entrez_date_filter
+                else ""
+            ),
         )
 
         summaries = self.entrez.summaries(
@@ -199,7 +213,7 @@ class HistoricalSearchService:
                 for summary in summaries
             ]
 
-        return [
+        annotated = [
             self._annotate_record(
                 record=record,
                 database=database,
@@ -208,6 +222,12 @@ class HistoricalSearchService:
                 profile=profile,
             )
             for record in records
+        ]
+
+        return [
+            record
+            for record in annotated
+            if self._within_requested_year_range(record)
         ]
 
     def _annotate_record(
@@ -266,6 +286,17 @@ class HistoricalSearchService:
                 },
             },
         )
+
+
+    def _within_requested_year_range(
+        self,
+        record: DatasetRecord,
+    ) -> bool:
+        """Keep known study years in range while retaining unknown dates."""
+        if record.study_year is None:
+            return True
+
+        return self.start_year <= record.study_year <= self.end_year
 
     @staticmethod
     def _verified_technique(

@@ -794,8 +794,8 @@ def test_historical_gene_terms_include_synonyms_and_flybase_id() -> None:
         flybase_id="FBgn0000210",
         current_fullname="bruno 1",
         synonyms=("bruno 1", "aret"),
-        secondary_flybase_ids=(),
-        annotation_id="",
+        secondary_flybase_ids=("FBgn9999999",),
+        annotation_id="CG31762",
         match_type="official_symbol",
         ambiguous=False,
     )
@@ -807,6 +807,8 @@ def test_historical_gene_terms_include_synonyms_and_flybase_id() -> None:
 
     assert "bru1" in terms
     assert "FBgn0000210" in terms
+    assert "FBgn9999999" in terms
+    assert "CG31762" in terms
     assert "bruno 1" in terms
     assert "aret" in terms
 
@@ -876,3 +878,37 @@ def test_batch_ranks_all_candidates_before_applying_result_limit() -> None:
 
     assert len(result.records) == 1
     assert result.records[0].accession == "GSE_BRAIN_LAST"
+
+
+def test_candidate_deduplication_prefers_distinctive_query_provenance() -> None:
+    weak = DatasetRecord(
+        uid="1",
+        accession="SRP1",
+        title="RNA-seq study",
+        organism="Drosophila melanogaster",
+        study_type="RNA-Seq",
+        sample_count=2,
+        publication_date="2020/01/01",
+        url="https://example.org/SRP1",
+        database="SRA",
+        gene_query_used="sm",
+        technique_match="Exact",
+    )
+    strong = DatasetRecord(
+        uid="1",
+        accession="SRP1",
+        title="RNA-seq study",
+        organism="Drosophila melanogaster",
+        study_type="RNA-Seq",
+        sample_count=2,
+        publication_date="2020/01/01",
+        url="https://example.org/SRP1",
+        database="SRA",
+        gene_query_used="FBgn0003435",
+        technique_match="Exact",
+    )
+
+    records = BatchSearchService._deduplicate_candidates([weak, strong])
+
+    assert len(records) == 1
+    assert records[0].gene_query_used == "FBgn0003435"

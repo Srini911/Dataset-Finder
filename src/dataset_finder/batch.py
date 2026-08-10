@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 
@@ -186,6 +187,10 @@ class BatchSearchService:
                             historical_cutoff_year=(
                                 historical_service
                                 .historical_cutoff_year
+                            ),
+                            use_entrez_date_filter=(
+                                historical_service
+                                .use_entrez_date_filter
                             ),
                         )
 
@@ -562,6 +567,8 @@ class BatchSearchService:
             submitted_gene,
             resolved_gene.official_symbol,
             resolved_gene.flybase_id,
+            *resolved_gene.secondary_flybase_ids,
+            resolved_gene.annotation_id,
             getattr(
                 resolved_gene,
                 "current_fullname",
@@ -590,12 +597,37 @@ class BatchSearchService:
         return tuple(terms)
 
     @staticmethod
+    def _candidate_provenance_score(record: DatasetRecord) -> int:
+        """Score discovery provenance so distinctive identifiers survive deduplication."""
+        term = record.gene_query_used.strip()
+
+        if re.fullmatch(r"FBgn\d+", term, flags=re.IGNORECASE):
+            gene_score = 100
+        elif re.fullmatch(r"CG\d+", term, flags=re.IGNORECASE):
+            gene_score = 90
+        elif len(re.sub(r"[^A-Za-z0-9]+", "", term)) >= 4:
+            gene_score = 50
+        elif term:
+            gene_score = 10
+        else:
+            gene_score = 0
+
+        technique_score = {
+            "Exact": 20,
+            "Unverified": 5,
+            "Mismatch": 0,
+        }.get(record.technique_match, 0)
+
+        return gene_score + technique_score
+
+    @classmethod
     def _deduplicate_candidates(
+        cls,
         records: list[DatasetRecord],
     ) -> list[DatasetRecord]:
-        """Deduplicate candidates while preserving historical priority."""
-        output: list[DatasetRecord] = []
-        seen: set[tuple[str, str]] = set()
+        """Deduplicate candidates while keeping the strongest discovery provenance."""
+        best: dict[tuple[str, str], DatasetRecord] = {}
+        order: list[tuple[str, str]] = []
 
         for record in records:
             database = record.database.strip().casefold()
@@ -604,16 +636,22 @@ class BatchSearchService:
                 or record.uid
                 or record.url
             ).strip().upper()
-
             identity = (database, accession)
 
-            if identity in seen:
+            current = best.get(identity)
+
+            if current is None:
+                best[identity] = record
+                order.append(identity)
                 continue
 
-            seen.add(identity)
-            output.append(record)
+            if (
+                cls._candidate_provenance_score(record)
+                > cls._candidate_provenance_score(current)
+            ):
+                best[identity] = record
 
-        return output
+        return [best[identity] for identity in order]
 
     @staticmethod
     def _build_search_query(

@@ -131,9 +131,9 @@ def test_historical_search_queries_sra_and_geo() -> None:
     } == {"sra", "gds"}
 
     for call in entrez.search_calls:
-        assert call["minimum_date"] == "2005/01/01"
-        assert call["maximum_date"] == "2026/12/31"
-        assert call["date_type"] == "pdat"
+        assert call["minimum_date"] == ""
+        assert call["maximum_date"] == ""
+        assert call["date_type"] == ""
         assert '"orb2"[All Fields]' in call["term"]
         assert '"RNA-seq"[All Fields]' in call["term"]
 
@@ -267,3 +267,24 @@ def test_requested_and_verified_technique_match() -> None:
         requested="ChIP-seq",
         verified="Other_Assays",
     ) == "Unverified"
+
+
+def test_historical_search_can_restore_strict_entrez_date_filter() -> None:
+    entrez = FakeEntrezClient()
+    service = HistoricalSearchService(
+        entrez_client=entrez,  # type: ignore[arg-type]
+        start_year=2005,
+        end_year=2026,
+        use_entrez_date_filter=True,
+    )
+
+    service.search(
+        species="Drosophila melanogaster",
+        gene_terms=["orb2"],
+        profiles=(RNA_PROFILE,),
+    )
+
+    for call in entrez.search_calls:
+        assert call["minimum_date"] == "2005/01/01"
+        assert call["maximum_date"] == "2026/12/31"
+        assert call["date_type"] == "pdat"
