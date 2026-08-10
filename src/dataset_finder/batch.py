@@ -267,7 +267,17 @@ class BatchSearchService:
                     resolved_gene=resolved_gene,
                 )
 
-                if not relevance.accepted:
+                legacy_entrez_match = (
+                    self._legacy_entrez_indexed_match(
+                        record=assessment_record,
+                        submitted_gene=submitted_gene,
+                    )
+                )
+
+                if (
+                    not relevance.accepted
+                    and not legacy_entrez_match
+                ):
                     continue
 
                 geo_sample_metadata: dict[str, object] = {}
@@ -298,12 +308,21 @@ class BatchSearchService:
                     record
                 )
 
-                confidence = self._combined_confidence(
-                    gene_confidence=self._confidence_label(
-                        resolved_gene
-                    ),
-                    relevance_confidence=relevance.confidence,
-                )
+                if legacy_entrez_match and not relevance.accepted:
+                    confidence = "Medium"
+                    match_type = "Legacy Entrez indexed match"
+                    match_evidence = (
+                        assessment_record.gene_query_used
+                    )
+                else:
+                    confidence = self._combined_confidence(
+                        gene_confidence=self._confidence_label(
+                            resolved_gene
+                        ),
+                        relevance_confidence=relevance.confidence,
+                    )
+                    match_type = relevance.match_type
+                    match_evidence = relevance.evidence
 
                 accepted_records_for_gene.append(
                     replace(
@@ -457,11 +476,11 @@ class BatchSearchService:
                             record.related_biosample_accessions
                             or record_links.related_biosample_accessions
                         ),
-                        match_type=relevance.match_type,
+                        match_type=match_type,
                         confidence=confidence,
                         evidence_text=(
                             record.evidence_text
-                            or relevance.evidence
+                            or match_evidence
                         ),
                         search_date=record.search_date or search_date,
                         flybase_url=resolved_gene.flybase_url,
@@ -556,6 +575,35 @@ class BatchSearchService:
                 flybase_id=resolved_gene.flybase_id,
                 symbol=resolved_gene.official_symbol,
             )
+
+    @staticmethod
+    def _legacy_entrez_indexed_match(
+        *,
+        record: DatasetRecord,
+        submitted_gene: str,
+    ) -> bool:
+        """Allow exact submitted-gene historical Entrez matches to survive."""
+        if not record.gene_query_used:
+            return False
+
+        if (
+            record.gene_query_used.strip().casefold()
+            != submitted_gene.strip().casefold()
+        ):
+            return False
+
+        if record.technique_match != "Exact":
+            return False
+
+        historical_metadata = record.raw_metadata.get(
+            "historical_search",
+            {},
+        )
+
+        if not historical_metadata:
+            return False
+
+        return True
 
     @staticmethod
     def _historical_gene_terms(
