@@ -673,33 +673,79 @@ class BatchSearchService:
         cls,
         records: list[DatasetRecord],
     ) -> list[DatasetRecord]:
-        """Deduplicate candidates while keeping the strongest discovery provenance."""
-        best: dict[tuple[str, str], DatasetRecord] = {}
-        order: list[tuple[str, str]] = []
+        """Deduplicate while preserving historical query provenance."""
+        output: list[DatasetRecord] = []
+        historical_seen: set[
+            tuple[str, str, str, str]
+        ] = set()
+
+        standard_best: dict[
+            tuple[str, str],
+            DatasetRecord,
+        ] = {}
+        standard_order: list[
+            tuple[str, str]
+        ] = []
 
         for record in records:
             database = record.database.strip().casefold()
+
             accession = (
                 record.accession
                 or record.uid
                 or record.url
             ).strip().upper()
-            identity = (database, accession)
 
-            current = best.get(identity)
+            historical_metadata = record.raw_metadata.get(
+                "historical_search",
+                {},
+            )
+
+            if historical_metadata:
+                identity = (
+                    database,
+                    accession,
+                    record.gene_query_used
+                    .strip()
+                    .casefold(),
+                    record.technique_requested
+                    .strip()
+                    .casefold(),
+                )
+
+                if identity in historical_seen:
+                    continue
+
+                historical_seen.add(identity)
+                output.append(record)
+                continue
+
+            identity = (
+                database,
+                accession,
+            )
+
+            current = standard_best.get(
+                identity
+            )
 
             if current is None:
-                best[identity] = record
-                order.append(identity)
+                standard_best[identity] = record
+                standard_order.append(identity)
                 continue
 
             if (
                 cls._candidate_provenance_score(record)
                 > cls._candidate_provenance_score(current)
             ):
-                best[identity] = record
+                standard_best[identity] = record
 
-        return [best[identity] for identity in order]
+        output.extend(
+            standard_best[identity]
+            for identity in standard_order
+        )
+
+        return output
 
     @staticmethod
     def _build_search_query(

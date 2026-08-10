@@ -912,3 +912,57 @@ def test_candidate_deduplication_prefers_distinctive_query_provenance() -> None:
 
     assert len(records) == 1
     assert records[0].gene_query_used == "FBgn0003435"
+
+
+def test_candidate_deduplication_preserves_historical_query_routes() -> None:
+    shared = dict(
+        uid="1",
+        accession="SRP013765",
+        title="GSE38709: Kc WT Repliseq",
+        organism="Drosophila melanogaster",
+        study_type="ChIP-Seq",
+        sample_count=2,
+        publication_date="2012/01/01",
+        url="https://example.org/SRP013765",
+        database="SRA",
+        technique="ChIP_seq",
+        technique_requested="ChIP-seq",
+        technique_match="Exact",
+    )
+
+    exact = DatasetRecord(
+        **shared,
+        gene_query_used="B-H2",
+        raw_metadata={
+            "historical_search": {
+                "gene_query": "B-H2",
+            }
+        },
+    )
+
+    alias = DatasetRecord(
+        **shared,
+        gene_query_used="AA33",
+        raw_metadata={
+            "historical_search": {
+                "gene_query": "AA33",
+            }
+        },
+    )
+
+    records = BatchSearchService._deduplicate_candidates(
+        [
+            exact,
+            alias,
+        ]
+    )
+
+    assert len(records) == 2
+
+    assert {
+        record.gene_query_used
+        for record in records
+    } == {
+        "B-H2",
+        "AA33",
+    }
