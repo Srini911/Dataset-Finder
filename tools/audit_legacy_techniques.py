@@ -52,12 +52,22 @@ def audit(
     legacy_path: Path,
     resolved_path: Path,
     output_path: Path,
+    gene_set: str = "",
 ) -> None:
     legacy = pd.read_excel(legacy_path)
     resolved = pd.read_excel(
         resolved_path,
         sheet_name="Resolved_Old_Results",
     )
+
+    if gene_set:
+        resolved = resolved[
+            resolved["Gene Set"]
+            .fillna("")
+            .astype(str)
+            .str.casefold()
+            == gene_set.casefold()
+        ].copy()
 
     resolved["gene_key"] = (
         resolved["Gene"]
@@ -313,6 +323,13 @@ def build_parser() -> argparse.ArgumentParser:
         "--output",
         required=True,
         type=Path,
+    )
+
+    parser.add_argument(
+        "--gene-set",
+        choices=("RBP", "TF", "rbp", "tf"),
+        default="",
+        help="Restrict resolved legacy rows to RBP or TF.",
     )
 
     return parser
