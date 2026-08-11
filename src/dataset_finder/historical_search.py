@@ -88,7 +88,7 @@ class HistoricalSearchService:
             ...,
         ] = TECHNIQUE_SEARCH_PROFILES,
     ) -> HistoricalSearchResult:
-        """Search historical SRA and GEO records for gene-technique pairs."""
+        """Search SRA and GEO with one combined gene query per technique."""
         species = species.strip()
 
         if not species:
@@ -100,67 +100,72 @@ class HistoricalSearchService:
                 "must be greater than zero."
             )
 
-        normalized_gene_terms = self._unique_terms(gene_terms)
+        normalized_gene_terms = self._unique_terms(
+            gene_terms
+        )
 
         if not normalized_gene_terms:
             raise ValueError(
                 "At least one gene search term is required."
             )
 
+        primary_gene = normalized_gene_terms[0]
+
         records: list[DatasetRecord] = []
         statuses: list[HistoricalSearchStatus] = []
 
-        for gene_term in normalized_gene_terms:
-            for profile in profiles:
-                query = self._build_query(
-                    species=species,
-                    gene_term=gene_term,
-                    profile=profile,
+        for profile in profiles:
+            query = self._build_combined_query(
+                species=species,
+                gene_terms=normalized_gene_terms,
+                profile=profile,
+            )
+
+            for database in ("sra", "gds"):
+                database_name = (
+                    "SRA"
+                    if database == "sra"
+                    else "GEO"
                 )
 
-                for database in ("sra", "gds"):
-                    database_name = (
-                        "SRA"
-                        if database == "sra"
-                        else "GEO"
+                try:
+                    discovered = self._search_database(
+                        database=database,
+                        query=query,
+                        gene_term=primary_gene,
+                        profile=profile,
+                        max_results=max_results_per_query,
                     )
-
-                    try:
-                        discovered = self._search_database(
-                            database=database,
-                            query=query,
-                            gene_term=gene_term,
-                            profile=profile,
-                            max_results=max_results_per_query,
-                        )
-                    except Exception as exc:
-                        statuses.append(
-                            HistoricalSearchStatus(
-                                gene_query=gene_term,
-                                technique=profile.name,
-                                database=database_name,
-                                success=False,
-                                candidate_count=0,
-                                error=str(exc),
-                            )
-                        )
-                        continue
-
-                    records.extend(discovered)
+                except Exception as exc:
                     statuses.append(
                         HistoricalSearchStatus(
-                            gene_query=gene_term,
+                            gene_query=primary_gene,
                             technique=profile.name,
                             database=database_name,
-                            success=True,
-                            candidate_count=len(discovered),
+                            success=False,
+                            candidate_count=0,
+                            error=str(exc),
                         )
                     )
+                    continue
+
+                records.extend(discovered)
+
+                statuses.append(
+                    HistoricalSearchStatus(
+                        gene_query=primary_gene,
+                        technique=profile.name,
+                        database=database_name,
+                        success=True,
+                        candidate_count=len(discovered),
+                    )
+                )
 
         return HistoricalSearchResult(
             records=tuple(self._deduplicate(records)),
             statuses=tuple(statuses),
         )
+
 
     def _search_database(
         self,
@@ -414,6 +419,33 @@ class HistoricalSearchService:
             return "Unverified"
 
         return "Mismatch"
+
+    @staticmethod
+    def _build_combined_query(
+        *,
+        species: str,
+        gene_terms: Iterable[str],
+        profile: TechniqueSearchProfile,
+    ) -> str:
+        """Build one legacy-compatible query for all gene identifiers."""
+        unique_terms = HistoricalSearchService._unique_terms(
+            gene_terms
+        )
+
+        gene_query = " OR ".join(
+            f'"{term}"[All Fields]'
+            for term in unique_terms
+        )
+
+        technique_query = " OR ".join(
+            f'"{term}"[All Fields]'
+            for term in profile.terms
+        )
+
+        return (
+            f"(({gene_query}) AND ({technique_query})) "
+            f'AND "{species}"[Organism]'
+        )
 
     @staticmethod
     def _build_query(

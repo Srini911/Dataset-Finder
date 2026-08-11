@@ -644,6 +644,7 @@ class BatchSearchService:
 
         return tuple(terms)
 
+
     @staticmethod
     def _candidate_provenance_score(record: DatasetRecord) -> int:
         """Score discovery provenance so distinctive identifiers survive deduplication."""
