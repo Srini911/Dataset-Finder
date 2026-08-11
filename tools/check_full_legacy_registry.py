@@ -79,15 +79,36 @@ def compare(
         .str.upper()
     )
 
-    if "Related Study Accessions" in new.columns:
-        new["related_study_key"] = (
-            normalize_text(
-                new["Related Study Accessions"]
+    related_accession_columns = (
+        "Project Accession",
+        "Related Accessions",
+        "Related GEO Accessions",
+        "Related SRA / ENA Studies",
+        "Related BioProjects",
+        "Related Study Accessions",
+    )
+
+    available_related_columns = [
+        column
+        for column in related_accession_columns
+        if column in new.columns
+    ]
+
+    if available_related_columns:
+        new["related_accession_key"] = (
+            new[
+                available_related_columns
+            ]
+            .fillna("")
+            .astype(str)
+            .agg(
+                " ; ".join,
+                axis=1,
             )
             .str.upper()
         )
     else:
-        new["related_study_key"] = ""
+        new["related_accession_key"] = ""
 
     rows = []
 
@@ -111,7 +132,7 @@ def compare(
                 == target["technique_key"]
             )
             & (
-                new["related_study_key"]
+                new["related_accession_key"]
                 .str.contains(
                     target["study_key"],
                     regex=False,
