@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: "Amla"
     given-names: "Srinivas"
-version: "0.2.0"
-date-released: "2026-07-19"
+version: "0.3.0"
+date-released: "2026-08-02"
 repository-code: "https://github.com/Srini911/Dataset-Finder"
 url: "https://github.com/Srini911/Dataset-Finder"
 license: MIT

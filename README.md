@@ -56,11 +56,11 @@ The package includes two curated *Drosophila melanogaster* gene collections:
 | ENCODE | Implemented | Functional genomics experiments for supported organisms |
 | FlyBase | Implemented | Gene annotation and identifier resolution |
 | FlyAtlas | Implemented | Tissue-expression enrichment |
-| BioSample | Metadata enrichment | Parsed from SRA records when available |
-| PubMed | Planned | Publication discovery |
-| ENA | Planned | Sequencing-data discovery |
-| Expression Atlas | Planned | Expression-study integration |
-| ProteomeXchange | Planned | Proteomics-data integration |
+| BioSample | Implemented | Sample-level metadata discovery and enrichment |
+| PubMed | Implemented | Publication discovery and study linking |
+| ENA | Implemented | Sequencing-data discovery |
+| Expression Atlas | Implemented | Expression-study discovery |
+| PRIDE | Implemented | Proteomics-study discovery |
 
 Repository coverage differs by organism. The current ENCODE portal primarily provides human and mouse experiment coverage, while the Drosophila workflow relies more heavily on GEO, SRA, BioProject, BioStudies, FlyBase, and FlyAtlas.
 
