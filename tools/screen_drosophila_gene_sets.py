@@ -16,7 +16,7 @@ import requests
 from dataset_finder.builtin_gene_sets import load_builtin_gene_set
 from dataset_finder.flybase_resolver import FlyBaseResolver
 
-EMAIL = "srinivas@umb.edu"
+NCBI_EMAIL = os.environ.get("NCBI_EMAIL", "")
 NCBI_API_KEY = os.environ.get("NCBI_API_KEY", "")
 NCBI_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
 SPECIES = "Drosophila melanogaster"
@@ -83,9 +83,11 @@ def request_json(
 ) -> dict:
     query = {
         "tool": "dataset_finder_direct_screen",
-        "email": EMAIL,
         **params,
     }
+
+    if NCBI_EMAIL:
+        query["email"] = NCBI_EMAIL
 
     if NCBI_API_KEY:
         query["api_key"] = NCBI_API_KEY
@@ -598,14 +600,10 @@ def collect_gene(
     return rows
 
 
-def load_validated_legacy_pairs() -> set[tuple[str, str, str]]:
-    registry_path = (
-        Path.home()
-        / "Downloads"
-        / "Validated_Legacy_Dataset_Registry.xlsx"
-    )
-
-    if not registry_path.exists():
+def load_validated_legacy_pairs(
+    registry_path: Path | None,
+) -> set[tuple[str, str, str]]:
+    if registry_path is None or not registry_path.exists():
         return set()
 
     registry = pd.read_excel(
@@ -637,6 +635,7 @@ def load_validated_legacy_pairs() -> set[tuple[str, str, str]]:
 def write_workbook(
     dataframe: pd.DataFrame,
     output: Path,
+    legacy_registry: Path | None = None,
 ) -> None:
     output.parent.mkdir(
         parents=True,
@@ -658,7 +657,9 @@ def write_workbook(
     )
 
     validated_legacy_pairs = (
-        load_validated_legacy_pairs()
+        load_validated_legacy_pairs(
+            legacy_registry
+        )
     )
 
     def is_validated_legacy(
@@ -798,6 +799,15 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
     )
 
+    parser.add_argument(
+        "--legacy-registry",
+        type=Path,
+        help=(
+            "Optional validated legacy dataset registry used to promote "
+            "verified historical gene-accession associations."
+        ),
+    )
+
     return parser
 
 
@@ -854,6 +864,7 @@ def main() -> int:
     write_workbook(
         dataframe,
         args.output,
+        legacy_registry=args.legacy_registry,
     )
 
     ok = dataframe[
