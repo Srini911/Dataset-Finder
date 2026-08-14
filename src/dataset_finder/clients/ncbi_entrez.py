@@ -101,16 +101,32 @@ class NCBIEntrezClient:
         database: str,
         term: str,
         max_results: int,
+        start: int = 0,
+        minimum_date: str = "",
+        maximum_date: str = "",
+        date_type: str = "",
     ) -> list[str]:
         """Search an Entrez database and return matching UIDs."""
+        parameters: dict[str, Any] = {
+            "db": database,
+            "term": term,
+            "retmode": "json",
+            "retmax": max_results,
+            "retstart": start,
+        }
+
+        if minimum_date:
+            parameters["mindate"] = minimum_date
+
+        if maximum_date:
+            parameters["maxdate"] = maximum_date
+
+        if date_type:
+            parameters["datetype"] = date_type
+
         payload = self.request_json(
             "esearch.fcgi",
-            parameters={
-                "db": database,
-                "term": term,
-                "retmode": "json",
-                "retmax": max_results,
-            },
+            parameters=parameters,
         )
 
         result = payload.get("esearchresult", {})
@@ -124,6 +140,70 @@ class NCBIEntrezClient:
             for identifier in identifiers
             if identifier
         ]
+
+    def search_ids_paged(
+        self,
+        *,
+        database: str,
+        term: str,
+        max_results: int,
+        page_size: int = 100,
+        minimum_date: str = "",
+        maximum_date: str = "",
+        date_type: str = "",
+    ) -> list[str]:
+        """Search Entrez across multiple result pages."""
+        if max_results < 1:
+            return []
+
+        if page_size < 1:
+            raise ValueError(
+                "Page size must be greater than zero."
+            )
+
+        identifiers: list[str] = []
+        seen: set[str] = set()
+        start = 0
+
+        while len(identifiers) < max_results:
+            remaining = max_results - len(identifiers)
+            request_size = min(page_size, remaining)
+
+            page = self.search_ids(
+                database=database,
+                term=term,
+                max_results=request_size,
+                start=start,
+                minimum_date=minimum_date,
+                maximum_date=maximum_date,
+                date_type=date_type,
+            )
+
+            if not page:
+                break
+
+            added = 0
+
+            for identifier in page:
+                if identifier in seen:
+                    continue
+
+                seen.add(identifier)
+                identifiers.append(identifier)
+                added += 1
+
+                if len(identifiers) >= max_results:
+                    break
+
+            if len(page) < request_size:
+                break
+
+            if added == 0:
+                break
+
+            start += len(page)
+
+        return identifiers
 
     def summaries(
         self,

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 
@@ -13,12 +14,18 @@ from dataset_finder.clients.flyatlas import (
 )
 from dataset_finder.clients.ncbi_geo import NCBIGEOClient
 from dataset_finder.flybase_resolver import FlyBaseGene, FlyBaseResolver
+from dataset_finder.historical_search import HistoricalSearchService
 from dataset_finder.metadata import extract_biological_metadata
 from dataset_finder.models import DatasetRecord
+from dataset_finder.ranking import rank_records
 from dataset_finder.relevance import assess_relevance
 from dataset_finder.search import (
     DatabaseSearchStatus,
     SearchService,
+)
+from dataset_finder.study_linking import (
+    extract_links_from_record,
+    link_related_records,
 )
 
 
@@ -73,11 +80,16 @@ class BatchSearchService:
         flybase_resolver: FlyBaseResolver | None = None,
         flyatlas_client: FlyAtlasClient | None = None,
         geo_client: NCBIGEOClient | None = None,
+        historical_search_service: HistoricalSearchService | None = None,
     ) -> None:
         self.search_service = search_service or SearchService()
         self.flybase_resolver = flybase_resolver or FlyBaseResolver()
         self.flyatlas_client = flyatlas_client or FlyAtlasClient()
         self.geo_client = geo_client or NCBIGEOClient()
+        self.historical_search_service = (
+            historical_search_service
+            or HistoricalSearchService()
+        )
 
     def search_many(
         self,
@@ -87,6 +99,10 @@ class BatchSearchService:
         database: str,
         max_results_per_gene: int,
         gene_set: str = "",
+        historical_search: bool = False,
+        historical_start_year: int = 2005,
+        historical_end_year: int | None = None,
+        historical_max_results: int = 100,
     ) -> BatchSearchResult:
         """Search all genes and return enriched, classified records."""
         if not genes:
@@ -135,7 +151,7 @@ class BatchSearchService:
                         database=database,
                         max_results=candidate_limit,
                     )
-                    gene_records = list(outcome.records)
+                    standard_records = list(outcome.records)
 
                     for status in outcome.statuses:
                         database_statuses.append(
@@ -145,12 +161,76 @@ class BatchSearchService:
                             )
                         )
                 else:
-                    gene_records = self.search_service.search(
+                    standard_records = self.search_service.search(
                         species=species,
                         query=query,
                         database=database,
                         max_results=candidate_limit,
                     )
+
+                historical_records: list[DatasetRecord] = []
+
+                if historical_search:
+                    historical_service = (
+                        self.historical_search_service
+                    )
+
+                    if isinstance(
+                        historical_service,
+                        HistoricalSearchService,
+                    ):
+                        historical_service = HistoricalSearchService(
+                            entrez_client=historical_service.entrez,
+                            start_year=historical_start_year,
+                            end_year=historical_end_year,
+                            page_size=historical_service.page_size,
+                            historical_cutoff_year=(
+                                historical_service
+                                .historical_cutoff_year
+                            ),
+                            use_entrez_date_filter=(
+                                historical_service
+                                .use_entrez_date_filter
+                            ),
+                        )
+
+                    historical_outcome = historical_service.search(
+                        species=species,
+                        gene_terms=self._historical_gene_terms(
+                            submitted_gene,
+                            resolved_gene,
+                        ),
+                        max_results_per_query=(
+                            historical_max_results
+                        ),
+                    )
+
+                    historical_records = list(
+                        historical_outcome.records
+                    )
+
+                    for status in historical_outcome.statuses:
+                        database_statuses.append(
+                            BatchDatabaseStatus(
+                                gene=submitted_gene,
+                                database=(
+                                    f"{status.database} Historical "
+                                    f"{status.technique}"
+                                ),
+                                success=status.success,
+                                result_count=(
+                                    status.candidate_count
+                                ),
+                                error=status.error,
+                            )
+                        )
+
+                gene_records = self._deduplicate_candidates(
+                    [
+                        *historical_records,
+                        *standard_records,
+                    ]
+                )
             except Exception as exc:
                 issues.append(
                     BatchSearchIssue(
@@ -161,12 +241,9 @@ class BatchSearchService:
                 )
                 continue
 
-            accepted_for_gene = 0
+            accepted_records_for_gene: list[DatasetRecord] = []
 
             for record in gene_records:
-                if accepted_for_gene >= max_results_per_gene:
-                    break
-
                 source_database = (
                     record.database
                     or self._infer_database(record)
@@ -190,7 +267,17 @@ class BatchSearchService:
                     resolved_gene=resolved_gene,
                 )
 
-                if not relevance.accepted:
+                legacy_entrez_match = (
+                    self._legacy_entrez_indexed_match(
+                        record=assessment_record,
+                        submitted_gene=submitted_gene,
+                    )
+                )
+
+                if (
+                    not relevance.accepted
+                    and not legacy_entrez_match
+                ):
                     continue
 
                 geo_sample_metadata: dict[str, object] = {}
@@ -217,14 +304,27 @@ class BatchSearchService:
                     geo_sample_metadata,
                 )
 
-                confidence = self._combined_confidence(
-                    gene_confidence=self._confidence_label(
-                        resolved_gene
-                    ),
-                    relevance_confidence=relevance.confidence,
+                record_links = extract_links_from_record(
+                    record
                 )
 
-                records.append(
+                if legacy_entrez_match and not relevance.accepted:
+                    confidence = "Medium"
+                    match_type = "Legacy Entrez indexed match"
+                    match_evidence = (
+                        assessment_record.gene_query_used
+                    )
+                else:
+                    confidence = self._combined_confidence(
+                        gene_confidence=self._confidence_label(
+                            resolved_gene
+                        ),
+                        relevance_confidence=relevance.confidence,
+                    )
+                    match_type = relevance.match_type
+                    match_evidence = relevance.evidence
+
+                accepted_records_for_gene.append(
                     replace(
                         record,
                         gene=submitted_gene,
@@ -351,11 +451,36 @@ class BatchSearchService:
                             record.perturbation
                             or biological_metadata.perturbation
                         ),
-                        match_type=relevance.match_type,
+                        pubmed_ids=(
+                            record.pubmed_ids
+                            or record_links.pubmed_ids
+                        ),
+                        dois=record.dois or record_links.dois,
+                        related_accessions=(
+                            record.related_accessions
+                            or record_links.study_level_accessions
+                        ),
+                        related_geo_accessions=(
+                            record.related_geo_accessions
+                            or record_links.related_geo_accessions
+                        ),
+                        related_study_accessions=(
+                            record.related_study_accessions
+                            or record_links.related_study_accessions
+                        ),
+                        related_bioproject_accessions=(
+                            record.related_bioproject_accessions
+                            or record_links.related_bioproject_accessions
+                        ),
+                        related_biosample_accessions=(
+                            record.related_biosample_accessions
+                            or record_links.related_biosample_accessions
+                        ),
+                        match_type=match_type,
                         confidence=confidence,
                         evidence_text=(
                             record.evidence_text
-                            or relevance.evidence
+                            or match_evidence
                         ),
                         search_date=record.search_date or search_date,
                         flybase_url=resolved_gene.flybase_url,
@@ -395,7 +520,16 @@ class BatchSearchService:
                         ),
                     )
                 )
-                accepted_for_gene += 1
+
+            ranked_records = rank_records(
+                accepted_records_for_gene
+            )
+
+            records.extend(
+                ranked_records[:max_results_per_gene]
+            )
+
+        records = list(link_related_records(records))
 
         return BatchSearchResult(
             records=tuple(self._deduplicate(records)),
@@ -441,6 +575,178 @@ class BatchSearchService:
                 flybase_id=resolved_gene.flybase_id,
                 symbol=resolved_gene.official_symbol,
             )
+
+    @staticmethod
+    def _legacy_entrez_indexed_match(
+        *,
+        record: DatasetRecord,
+        submitted_gene: str,
+    ) -> bool:
+        """Allow exact submitted-gene historical Entrez matches to survive."""
+        if not record.gene_query_used:
+            return False
+
+        if (
+            record.gene_query_used.strip().casefold()
+            != submitted_gene.strip().casefold()
+        ):
+            return False
+
+        if record.technique_match != "Exact":
+            return False
+
+        historical_metadata = record.raw_metadata.get(
+            "historical_search",
+            {},
+        )
+
+        if not historical_metadata:
+            return False
+
+        return True
+
+    @staticmethod
+    def _historical_gene_terms(
+        submitted_gene: str,
+        resolved_gene: FlyBaseGene,
+    ) -> tuple[str, ...]:
+        """Return symbols, identifiers, names, and synonyms for searching."""
+        values = [
+            submitted_gene,
+            resolved_gene.official_symbol,
+            resolved_gene.flybase_id,
+            *resolved_gene.secondary_flybase_ids,
+            resolved_gene.annotation_id,
+            getattr(
+                resolved_gene,
+                "current_fullname",
+                "",
+            ),
+            *resolved_gene.synonyms,
+        ]
+
+        terms: list[str] = []
+        seen: set[str] = set()
+
+        for value in values:
+            normalized = str(value).strip()
+
+            if not normalized:
+                continue
+
+            identity = normalized.casefold()
+
+            if identity in seen:
+                continue
+
+            seen.add(identity)
+            terms.append(normalized)
+
+        return tuple(terms)
+
+
+    @staticmethod
+    def _candidate_provenance_score(record: DatasetRecord) -> int:
+        """Score discovery provenance so distinctive identifiers survive deduplication."""
+        term = record.gene_query_used.strip()
+
+        if re.fullmatch(r"FBgn\d+", term, flags=re.IGNORECASE):
+            gene_score = 100
+        elif re.fullmatch(r"CG\d+", term, flags=re.IGNORECASE):
+            gene_score = 90
+        elif len(re.sub(r"[^A-Za-z0-9]+", "", term)) >= 4:
+            gene_score = 50
+        elif term:
+            gene_score = 10
+        else:
+            gene_score = 0
+
+        technique_score = {
+            "Exact": 20,
+            "Unverified": 5,
+            "Mismatch": 0,
+        }.get(record.technique_match, 0)
+
+        return gene_score + technique_score
+
+    @classmethod
+    def _deduplicate_candidates(
+        cls,
+        records: list[DatasetRecord],
+    ) -> list[DatasetRecord]:
+        """Deduplicate while preserving historical query provenance."""
+        output: list[DatasetRecord] = []
+        historical_seen: set[
+            tuple[str, str, str, str]
+        ] = set()
+
+        standard_best: dict[
+            tuple[str, str],
+            DatasetRecord,
+        ] = {}
+        standard_order: list[
+            tuple[str, str]
+        ] = []
+
+        for record in records:
+            database = record.database.strip().casefold()
+
+            accession = (
+                record.accession
+                or record.uid
+                or record.url
+            ).strip().upper()
+
+            historical_metadata = record.raw_metadata.get(
+                "historical_search",
+                {},
+            )
+
+            if historical_metadata:
+                identity = (
+                    database,
+                    accession,
+                    record.gene_query_used
+                    .strip()
+                    .casefold(),
+                    record.technique_requested
+                    .strip()
+                    .casefold(),
+                )
+
+                if identity in historical_seen:
+                    continue
+
+                historical_seen.add(identity)
+                output.append(record)
+                continue
+
+            identity = (
+                database,
+                accession,
+            )
+
+            current = standard_best.get(
+                identity
+            )
+
+            if current is None:
+                standard_best[identity] = record
+                standard_order.append(identity)
+                continue
+
+            if (
+                cls._candidate_provenance_score(record)
+                > cls._candidate_provenance_score(current)
+            ):
+                standard_best[identity] = record
+
+        output.extend(
+            standard_best[identity]
+            for identity in standard_order
+        )
+
+        return output
 
     @staticmethod
     def _build_search_query(

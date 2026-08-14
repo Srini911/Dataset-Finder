@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
+from xlsxwriter.utility import xl_col_to_name
 
 from dataset_finder.assay_classifier import TECHNIQUE_ORDER
 from dataset_finder.batch import BatchSearchResult
@@ -18,6 +19,15 @@ RECORD_COLUMNS = [
     "synonyms",
     "technique",
     "technique_subtype",
+    "technique_requested",
+    "technique_match",
+    "technique_search_term",
+    "technique_evidence",
+    "technique_evidence_source",
+    "gene_query_used",
+    "search_query_used",
+    "study_year",
+    "historical_study",
     "database",
     "accession",
     "project_accession",
@@ -47,6 +57,13 @@ RECORD_COLUMNS = [
     "control",
     "sample_count",
     "publication",
+    "pubmed_ids",
+    "dois",
+    "related_accessions",
+    "related_geo_accessions",
+    "related_study_accessions",
+    "related_bioproject_accessions",
+    "related_biosample_accessions",
     "publication_date",
     "url",
     "flybase_url",
@@ -65,6 +82,8 @@ RECORD_COLUMNS = [
     "evidence_text",
     "match_type",
     "confidence",
+    "ranking_score",
+    "ranking_reasons",
     "search_date",
     "uid",
 ]
@@ -78,6 +97,15 @@ DISPLAY_NAMES = {
     "synonyms": "Synonyms",
     "technique": "Technique",
     "technique_subtype": "Technique Subtype",
+    "technique_requested": "Technique Requested",
+    "technique_match": "Technique Match",
+    "technique_search_term": "Technique Search Terms",
+    "technique_evidence": "Technique Evidence",
+    "technique_evidence_source": "Technique Evidence Source",
+    "gene_query_used": "Gene Query Used",
+    "search_query_used": "Search Query Used",
+    "study_year": "Study Year",
+    "historical_study": "Historical Study",
     "database": "Database",
     "accession": "Accession",
     "project_accession": "Project Accession",
@@ -107,6 +135,13 @@ DISPLAY_NAMES = {
     "control": "Control",
     "sample_count": "Sample Count",
     "publication": "Publication",
+    "pubmed_ids": "PubMed IDs",
+    "dois": "DOIs",
+    "related_accessions": "Related Accessions",
+    "related_geo_accessions": "Related GEO Accessions",
+    "related_study_accessions": "Related SRA / ENA Studies",
+    "related_bioproject_accessions": "Related BioProjects",
+    "related_biosample_accessions": "Related BioSamples",
     "publication_date": "Publication Date",
     "url": "Dataset URL",
     "flybase_url": "FlyBase URL",
@@ -175,6 +210,60 @@ def _safe_sheet_name(value: str) -> str:
     return value[:31] or "Sheet"
 
 
+NEURAL_HIGHLIGHT_TERMS = (
+    "brain",
+    "central nervous system",
+    "cns",
+    "mushroom body",
+    "mushroom bodies",
+    "kenyon cell",
+    "kenyon cells",
+    "optic lobe",
+    "optic lobes",
+    "neuron",
+    "neuronal",
+    "glia",
+    "glial",
+    "neural stem cell",
+    "neural stem cells",
+)
+
+
+def _neural_highlight_formula(
+    columns: list[str],
+) -> str:
+    """Build an Excel formula for strong brain or neural evidence."""
+    searchable_columns = (
+        "Tissue",
+        "Cell Type",
+        "Title",
+        "Description",
+    )
+
+    clauses: list[str] = []
+
+    for column_name in searchable_columns:
+        if column_name not in columns:
+            continue
+
+        column_index = columns.index(column_name)
+        column_letter = xl_col_to_name(
+            column_index,
+            col_abs=True,
+        )
+
+        for term in NEURAL_HIGHLIGHT_TERMS:
+            clauses.append(
+                f'ISNUMBER(SEARCH("{term}",'
+                f'{column_letter}2))'
+            )
+
+    if not clauses:
+        return ""
+
+    return f'=OR({",".join(clauses)})'
+
+
 def _format_dataframe_sheet(
     *,
     worksheet,
@@ -209,6 +298,11 @@ def _format_dataframe_sheet(
             "font_color": "#0563C1",
             "underline": True,
             "valign": "top",
+        }
+    )
+    neural_row_format = workbook.add_format(
+        {
+            "bg_color": "#E2F0D9",
         }
     )
 
@@ -287,6 +381,27 @@ def _format_dataframe_sheet(
                         link_format,
                         string="Open",
                     )
+
+    neural_formula = _neural_highlight_formula(
+        list(dataframe.columns)
+    )
+
+    if (
+        neural_formula
+        and not dataframe.empty
+        and len(dataframe.columns)
+    ):
+        worksheet.conditional_format(
+            1,
+            0,
+            len(dataframe),
+            len(dataframe.columns) - 1,
+            {
+                "type": "formula",
+                "criteria": neural_formula,
+                "format": neural_row_format,
+            },
+        )
 
 
 def _write_readme_sheet(
@@ -488,6 +603,9 @@ def _write_gene_summary(
             "BioSample",
             "BioStudies",
             "ENA",
+            "PubMed",
+            "Expression Atlas",
+            "PRIDE",
         ):
             row[database_name] = int(
                 (

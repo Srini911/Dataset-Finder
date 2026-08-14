@@ -1,6 +1,7 @@
 """Tests for multi-gene batch searches."""
 
 from dataset_finder.batch import BatchSearchService
+from dataset_finder.flybase_resolver import FlyBaseGene
 from dataset_finder.models import DatasetRecord
 
 
@@ -662,3 +663,306 @@ def test_geo_sample_metadata_is_retained_in_raw_metadata() -> None:
         "GSM8193871",
         "GSM8193872",
     ]
+
+
+def test_batch_historical_search_adds_old_technique_records() -> None:
+    from dataset_finder.historical_search import (
+        HistoricalSearchResult,
+        HistoricalSearchStatus,
+    )
+
+    class EmptySearchService:
+        def search_with_status(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ):
+            del species, query, database, max_results
+
+            from dataset_finder.search import SearchOutcome
+
+            return SearchOutcome(
+                records=(),
+                statuses=(),
+            )
+
+    class Bru1Resolver:
+        def resolve(self, submitted_symbol: str) -> FlyBaseGene:
+            assert submitted_symbol == "bru1"
+
+            return FlyBaseGene(
+                submitted_symbol="bru1",
+                official_symbol="bru1",
+                flybase_id="FBgn0000210",
+                current_fullname="bruno 1",
+                synonyms=("bruno 1", "aret"),
+                secondary_flybase_ids=(),
+                annotation_id="",
+                match_type="official_symbol",
+                ambiguous=False,
+            )
+
+    class HistoricalService:
+        page_size = 100
+        historical_cutoff_year = 2015
+        entrez = object()
+
+        def search(
+            self,
+            *,
+            species: str,
+            gene_terms,
+            max_results_per_query: int,
+        ) -> HistoricalSearchResult:
+            del species, gene_terms, max_results_per_query
+
+            return HistoricalSearchResult(
+                records=(
+                    DatasetRecord(
+                        uid="22080666",
+                        accession="SRP377648",
+                        title=(
+                            "Bruno1 regulates gene expression "
+                            "and splicing"
+                        ),
+                        organism="Drosophila melanogaster",
+                        study_type="RNA-Seq",
+                        sample_count=4,
+                        publication_date="2012/01/01",
+                        url=(
+                            "https://www.ncbi.nlm.nih.gov/"
+                            "sra/?term=SRP377648"
+                        ),
+                        database="SRA",
+                        technique="RNA_seq",
+                        technique_requested="RNA-seq",
+                        gene_query_used="bru1",
+                        study_year=2012,
+                        historical_study=True,
+                        evidence_text=(
+                            "bru1 Bruno1 RNA-Seq Drosophila"
+                        ),
+                    ),
+                ),
+                statuses=(
+                    HistoricalSearchStatus(
+                        gene_query="bru1",
+                        technique="RNA-seq",
+                        database="SRA",
+                        success=True,
+                        candidate_count=1,
+                    ),
+                ),
+            )
+
+    service = BatchSearchService(
+        search_service=EmptySearchService(),
+        flybase_resolver=Bru1Resolver(),
+        historical_search_service=HistoricalService(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["bru1"],
+        database="all",
+        max_results_per_gene=20,
+        historical_search=True,
+        historical_start_year=2005,
+        historical_end_year=2026,
+        historical_max_results=100,
+    )
+
+    assert len(result.records) == 1
+
+    record = result.records[0]
+
+    assert record.accession == "SRP377648"
+    assert record.uid == "22080666"
+    assert record.technique == "RNA_seq"
+    assert record.technique_requested == "RNA-seq"
+    assert record.study_year == 2012
+    assert record.historical_study is True
+
+
+def test_historical_gene_terms_include_synonyms_and_flybase_id() -> None:
+    resolved = FlyBaseGene(
+        submitted_symbol="bru1",
+        official_symbol="bru1",
+        flybase_id="FBgn0000210",
+        current_fullname="bruno 1",
+        synonyms=("bruno 1", "aret"),
+        secondary_flybase_ids=("FBgn9999999",),
+        annotation_id="CG31762",
+        match_type="official_symbol",
+        ambiguous=False,
+    )
+
+    terms = BatchSearchService._historical_gene_terms(
+        "bru1",
+        resolved,
+    )
+
+    assert "bru1" in terms
+    assert "FBgn0000210" in terms
+    assert "FBgn9999999" in terms
+    assert "CG31762" in terms
+    assert "bruno 1" in terms
+    assert "aret" in terms
+
+
+def test_batch_ranks_all_candidates_before_applying_result_limit() -> None:
+    class RankingSearchService:
+        def search(
+            self,
+            *,
+            species: str,
+            query: str,
+            database: str,
+            max_results: int,
+        ) -> list[DatasetRecord]:
+            del species, query, database, max_results
+
+            generic_records = [
+                DatasetRecord(
+                    uid=f"GSE_GENERIC_{index}",
+                    accession=f"GSE_GENERIC_{index}",
+                    title=f"hairy whole body RNA-seq {index}",
+                    organism="Drosophila melanogaster",
+                    study_type="RNA-seq",
+                    sample_count=2,
+                    publication_date="2026/01/01",
+                    url=f"https://example.org/{index}",
+                    database="GEO",
+                    technique_match="Exact",
+                    evidence_text="hairy RNA-seq",
+                )
+                for index in range(5)
+            ]
+
+            brain_record = DatasetRecord(
+                uid="GSE_BRAIN_LAST",
+                accession="GSE_BRAIN_LAST",
+                title="hairy RNA-seq in Drosophila brain neurons",
+                organism="Drosophila melanogaster",
+                study_type="RNA-seq",
+                sample_count=2,
+                publication_date="2014/01/01",
+                url="https://example.org/brain",
+                database="GEO",
+                technique_match="Exact",
+                tissue="brain",
+                historical_study=True,
+                study_year=2014,
+                evidence_text="hairy brain neuronal RNA-seq",
+            )
+
+            return [
+                *generic_records,
+                brain_record,
+            ]
+
+    service = BatchSearchService(
+        search_service=RankingSearchService(),
+        flybase_resolver=FakeFlyBaseResolver(),
+    )
+
+    result = service.search_many(
+        species="Drosophila melanogaster",
+        genes=["h"],
+        database="geo",
+        max_results_per_gene=1,
+    )
+
+    assert len(result.records) == 1
+    assert result.records[0].accession == "GSE_BRAIN_LAST"
+
+
+def test_candidate_deduplication_prefers_distinctive_query_provenance() -> None:
+    weak = DatasetRecord(
+        uid="1",
+        accession="SRP1",
+        title="RNA-seq study",
+        organism="Drosophila melanogaster",
+        study_type="RNA-Seq",
+        sample_count=2,
+        publication_date="2020/01/01",
+        url="https://example.org/SRP1",
+        database="SRA",
+        gene_query_used="sm",
+        technique_match="Exact",
+    )
+    strong = DatasetRecord(
+        uid="1",
+        accession="SRP1",
+        title="RNA-seq study",
+        organism="Drosophila melanogaster",
+        study_type="RNA-Seq",
+        sample_count=2,
+        publication_date="2020/01/01",
+        url="https://example.org/SRP1",
+        database="SRA",
+        gene_query_used="FBgn0003435",
+        technique_match="Exact",
+    )
+
+    records = BatchSearchService._deduplicate_candidates([weak, strong])
+
+    assert len(records) == 1
+    assert records[0].gene_query_used == "FBgn0003435"
+
+
+def test_candidate_deduplication_preserves_historical_query_routes() -> None:
+    shared = dict(
+        uid="1",
+        accession="SRP013765",
+        title="GSE38709: Kc WT Repliseq",
+        organism="Drosophila melanogaster",
+        study_type="ChIP-Seq",
+        sample_count=2,
+        publication_date="2012/01/01",
+        url="https://example.org/SRP013765",
+        database="SRA",
+        technique="ChIP_seq",
+        technique_requested="ChIP-seq",
+        technique_match="Exact",
+    )
+
+    exact = DatasetRecord(
+        **shared,
+        gene_query_used="B-H2",
+        raw_metadata={
+            "historical_search": {
+                "gene_query": "B-H2",
+            }
+        },
+    )
+
+    alias = DatasetRecord(
+        **shared,
+        gene_query_used="AA33",
+        raw_metadata={
+            "historical_search": {
+                "gene_query": "AA33",
+            }
+        },
+    )
+
+    records = BatchSearchService._deduplicate_candidates(
+        [
+            exact,
+            alias,
+        ]
+    )
+
+    assert len(records) == 2
+
+    assert {
+        record.gene_query_used
+        for record in records
+    } == {
+        "B-H2",
+        "AA33",
+    }

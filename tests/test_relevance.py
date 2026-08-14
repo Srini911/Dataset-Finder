@@ -1,6 +1,6 @@
 """Tests for gene-to-dataset relevance validation."""
 
-from dataset_finder.flybase_resolver import FlyBaseResolver
+from dataset_finder.flybase_resolver import FlyBaseGene, FlyBaseResolver
 from dataset_finder.models import DatasetRecord
 from dataset_finder.relevance import assess_relevance
 
@@ -159,3 +159,78 @@ def test_orb2_matches_orb2() -> None:
         "Submitted symbol",
         "FlyBase synonym",
     }
+
+
+def test_distinctive_historical_query_provenance_can_support_match() -> None:
+    resolved = FlyBaseGene(
+        submitted_symbol="CG7804",
+        official_symbol="cocoon",
+        flybase_id="FBgn0036496",
+        current_fullname="cocoon",
+        synonyms=("CG7804",),
+        secondary_flybase_ids=(),
+        annotation_id="",
+        match_type="synonym",
+        ambiguous=False,
+    )
+
+    record = DatasetRecord(
+        uid="4211124",
+        accession="SRP110269",
+        title=(
+            "Fast evolution of gained essential function by a young gene "
+            "through gained interaction with other essential genes [RNA-Seq]"
+        ),
+        organism="Drosophila melanogaster",
+        study_type="RNA-Seq",
+        sample_count=1,
+        publication_date="2017/01/01",
+        url="https://example.org/SRP110269",
+        database="SRA",
+        gene_query_used="CG7804",
+    )
+
+    result = assess_relevance(
+        record=record,
+        submitted_gene="CG7804",
+        resolved_gene=resolved,
+    )
+
+    assert result.accepted is True
+    assert result.match_type == "Historical query provenance"
+    assert result.evidence == "CG7804"
+
+
+def test_short_ambiguous_query_provenance_is_not_enough() -> None:
+    resolved = FlyBaseGene(
+        submitted_symbol="sm",
+        official_symbol="sm",
+        flybase_id="FBgn0003435",
+        current_fullname="smooth",
+        synonyms=("sm",),
+        secondary_flybase_ids=(),
+        annotation_id="",
+        match_type="official_symbol",
+        ambiguous=False,
+    )
+
+    record = DatasetRecord(
+        uid="30736048",
+        accession="SRP475297",
+        title="SM2698B systemic infection",
+        organism="Drosophila melanogaster",
+        study_type="RNA-Seq",
+        sample_count=1,
+        publication_date="2023/01/01",
+        url="https://example.org/SRP475297",
+        database="SRA",
+        gene_query_used="sm",
+    )
+
+    result = assess_relevance(
+        record=record,
+        submitted_gene="sm",
+        resolved_gene=resolved,
+    )
+
+    assert result.accepted is False

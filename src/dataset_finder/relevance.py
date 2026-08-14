@@ -117,6 +117,51 @@ def record_search_text(record: DatasetRecord) -> str:
     )
 
 
+def _trusted_query_provenance(
+    *,
+    record: DatasetRecord,
+    submitted_gene: str,
+    resolved_gene: FlyBaseGene,
+) -> str:
+    """Return a distinctive gene term that directly produced the candidate."""
+    query_term = str(
+        getattr(record, "gene_query_used", "") or ""
+    ).strip()
+
+    if not query_term:
+        return ""
+
+    compact = _normalized_compact(query_term)
+
+    # Stable FlyBase identifiers are always distinctive.
+    if re.fullmatch(r"FBgn\d+", query_term, flags=re.IGNORECASE):
+        return query_term
+
+    # Drosophila CG identifiers are distinctive despite being shortish.
+    if re.fullmatch(r"CG\d+", query_term, flags=re.IGNORECASE):
+        return query_term
+
+    # Do not trust generic/ambiguous terms such as sm, mod, snf.
+    if len(compact) < 4:
+        return ""
+
+    allowed_terms = {
+        str(value).strip().casefold()
+        for value in (
+            submitted_gene,
+            resolved_gene.official_symbol,
+            resolved_gene.current_fullname,
+            *resolved_gene.synonyms,
+        )
+        if value and str(value).strip()
+    }
+
+    if query_term.casefold() in allowed_terms:
+        return query_term
+
+    return ""
+
+
 def assess_relevance(
     *,
     record: DatasetRecord,
@@ -213,6 +258,20 @@ def assess_relevance(
                 confidence="Medium",
                 evidence=synonym,
             )
+
+    provenance_term = _trusted_query_provenance(
+        record=record,
+        submitted_gene=submitted_gene,
+        resolved_gene=resolved_gene,
+    )
+
+    if provenance_term:
+        return RelevanceAssessment(
+            accepted=True,
+            match_type="Historical query provenance",
+            confidence="Medium",
+            evidence=provenance_term,
+        )
 
     return RelevanceAssessment(
         accepted=False,

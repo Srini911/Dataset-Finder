@@ -85,3 +85,50 @@ def test_export_excel_creates_expected_sheets(tmp_path) -> None:
     assert "Gene" in headers
     assert "Technique" in headers
     assert "Dataset URL" in headers
+
+
+def test_neural_highlight_formula_uses_biological_columns() -> None:
+    from dataset_finder.exporters.excel_exporter import (
+        _neural_highlight_formula,
+    )
+
+    formula = _neural_highlight_formula(
+        [
+            "Gene",
+            "Tissue",
+            "Cell Type",
+            "Title",
+            "Description",
+        ]
+    )
+
+    assert formula.startswith("=OR(")
+    assert 'SEARCH("brain",$B2)' in formula
+    assert 'SEARCH("neuron",$C2)' in formula
+    assert 'SEARCH("mushroom body",$D2)' in formula
+    assert 'SEARCH("glial",$E2)' in formula
+
+
+def test_neural_highlight_formula_ignores_head_alone() -> None:
+    from dataset_finder.exporters.excel_exporter import (
+        _neural_highlight_formula,
+    )
+
+    formula = _neural_highlight_formula(
+        ["Gene", "Tissue", "Title"]
+    )
+
+    assert 'SEARCH("head"' not in formula
+
+
+def test_neural_highlight_formula_requires_searchable_columns() -> None:
+    from dataset_finder.exporters.excel_exporter import (
+        _neural_highlight_formula,
+    )
+
+    assert (
+        _neural_highlight_formula(
+            ["Gene", "Accession", "Database"]
+        )
+        == ""
+    )

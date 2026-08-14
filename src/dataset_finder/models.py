@@ -27,6 +27,15 @@ class DatasetRecord:
     synonyms: tuple[str, ...] = field(default_factory=tuple)
     technique: str = ""
     technique_subtype: str = ""
+    technique_requested: str = ""
+    technique_match: str = ""
+    technique_search_term: str = ""
+    technique_evidence: str = ""
+    technique_evidence_source: str = ""
+    gene_query_used: str = ""
+    search_query_used: str = ""
+    study_year: int | None = None
+    historical_study: bool = False
     project_accession: str = ""
     experiment_accessions: tuple[str, ...] = field(default_factory=tuple)
     sample_accessions: tuple[str, ...] = field(default_factory=tuple)
@@ -50,9 +59,22 @@ class DatasetRecord:
     perturbation: str = ""
     control: str = ""
     publication: str = ""
+    pubmed_ids: tuple[str, ...] = field(default_factory=tuple)
+    dois: tuple[str, ...] = field(default_factory=tuple)
+    related_accessions: tuple[str, ...] = field(default_factory=tuple)
+    related_geo_accessions: tuple[str, ...] = field(default_factory=tuple)
+    related_study_accessions: tuple[str, ...] = field(default_factory=tuple)
+    related_bioproject_accessions: tuple[str, ...] = field(
+        default_factory=tuple
+    )
+    related_biosample_accessions: tuple[str, ...] = field(
+        default_factory=tuple
+    )
     evidence_text: str = ""
     match_type: str = ""
     confidence: str = ""
+    ranking_score: int = 0
+    ranking_reasons: tuple[str, ...] = field(default_factory=tuple)
     search_date: str = ""
     flyatlas_url: str = ""
     flybase_url: str = ""
@@ -81,6 +103,23 @@ class DatasetRecord:
         )
         result["biosample_accessions"] = "; ".join(
             self.biosample_accessions
+        )
+        result["pubmed_ids"] = "; ".join(self.pubmed_ids)
+        result["dois"] = "; ".join(self.dois)
+        result["related_accessions"] = "; ".join(
+            self.related_accessions
+        )
+        result["related_geo_accessions"] = "; ".join(
+            self.related_geo_accessions
+        )
+        result["related_study_accessions"] = "; ".join(
+            self.related_study_accessions
+        )
+        result["related_bioproject_accessions"] = "; ".join(
+            self.related_bioproject_accessions
+        )
+        result["related_biosample_accessions"] = "; ".join(
+            self.related_biosample_accessions
         )
         result["raw_metadata"] = str(self.raw_metadata)
         return result
