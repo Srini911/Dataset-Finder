@@ -534,10 +534,6 @@ GitHub Actions validates commits and pull requests using Ruff, automated tests, 
 
 Planned work includes:
 
-- PubMed integration
-- ENA integration
-- Expression Atlas integration
-- ProteomeXchange integration
 - Additional metadata normalization
 - Tissue and cell-type filtering
 - Disease-related filtering
