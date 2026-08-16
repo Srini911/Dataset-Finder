@@ -151,7 +151,12 @@ Available databases include:
 - `encode`
 - `sra`
 - `bioproject`
+- `biosample`
 - `biostudies`
+- `ena`
+- `pubmed`
+- `expression-atlas`
+- `pride`
 - `all`
 
 Available output formats include:
@@ -313,7 +318,7 @@ Gene, gene list, or built-in gene set
                   |
                   v
      Repository-specific searches
-   GEO | SRA | BioProject | BioStudies | ENCODE
+   GEO | SRA | BioProject | BioSample | BioStudies | ENCODE | ENA | PubMed | Expression Atlas | PRIDE
                   |
                   v
          Metadata normalization
