@@ -449,6 +449,50 @@ These labels are metadata-derived screening annotations, not guaranteed experime
 
 The built-in curated Drosophila RBP screening panel currently contains 131 genes.
 
+### Validated Control–Experiment Comparison Export
+
+After sample-level screening, Dataset Finder can generate a conservative comparison workbook from the `Sample_Metadata` sheet.
+
+Example:
+
+    python tools/build_final_comparison_excel.py \
+        --input-dir results_2026_09_13_metadata \
+        --output-dir final_results \
+        --gene-set both
+
+`--gene-set` accepts `rbp`, `tf`, or `both`.
+
+The exporter resolves usable biological control–experiment comparisons rather than treating every search hit as a valid comparison. Resolution considers available sample metadata such as experimental group, sex, assay context, and developmental timepoint. Ambiguous or unsupported comparisons may be excluded instead of being inferred.
+
+Each final workbook contains the following sheets:
+
+- `Summary`
+- `CUT&RUN`
+- `CUT&Tag`
+- `ChIP-seq`
+- `CLIP`
+- `RNA-seq`
+
+Each sheet uses the same 10-column schema:
+
+1. `Gene Name`
+2. `Gene Symbol`
+3. `FlyBase ID`
+4. `Full Gene Name`
+5. `Technique`
+6. `Study Name`
+7. `GEO/SRA Number`
+8. `Experiment Accession Code`
+9. `Control Accession Code`
+10. `Sex Label`
+
+Run-level accessions (`SRR`, `ERR`, or `DRR`) are preferred. Experiment-level accessions (`SRX`, `ERX`, or `DRX`) are used as a fallback when run accessions are unavailable.
+
+`Sex Label` is restricted to `Male`, `Female`, `Mixed`, or `Unspecified`. `Mixed` indicates an explicitly mixed or pooled biological sample. Missing or unresolved sex metadata is reported as `Unspecified`.
+
+Empty technique sheets do not imply that no public datasets exist for that technique. They indicate that no control–experiment comparison from the screened metadata passed the conservative comparison-resolution rules.
+
+
 ## Excel Workbook Structure
 
 Excel exports contain the following worksheets:

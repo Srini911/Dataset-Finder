@@ -1,3 +1,4 @@
+import argparse
 import re
 from pathlib import Path
 
@@ -484,5 +485,81 @@ def build(kind):
         print(result["Sex Label"].value_counts().to_string())
 
 
-for kind in ["RBP", "TF"]:
-    build(kind)
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description=(
+            "Build validated Drosophila RBP/TF control-experiment "
+            "comparison workbooks from Dataset-Finder Sample_Metadata."
+        )
+    )
+
+    parser.add_argument(
+        "--input-dir",
+        type=Path,
+        default=ROOT,
+        help=(
+            "Directory containing Drosophila_RBP_Metadata_FINAL.xlsx "
+            "and/or Drosophila_TF_Metadata_FINAL.xlsx."
+        ),
+    )
+
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=None,
+        help=(
+            "Directory for final comparison workbooks. "
+            "Defaults to --input-dir."
+        ),
+    )
+
+    parser.add_argument(
+        "--gene-set",
+        choices=["rbp", "tf", "both"],
+        default="both",
+        help="Gene set to process. Default: both.",
+    )
+
+    return parser.parse_args()
+
+
+def main():
+    global ROOT, FILES, OUT
+
+    args = parse_args()
+
+    ROOT = args.input_dir
+    output_dir = args.output_dir or ROOT
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    FILES = {
+        "RBP": ROOT / "Drosophila_RBP_Metadata_FINAL.xlsx",
+        "TF": ROOT / "Drosophila_TF_Metadata_FINAL.xlsx",
+    }
+
+    OUT = {
+        "RBP": output_dir
+        / "Drosophila_RBP_Control_Experiment_Sex_FINAL.xlsx",
+        "TF": output_dir
+        / "Drosophila_TF_Control_Experiment_Sex_FINAL.xlsx",
+    }
+
+    kinds = {
+        "rbp": ["RBP"],
+        "tf": ["TF"],
+        "both": ["RBP", "TF"],
+    }[args.gene_set]
+
+    for kind in kinds:
+        if not FILES[kind].exists():
+            raise FileNotFoundError(
+                f"Input workbook not found: {FILES[kind]}"
+            )
+
+        build(kind)
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
