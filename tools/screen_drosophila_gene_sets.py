@@ -428,6 +428,642 @@ def dataset_link(
     )
 
 
+
+def xml_attribute(
+    text: str,
+    tag: str,
+    attribute: str,
+) -> str:
+    if not text:
+        return ""
+
+    match = re.search(
+        rf"<{tag}\b[^>]*\b{attribute}=[\"']([^\"']+)[\"']",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    return clean(match.group(1)) if match else ""
+
+
+def xml_text(
+    text: str,
+    tag: str,
+) -> str:
+    if not text:
+        return ""
+
+    match = re.search(
+        rf"<{tag}\b[^>]*>(.*?)</{tag}>",
+        text,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+
+    if not match:
+        return ""
+
+    value = re.sub(
+        r"<[^>]+>",
+        " ",
+        match.group(1),
+    )
+
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def extract_all_accessions(
+    text: str,
+    prefixes: tuple[str, ...],
+) -> list[str]:
+    if not text:
+        return []
+
+    prefix_pattern = "|".join(
+        re.escape(prefix)
+        for prefix in prefixes
+    )
+
+    values = re.findall(
+        rf"\b(?:{prefix_pattern})\d+\b",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    return unique_terms(
+        [value.upper() for value in values]
+    )
+
+
+def sra_metadata(
+    entry: dict[str, Any],
+) -> dict[str, str]:
+    expxml = clean(entry.get("expxml"))
+    runs = clean(entry.get("runs"))
+
+    experiment_accession = xml_attribute(
+        expxml,
+        "Experiment",
+        "acc",
+    )
+
+    sample_accession = xml_attribute(
+        expxml,
+        "Sample",
+        "acc",
+    )
+
+    study_accession = xml_attribute(
+        expxml,
+        "Study",
+        "acc",
+    )
+
+    study_title = xml_attribute(
+        expxml,
+        "Study",
+        "name",
+    )
+
+    experiment_title = xml_text(
+        expxml,
+        "Title",
+    )
+
+    bioproject = xml_text(
+        expxml,
+        "Bioproject",
+    )
+
+    biosample = xml_text(
+        expxml,
+        "Biosample",
+    )
+
+    library_strategy = xml_text(
+        expxml,
+        "LIBRARY_STRATEGY",
+    )
+
+    library_source = xml_text(
+        expxml,
+        "LIBRARY_SOURCE",
+    )
+
+    library_selection = xml_text(
+        expxml,
+        "LIBRARY_SELECTION",
+    )
+
+    if re.search(
+        r"<PAIRED\b",
+        expxml,
+        flags=re.IGNORECASE,
+    ):
+        library_layout = "PAIRED"
+    elif re.search(
+        r"<SINGLE\b",
+        expxml,
+        flags=re.IGNORECASE,
+    ):
+        library_layout = "SINGLE"
+    else:
+        library_layout = ""
+
+    platform_match = re.search(
+        r'instrument_model=[\"\']([^\"\']+)[\"\']',
+        expxml,
+        flags=re.IGNORECASE,
+    )
+
+    platform = (
+        clean(platform_match.group(1))
+        if platform_match
+        else ""
+    )
+
+    run_accessions = extract_all_accessions(
+        runs,
+        ("SRR", "ERR", "DRR"),
+    )
+
+    biosample_accessions = unique_terms(
+        [
+            sample_accession,
+            biosample,
+            *extract_all_accessions(
+                expxml,
+                ("SAMN", "SAMEA", "SAMD"),
+            ),
+        ]
+    )
+
+    evidence = re.sub(
+        r"<[^>]+>",
+        " ",
+        expxml,
+    )
+    evidence = re.sub(
+        r"\s+",
+        " ",
+        evidence,
+    ).strip()
+
+    return {
+        "Project Accession":
+            bioproject or study_accession,
+        "Study Accession":
+            study_accession,
+        "Experiment Accession":
+            experiment_accession,
+        "Run Accessions":
+            "; ".join(run_accessions),
+        "BioSample Accessions":
+            "; ".join(biosample_accessions),
+        "Sample Accession":
+            sample_accession,
+        "Experiment Title":
+            experiment_title,
+        "Study Title":
+            study_title,
+        "Library Strategy":
+            library_strategy,
+        "Library Source":
+            library_source,
+        "Library Selection":
+            library_selection,
+        "Library Layout":
+            library_layout,
+        "Platform":
+            platform,
+        "Metadata Evidence":
+            evidence,
+    }
+
+
+def contains_gene(
+    text: str,
+    gene: str,
+) -> bool:
+    text = clean(text)
+
+    if not text or not gene:
+        return False
+
+    return bool(
+        re.search(
+            rf"(?<![A-Za-z0-9]){re.escape(gene)}(?![A-Za-z0-9])",
+            text,
+            flags=re.IGNORECASE,
+        )
+    )
+
+
+def technique_matches_sample(
+    technique: str,
+    sample_metadata: dict[str, str],
+) -> bool:
+    text = " ".join(
+        [
+            clean(sample_metadata.get("Experiment Title")),
+            clean(sample_metadata.get("Library Strategy")),
+            clean(sample_metadata.get("Metadata Evidence")),
+        ]
+    ).casefold()
+
+    strategy = clean(
+        sample_metadata.get("Library Strategy")
+    ).casefold()
+
+    if technique == "RNA_seq":
+        return (
+            strategy in {"rna-seq", "rna seq", "transcriptomic"}
+            or "rna-seq" in text
+            or "rnaseq" in text
+        )
+
+    if technique == "ChIP_seq":
+        return (
+            "chip-seq" in text
+            or "chip seq" in text
+            or "chipseq" in text
+        )
+
+    if technique == "CUT_RUN":
+        return (
+            "cut&run" in text
+            or "cut and run" in text
+            or "cut-run" in text
+            or "cut n run" in text
+        )
+
+    if technique == "CUT_TAG":
+        return (
+            "cut&tag" in text
+            or "cut and tag" in text
+            or "cut-tag" in text
+            or "cut n tag" in text
+        )
+
+    if technique == "CLIP":
+        return any(
+            value in text
+            for value in (
+                "clip-seq",
+                "clip seq",
+                "eclip",
+                "iclip",
+                "par-clip",
+                "hits-clip",
+                "rip-seq",
+            )
+        )
+
+    return True
+
+
+def classify_group(
+    gene: str,
+    experiment_title: str,
+    metadata_evidence: str,
+) -> tuple[str, str, str]:
+    title = clean(experiment_title)
+    evidence = clean(metadata_evidence)
+
+    title_lower = title.casefold()
+    evidence_lower = evidence.casefold()
+
+    title_normalized = re.sub(
+        r"[_-]+",
+        " ",
+        title_lower,
+    )
+    evidence_normalized = re.sub(
+        r"[_-]+",
+        " ",
+        evidence_lower,
+    )
+
+    target_in_title = contains_gene(
+        title,
+        gene,
+    )
+    target_in_evidence = contains_gene(
+        evidence,
+        gene,
+    )
+
+    gene_pattern = re.escape(gene.casefold())
+
+    target_kd = bool(
+        re.search(
+            rf"\bkd\s+{gene_pattern}\b",
+            evidence_normalized,
+            flags=re.IGNORECASE,
+        )
+        or re.search(
+            rf"\b{gene_pattern}\s+kd\b",
+            evidence_normalized,
+            flags=re.IGNORECASE,
+        )
+        or re.search(
+            rf"\bknock\s*down\s+{gene_pattern}\b",
+            evidence_normalized,
+            flags=re.IGNORECASE,
+        )
+        or re.search(
+            rf"\b{gene_pattern}\s+knock\s*down\b",
+            evidence_normalized,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    target_rnai = bool(
+        target_in_evidence
+        and re.search(
+            r"\brnai\b",
+            evidence_normalized,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    negative_control_patterns = {
+        "GFP RNAi control":
+            r"\bgfp\s*rnai\b",
+        "IgG control":
+            r"\bigg\b",
+        "Input control":
+            r"\binput\b",
+        "wild type":
+            r"\bwild\s*type\b|\bwildtype\b|\bwt\b",
+        "mock":
+            r"\bmock\b",
+        "vehicle":
+            r"\bvehicle\b",
+        "untreated":
+            r"\buntreated\b",
+        "control":
+            r"\bcontrol\b",
+    }
+
+    perturbation_patterns = {
+        "RNAi":
+            r"\brnai\b",
+        "knockdown":
+            r"\bknock\s*down\b|\bkd\b",
+        "knockout":
+            r"\bknock\s*out\b|\bko\b",
+        "mutant":
+            r"\bmutant\b",
+        "depletion":
+            r"\bdeplet(?:ed|ion)\b",
+        "overexpression":
+            r"\boverexpress(?:ion|ed)?\b",
+        "CRISPR":
+            r"\bcrispr\b",
+        "treated":
+            r"\btreated\b",
+    }
+
+    control_hits = [
+        label
+        for label, pattern in negative_control_patterns.items()
+        if re.search(
+            pattern,
+            title_normalized,
+            flags=re.IGNORECASE,
+        )
+    ]
+
+    perturbation_hits = [
+        label
+        for label, pattern in perturbation_patterns.items()
+        if re.search(
+            pattern,
+            title_normalized,
+            flags=re.IGNORECASE,
+        )
+    ]
+
+    if target_in_title and perturbation_hits:
+        return (
+            "Experiment",
+            "High",
+            (
+                f"Target gene {gene} present; "
+                + "; ".join(perturbation_hits)
+            ),
+        )
+
+    if target_in_title and (
+        "rip" in title_lower
+        or "clip" in title_lower
+        or "chip" in title_lower
+    ):
+        return (
+            "Experiment",
+            "High",
+            f"Target gene {gene} present in target-enrichment sample",
+        )
+
+    if control_hits and not target_in_title:
+        return (
+            "Control",
+            "High",
+            "; ".join(control_hits),
+        )
+
+    if perturbation_hits and not target_in_title:
+        return (
+            "Other",
+            "High",
+            (
+                "Non-target perturbation: "
+                + "; ".join(perturbation_hits)
+            ),
+        )
+
+    if target_kd:
+        return (
+            "Experiment",
+            "High",
+            f"Target-specific knockdown evidence for {gene}",
+        )
+
+    if target_rnai:
+        return (
+            "Experiment",
+            "High",
+            f"Target-specific RNAi evidence for {gene}",
+        )
+
+    if re.search(
+        r"\bgfp(?:\s+rnai)?\b",
+        evidence_normalized,
+        flags=re.IGNORECASE,
+    ):
+        return (
+            "Control",
+            "High",
+            "GFP control evidence in sample metadata",
+        )
+
+    generic_perturbation = [
+        label
+        for label, pattern in perturbation_patterns.items()
+        if re.search(
+            pattern,
+            evidence_normalized,
+            flags=re.IGNORECASE,
+        )
+    ]
+
+    if generic_perturbation and not target_in_evidence:
+        return (
+            "Other",
+            "High",
+            (
+                "Non-target perturbation in metadata: "
+                + "; ".join(generic_perturbation)
+            ),
+        )
+
+    if target_in_title:
+        return (
+            "Experiment",
+            "Medium",
+            f"Target gene {gene} present in sample title",
+        )
+
+    return (
+        "Unclear",
+        "Low",
+        "No target-specific control/experiment evidence",
+    )
+
+
+def classify_sex(
+    experiment_title: str,
+    metadata_evidence: str,
+) -> tuple[str, str, str]:
+    title = clean(experiment_title)
+    evidence = clean(metadata_evidence)
+
+    title_lower = title.casefold()
+    evidence_lower = evidence.casefold()
+
+    male_pattern = r"\bmales?\b"
+    female_pattern = r"\bfemales?\b"
+
+    title_male = bool(
+        re.search(male_pattern, title_lower)
+    )
+    title_female = bool(
+        re.search(female_pattern, title_lower)
+    )
+
+    if title_male and title_female:
+        return (
+            "Mixed",
+            "High",
+            "Male and female explicitly present in experiment title",
+        )
+
+    if title_male:
+        return (
+            "Male",
+            "High",
+            "Male explicitly present in experiment title",
+        )
+
+    if title_female:
+        return (
+            "Female",
+            "High",
+            "Female explicitly present in experiment title",
+        )
+
+    evidence_male = bool(
+        re.search(male_pattern, evidence_lower)
+    )
+    evidence_female = bool(
+        re.search(female_pattern, evidence_lower)
+    )
+
+    if evidence_male and evidence_female:
+        return (
+            "Unclear",
+            "Low",
+            "Conflicting male and female terms in metadata evidence",
+        )
+
+    if evidence_male:
+        return (
+            "Male",
+            "Medium",
+            "Male explicitly present in metadata evidence",
+        )
+
+    if evidence_female:
+        return (
+            "Female",
+            "Medium",
+            "Female explicitly present in metadata evidence",
+        )
+
+    return (
+        "Unclear",
+        "Low",
+        "No explicit sex information found",
+    )
+
+
+def expand_sra_study(
+    study_accession: str,
+) -> list[dict[str, Any]]:
+    if not study_accession:
+        return []
+
+    term = (
+        f'"{study_accession}"[All Fields] AND '
+        f'"{SPECIES}"[Organism]'
+    )
+
+    identifiers = esearch(
+        "sra",
+        term,
+    )
+
+    return esummary(
+        "sra",
+        identifiers,
+    )
+
+def empty_sample_metadata() -> dict[str, str]:
+    return {
+        "Project Accession": "",
+        "Study Accession": "",
+        "Experiment Accession": "",
+        "Run Accessions": "",
+        "BioSample Accessions": "",
+        "Sample Accession": "",
+        "Experiment Title": "",
+        "Study Title": "",
+        "Library Strategy": "",
+        "Library Source": "",
+        "Library Selection": "",
+        "Library Layout": "",
+        "Platform": "",
+        "Metadata Evidence": "",
+        "Group": "Unclear",
+        "Group Confidence": "Low",
+        "Group Evidence":
+            "Sample-level metadata unavailable from this summary record",
+        "Sex": "Unclear",
+        "Sex Confidence": "Low",
+        "Sex Evidence":
+            "Sample-level sex metadata unavailable from this summary record",
+    }
+
 def collect_route(
     *,
     gene: str,
@@ -458,6 +1094,44 @@ def collect_route(
         identifiers,
     )
 
+    if database == "sra":
+        studies: list[str] = []
+
+        for entry in entries:
+            sm = sra_metadata(entry)
+
+            study = clean(
+                sm.get("Study Accession")
+            )
+
+            if study and study not in studies:
+                studies.append(study)
+
+        expanded_entries: list[dict[str, Any]] = []
+        seen_experiments: set[str] = set()
+
+        for study in studies:
+            for entry in expand_sra_study(study):
+                sm = sra_metadata(entry)
+
+                experiment = clean(
+                    sm.get("Experiment Accession")
+                )
+
+                identity = (
+                    experiment
+                    or clean(entry.get("_uid"))
+                )
+
+                if identity in seen_experiments:
+                    continue
+
+                seen_experiments.add(identity)
+                expanded_entries.append(entry)
+
+        if expanded_entries:
+            entries = expanded_entries
+
     rows: list[dict[str, object]] = []
 
     for entry in entries:
@@ -465,6 +1139,72 @@ def collect_route(
             database,
             entry,
         )
+
+        if database == "sra":
+            sample_metadata = sra_metadata(
+                entry
+            )
+
+            if not technique_matches_sample(
+                technique,
+                sample_metadata,
+            ):
+                continue
+
+            experiment_title = sample_metadata[
+                "Experiment Title"
+            ]
+
+            (
+                group,
+                group_confidence,
+                group_evidence,
+            ) = classify_group(
+                gene,
+                experiment_title,
+                sample_metadata[
+                    "Metadata Evidence"
+                ],
+            )
+
+            sample_metadata["Group"] = group
+            sample_metadata[
+                "Group Confidence"
+            ] = group_confidence
+            sample_metadata[
+                "Group Evidence"
+            ] = group_evidence
+
+            (
+                sex,
+                sex_confidence,
+                sex_evidence,
+            ) = classify_sex(
+                experiment_title,
+                sample_metadata[
+                    "Metadata Evidence"
+                ],
+            )
+
+            sample_metadata["Sex"] = sex
+            sample_metadata[
+                "Sex Confidence"
+            ] = sex_confidence
+            sample_metadata[
+                "Sex Evidence"
+            ] = sex_evidence
+
+            title = (
+                sample_metadata["Study Title"]
+                or experiment_title
+                or clean(entry.get("title"))
+            )
+
+        else:
+            sample_metadata = empty_sample_metadata()
+            title = clean(
+                entry.get("title")
+            )
 
         rows.append(
             {
@@ -478,12 +1218,9 @@ def collect_route(
                     database_label,
                 "Accession":
                     accession,
+                **sample_metadata,
                 "Title":
-                    clean(
-                        entry.get(
-                            "title"
-                        )
-                    ),
+                    title,
                 "Search Route":
                     route,
                 "Gene Query Used":
@@ -505,7 +1242,6 @@ def collect_route(
         )
 
     return rows
-
 
 def collect_gene(
     *,
@@ -652,6 +1388,7 @@ def write_workbook(
             "Technique",
             "Database",
             "Accession",
+            "Experiment Accession",
             "Search Route",
         ]
     )
@@ -680,18 +1417,73 @@ def write_workbook(
         axis=1,
     )
 
-    risky_fallback = ok[
+    strong_target_evidence = (
+        (ok["Group"] == "Experiment")
+        & (ok["Group Confidence"] == "High")
+        & (
+            ok["Group Evidence"]
+            .fillna("")
+            .astype(str)
+            .str.contains(
+                r"Target-specific|Target gene .* present",
+                case=False,
+                regex=True,
+            )
+        )
+    )
+
+    validated_study_keys = set(
+        zip(
+            ok.loc[
+                strong_target_evidence,
+                "Gene",
+            ].astype(str).str.casefold(),
+            ok.loc[
+                strong_target_evidence,
+                "Technique",
+            ].astype(str),
+            ok.loc[
+                strong_target_evidence,
+                "Database",
+            ].astype(str),
+            ok.loc[
+                strong_target_evidence,
+                "Accession",
+            ].astype(str),
+        )
+    )
+
+    def has_strong_study_validation(row):
+        key = (
+            clean(row["Gene"]).casefold(),
+            clean(row["Technique"]),
+            clean(row["Database"]),
+            clean(row["Accession"]),
+        )
+        return key in validated_study_keys
+
+    ok["Strong Study Validation"] = ok.apply(
+        lambda row: (
+            "Yes"
+            if has_strong_study_validation(row)
+            else "No"
+        ),
+        axis=1,
+    )
+
+    rejected_risky = (
         (ok["Search Route"] == "Legacy symbol fallback")
         & (ok["Risky Symbol"] == "Yes")
         & (ok["Validated Legacy"] != "Yes")
+        & (ok["Strong Study Validation"] != "Yes")
+    )
+
+    risky_fallback = ok[
+        rejected_risky
     ].copy()
 
     accepted = ok[
-        ~(
-            (ok["Search Route"] == "Legacy symbol fallback")
-            & (ok["Risky Symbol"] == "Yes")
-            & (ok["Validated Legacy"] != "Yes")
-        )
+        ~rejected_risky
     ].copy()
 
     accepted = accepted.drop_duplicates(
@@ -700,6 +1492,7 @@ def write_workbook(
             "Technique",
             "Database",
             "Accession",
+            "Experiment Accession",
         ]
     )
 
@@ -710,12 +1503,42 @@ def write_workbook(
                 "Technique",
                 "Database",
             ]
-        )
-        .size()
+        )["Accession"]
+        .nunique()
         .reset_index(
             name="Dataset Count"
         )
     )
+
+    sample_metadata = accepted[
+        (
+            accepted["Experiment Accession"]
+            .fillna("")
+            .astype(str)
+            .str.len()
+            > 0
+        )
+        | (
+            accepted["Run Accessions"]
+            .fillna("")
+            .astype(str)
+            .str.len()
+            > 0
+        )
+        | (
+            accepted["BioSample Accessions"]
+            .fillna("")
+            .astype(str)
+            .str.len()
+            > 0
+        )
+    ].copy()
+
+    control_experiment = sample_metadata[
+        sample_metadata["Group"].isin(
+            ["Control", "Experiment"]
+        )
+    ].copy()
 
     with pd.ExcelWriter(
         output,
@@ -748,6 +1571,18 @@ def write_workbook(
         summary.to_excel(
             writer,
             sheet_name="Summary",
+            index=False,
+        )
+
+        sample_metadata.to_excel(
+            writer,
+            sheet_name="Sample_Metadata",
+            index=False,
+        )
+
+        control_experiment.to_excel(
+            writer,
+            sheet_name="Control_Experiment",
             index=False,
         )
 
@@ -850,12 +1685,44 @@ def main() -> int:
             flush=True,
         )
 
-        rows.extend(
-            collect_gene(
+        gene_rows = collect_gene(
+            gene=gene,
+            gene_set=args.gene_set,
+        )
+
+        ok_gene_rows = [
+            row
+            for row in gene_rows
+            if row.get("Status") == "OK"
+        ]
+
+        if not ok_gene_rows:
+            print(
+                f"  No hits returned for {gene}; retrying once...",
+                flush=True,
+            )
+
+            time.sleep(2.0)
+
+            retry_rows = collect_gene(
                 gene=gene,
                 gene_set=args.gene_set,
             )
-        )
+
+            retry_ok_rows = [
+                row
+                for row in retry_rows
+                if row.get("Status") == "OK"
+            ]
+
+            if retry_ok_rows:
+                print(
+                    f"  Retry recovered {len(retry_ok_rows)} rows for {gene}",
+                    flush=True,
+                )
+                gene_rows = retry_rows
+
+        rows.extend(gene_rows)
 
     dataframe = pd.DataFrame(
         rows

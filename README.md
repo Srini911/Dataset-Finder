@@ -422,6 +422,33 @@ Normalized SRA metadata may include:
 - Release date
 - Direct SRA URL
 
+## Drosophila Sample-Level Screening
+
+The Drosophila RBP/TF screening utility can expand SRA study-level discoveries into sample-level metadata for downstream dataset review.
+
+For SRA-backed records, the screening output can include:
+
+- SRA study accession (`SRP`/`ERP`)
+- Experiment accession (`SRX`/`ERX`)
+- Run accession (`SRR`/`ERR`)
+- BioSample/sample accession when available
+- Experiment and study titles
+- Library strategy, source, selection, layout, and sequencing platform
+- Target-relative sample role: `Control`, `Experiment`, `Other`, or `Unclear`
+- Group confidence and supporting metadata evidence
+- Sex annotation: `Male`, `Female`, `Mixed`, or `Unclear`
+- Sex confidence and supporting metadata evidence
+
+Control/experiment classification is target-gene-relative. Explicit target perturbation evidence such as RNAi or knockdown can support an `Experiment` assignment, while explicit control metadata can support a `Control` assignment. Non-target perturbations within the same study are retained as `Other`.
+
+For short or potentially ambiguous gene symbols, study-level results can be promoted only when explicit target-specific sample evidence provides strong validation. This reduces false-positive associations caused by generic symbols or aliases.
+
+Sex classification prioritizes explicit sample/experiment-title evidence and uses metadata evidence when appropriate. When sex or experimental role cannot be supported by the retrieved public metadata, Dataset Finder reports `Unclear` rather than inferring a label.
+
+These labels are metadata-derived screening annotations, not guaranteed experimental contrast definitions. Exact control/experiment pairing should be verified against the source study before publication or downstream statistical analysis.
+
+The built-in curated Drosophila RBP screening panel currently contains 131 genes.
+
 ## Excel Workbook Structure
 
 Excel exports contain the following worksheets:
@@ -532,7 +559,9 @@ GitHub Actions validates commits and pull requests using Ruff, automated tests, 
 - Some datasets may not expose enough metadata for strict gene validation.
 - A zero-result gene does not necessarily mean no public data exists.
 - ENCODE organism coverage differs from GEO and SRA coverage.
-- External APIs may temporarily fail or change independently of Dataset Finder.
+- External APIs may temporarily fail, rate-limit requests, or change independently of Dataset Finder.
+- NCBI E-utilities may return HTTP 429 responses during request-heavy or concurrent screening runs; failed requests are reported rather than silently treated as confirmed zero-result searches.
+- Metadata-derived control, experiment, and sex annotations should be verified against the source study before publication or downstream statistical analysis.
 - Search results should be reviewed before publication or downstream analysis.
 
 ## Roadmap

@@ -17,6 +17,10 @@ versioning.
 - Dataset ranking, relevance scoring, and known-dataset regression checks
 - Focused Drosophila RBP/TF screening workflow with canonical identifier and historical-alias searches
 - Validation utilities for historical dataset recovery and ambiguous gene-symbol handling
+- Sample-level SRA expansion for the focused Drosophila RBP/TF screening workflow, including study, experiment, run, and BioSample accessions
+- Target-relative `Control`, `Experiment`, `Other`, and `Unclear` sample-role annotations with confidence and supporting evidence
+- `Male`, `Female`, `Mixed`, and `Unclear` sex annotations with confidence and supporting metadata evidence
+- Strong study-level validation for ambiguous gene symbols using explicit target-specific sample metadata
 
 ### Changed
 
