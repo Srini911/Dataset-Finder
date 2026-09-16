@@ -493,6 +493,58 @@ Run-level accessions (`SRR`, `ERR`, or `DRR`) are preferred. Experiment-level ac
 Empty technique sheets do not imply that no public datasets exist for that technique. They indicate that no control–experiment comparison from the screened metadata passed the conservative comparison-resolution rules.
 
 
+
+### Strict Gene–Dataset Validation and Full-Panel Export
+
+Dataset Finder also provides an offline validation layer for reducing false-positive gene–dataset associations after discovery. This is particularly important for short or ambiguous Drosophila gene symbols that may collide with unrelated experimental terminology.
+
+The curated screening panels contain:
+
+- 131 RNA-binding protein (RBP) genes
+- 292 transcription factor (TF) genes
+- 423 genes in total
+
+Strict validation uses the local FlyBase gene index together with existing sample-level metadata. Evidence can include the official gene symbol, FlyBase ID, annotation/CG ID, full gene name, aliases, sample titles, study titles, assay context, and perturbation or target information.
+
+Candidate gene–study associations are classified as:
+
+- `VALIDATED` — sufficiently strong gene-specific and experimental evidence was detected.
+- `REVIEW` — potentially relevant, but the available metadata is insufficient for automatic acceptance.
+- `REJECTED` — gene-specific evidence is absent or the match is consistent with an unrelated textual collision.
+
+For example, short symbols are not accepted solely because their characters occur in assay terminology. A match to the transcription factor `ac` must not be inferred from `H3K27ac`, where `ac` refers to histone acetylation.
+
+Run the offline validator after generating the sample-level metadata workbooks:
+
+    python tools/strict_gene_dataset_validator.py
+
+The validator writes:
+
+    results_2026_09_13_metadata/STRICT_GENE_DATASET_VALIDATION_AUDIT.xlsx
+
+The audit contains gene–study and sample-level validation information. It does not overwrite the source metadata workbooks.
+
+Truth-filtered full-panel workbooks can then be generated with:
+
+    python tools/build_truth_validated_final_workbooks.py
+
+The resulting RBP and TF workbooks preserve every gene in the corresponding curated panel, including genes for which no association passes strict automatic validation. A gene without a sufficiently supported dataset is therefore retained rather than silently removed.
+
+The truth-validated workbooks contain:
+
+- `Gene_Coverage`
+- `All_Genes`
+- `CUT&RUN`
+- `CUT&Tag`
+- `ChIP-seq`
+- `CLIP`
+- `RNA-seq`
+- `Needs_Review`
+- `Rejected_Associations`
+
+`VALIDATED` is an automated metadata-based validation category and should not be interpreted as a substitute for manual review of the original study when a dataset is used for publication, biological interpretation, or downstream statistical analysis.
+
+
 ## Excel Workbook Structure
 
 Excel exports contain the following worksheets:
